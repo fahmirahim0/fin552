@@ -7,7 +7,7 @@
 <style>
 :root{--navy:#1f2a44;--gold:#c9a227;--gold-soft:#f7efd6;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--bg:#f5f6f8;--good:#15803d;--bad:#b91c1c;--warn:#b45309}
 *{box-sizing:border-box}body{margin:0;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-header{background:var(--navy);color:#fff;border-bottom:4px solid var(--gold)}header .w{display:flex;align-items:baseline;gap:12px;padding:14px 20px}header b{font-size:20px}header span{color:var(--gold);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+header{background:var(--navy);color:#fff;border-bottom:4px solid var(--gold)}header .w{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:12px 20px}header .hb{color:#fff;text-decoration:none;font-family:inherit;font-size:13px;font-weight:600;line-height:1.5;border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:5px 12px;background:transparent;cursor:pointer}header .hb:hover{background:rgba(255,255,255,.12)}header b{font-size:20px}header span{color:var(--gold);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
 main{max-width:1180px;margin:0 auto;padding:18px 16px 60px;display:grid;gap:14px}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}.card h2{margin:0 0 8px;font-size:17px;color:var(--navy)}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -22,7 +22,7 @@ details summary{cursor:pointer;font-weight:600;color:var(--navy)}
 .hide{display:none}
 </style></head>
 <body>
-<header><div class="w"><b>PraktiFin</b><span id="hd">Class progress · lecturer</span></div></header>
+<header><div class="w"><a class="hb" href="../" title="Back to the PraktiFin home page">&#8592; All modules</a><b>PraktiFin</b><span id="hd">Class progress · lecturer</span><a class="hb" href="./" style="margin-left:auto">Open the app</a><button type="button" class="hb hide" id="signout">Sign out</button></div></header>
 <main>
   <section class="card" id="login">
     <h2>Lecturer sign in</h2>
@@ -87,7 +87,7 @@ async function openPanel() {
   try {
     await api('/v1/admin/students?course=' + COURSE);
     sessionStorage.setItem('pf-admin', KEY); sessionStorage.setItem('pf-course', COURSE);
-    $('#login').classList.add('hide'); $('#classlist').classList.remove('hide');
+    $('#login').classList.add('hide'); $('#classlist').classList.remove('hide'); $('#signout').classList.remove('hide');
     $('#hd').textContent = ($('#course').selectedOptions[0] || {}).text + ' · class progress';
     const saved = localStorage.getItem(LSK()); if (saved) { $('#cl').value = saved; $('#clkeep').checked = true; await match(); }
   } catch (e) { $('#lmsg').textContent = e.message; sessionStorage.removeItem('pf-admin'); }
@@ -169,6 +169,7 @@ $('#csv').addEventListener('click', () => { const d = new Date().toISOString().s
 $('#rgo').addEventListener('click', async () => { const id = $('#rid').value.trim(); if (!/^\d{10}$/.test(id)) { $('#rmsg').textContent = 'Type a 10-digit student ID.'; return; } try { const j = await api('/v1/admin/resetpin', { method: 'POST', body: { course: COURSE, id } }); $('#rmsg').textContent = j.found ? 'Done. The student can now choose a new PIN.' : 'No account with this ID in this course.'; } catch (e) { $('#rmsg').textContent = e.message; } });
 $('#resgo').addEventListener('click', async () => { try { const j = await api('/v1/admin/research?course=' + COURSE); download(`PraktiFin ${COURSE} research data ${new Date().toISOString().slice(0, 10)}.csv`, [['participant', 'group', 'time', 'code', 'topic', 'level', 'source', 'got', 'out_of', 'wrong', 'topic_key', 'question_ids', 'first_answers', 'seconds']].concat(j.results.map((x) => [x.participant, x.grp, x.time, x.code, x.topic, x.level, x.source, x.got, x.out_of, x.wrong, x.tkey, x.sid, x.ans, x.secs]))); $('#resmsg').textContent = `${j.participants} participants, ${j.results.length} rows.`; } catch (e) { $('#resmsg').textContent = e.message; } });
 $('#dgo').addEventListener('click', async () => { const id = $('#did').value.trim(); if (!/^\d{10}$/.test(id) || $('#dconf').value !== 'DELETE') { $('#dmsg').textContent = 'Type the 10-digit ID and DELETE in capitals.'; return; } try { await api('/v1/admin/delete', { method: 'POST', body: { course: COURSE, id, confirm: 'DELETE' } }); $('#dmsg').textContent = 'Removed.'; $('#dconf').value = ''; await load(); } catch (e) { $('#dmsg').textContent = e.message; } });
+$('#signout').addEventListener('click', () => { sessionStorage.removeItem('pf-admin'); KEY = ''; location.reload(); });
 if (KEY) { $('#course').value = COURSE; openPanel(); }
 </script>
 </body></html>
