@@ -1,10 +1,12 @@
-# FIN552 Tutorial Lab
+# PraktiFin
 
-Self-marking practice app for FIN552 Investment and Portfolio Analysis (UiTM Cawangan Melaka, Kampus Bandaraya Melaka).
+Self-marking practice apps for university finance courses, built on the step methods taught in class.
 
-Open the app: https://fahmirahim0.github.io/fin552/
+Site: https://fahmirahim0.github.io/praktifin/
 
-Chapters 1 to 7: Concept Check (100 MCQ per chapter) and a Calculation or Case Analysis Lab with adaptive levels.
-Progress is kept in your own browser; use Save progress to move it to another device.
+## Modules
+- **PraktiFin Investment** (Investment and Portfolio Analysis, FIN552, Chapters 1 to 7): https://fahmirahim0.github.io/praktifin/investment/ , user guide: https://fahmirahim0.github.io/praktifin/investment/guide.pdf
 
-Prepared by Dr Fahmi Abdul Rahim.
+Progress is kept in each student's own browser; use Save progress to move it to another device.
+
+PraktiFin © 2026 Universiti Teknologi MARA. Developed by Dr Fahmi Abdul Rahim, Faculty of Business and Management, UiTM Cawangan Melaka.
