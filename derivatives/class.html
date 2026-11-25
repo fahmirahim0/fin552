@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PraktiFin · Class progress (lecturer)</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root{--navy:#1f2a44;--gold:#c9a227;--gold-soft:#f7efd6;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--bg:#f5f6f8;--good:#15803d;--bad:#b91c1c;--warn:#b45309}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:var(--navy);color:#fff;border-bottom:4px solid var(--gold)}header .w{display:flex;align-items:baseline;gap:12px;padding:14px 20px}header b{font-size:20px}header span{color:var(--gold);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+main{max-width:1180px;margin:0 auto;padding:18px 16px 60px;display:grid;gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}.card h2{margin:0 0 8px;font-size:17px;color:var(--navy)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input,select,textarea{font:inherit;padding:8px 10px;border:1px solid #cbd2dc;border-radius:8px;background:#fff}textarea{width:100%;font:13px/1.4 ui-monospace,Menlo,monospace}
+button{font:600 14px inherit;padding:8px 14px;border-radius:8px;border:1px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer}button.pri{background:var(--navy);color:#fff}button.danger{border-color:var(--bad);color:var(--bad)}button:disabled{opacity:.5;cursor:default}
+.muted{color:var(--muted);font-size:13px}.msg{font-size:13px;color:var(--warn)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}.kpi b{display:block;font-size:24px;color:var(--navy)}.kpi span{font-size:12.5px;color:var(--muted)}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;font-size:13.5px;background:#fff}th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{background:#f1f3f6;position:sticky;top:0;cursor:pointer;font-size:12.5px;color:#374151}td.n{text-align:right;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:600}.p-ok{background:#dcfce7;color:var(--good)}.p-no{background:#fee2e2;color:var(--bad)}.p-mid{background:var(--gold-soft);color:#7a5a00}
+.bar{display:inline-block;height:8px;border-radius:4px;background:var(--gold);vertical-align:middle;margin-right:6px}
+details summary{cursor:pointer;font-weight:600;color:var(--navy)}
+.hide{display:none}
+</style></head>
+<body>
+<header><div class="w"><b>PraktiFin</b><span id="hd">Class progress · lecturer</span></div></header>
+<main>
+  <section class="card" id="login">
+    <h2>Lecturer sign in</h2>
+    <p class="muted">Use the ADMIN_KEY you set in Cloudflare. It is kept only for this browser tab and is never shown to students.</p>
+    <div class="row"><select id="course"><option value="deriv">PraktiFin Derivatives (FIN549)</option><option value="invest">PraktiFin Investment (FIN552)</option></select>
+      <input id="key" type="password" placeholder="Admin key" autocomplete="current-password" style="min-width:240px"><button class="pri" id="go">Open class progress</button><span class="msg" id="lmsg"></span></div>
+  </section>
+
+  <section class="card hide" id="classlist">
+    <h2>1 · Your class list</h2>
+    <p class="muted">Paste your class list (student ID, name and group, one student per line, from iStudent or Excel) or load a CSV file. Names stay in this browser and are <b>never sent</b> to the server. Only the student IDs are sent, to match them with the coded IDs.</p>
+    <textarea id="cl" rows="5" placeholder="2025123456, NUR AISYAH BINTI AHMAD, M1FN7"></textarea>
+    <div class="row"><button id="clfile-btn">Load CSV file</button><input type="file" id="clfile" accept=".csv,.txt" hidden><label class="muted"><input type="checkbox" id="clkeep"> Remember this list on this computer</label><button class="pri" id="clgo">Match and show progress</button><span class="msg" id="cmsg"></span></div>
+  </section>
+
+  <section class="hide" id="dash">
+    <div class="kpis" id="kpis"></div>
+    <section class="card" style="margin-top:14px">
+      <div class="row" style="justify-content:space-between"><h2 style="margin:0">2 · Students</h2>
+        <div class="row"><select id="fgrp"><option value="">All groups</option></select><input id="fq" placeholder="Search name or ID" style="width:200px"><button id="refresh">Refresh</button><button id="csv">Download CSV</button></div></div>
+      <p class="muted">Part 1 = theory sets (MCQ and True/False). Part 2 = calculation and case questions. Average is the first-attempt mark. Click a column title to sort.</p>
+      <div class="tw" style="max-height:560px"><table id="tbl"></table></div>
+      <p class="muted" id="unk"></p>
+    </section>
+    <section class="card" style="margin-top:14px"><h2>3 · By topic</h2><p class="muted">Average first-attempt mark by topic for the students shown above. Low averages show where the class needs help.</p><div class="tw"><table id="ttbl"></table></div></section>
+    <section class="card" style="margin-top:14px"><h2>4 · Manage</h2>
+      <details><summary>Reset a student's PIN</summary><p class="muted">The student's next sign-in sets a new PIN. Their progress is kept.</p><div class="row"><input id="rid" placeholder="Student ID" inputmode="numeric"><button id="rgo">Reset PIN</button><span class="msg" id="rmsg"></span></div></details>
+      <details style="margin-top:10px"><summary>Research data export</summary><p class="muted">Only students who ticked the optional research consent. No names and no student IDs: each student has a fixed participant code. Use this only for research approved by the ethics committee.</p><div class="row"><button id="resgo">Download research CSV</button><span class="msg" id="resmsg"></span></div></details>
+      <details style="margin-top:10px"><summary>Remove a student's data (withdrawal)</summary><p class="muted">Deletes the student's account, progress and results on the server for this course. This cannot be undone. Their own device keeps its copy.</p><div class="row"><input id="did" placeholder="Student ID" inputmode="numeric"><input id="dconf" placeholder="Type DELETE"><button class="danger" id="dgo">Remove data</button><span class="msg" id="dmsg"></span></div></details>
+    </section>
+  </section>
+</main>
+<script>
+const API = window.PF_API || 'https://praktifin-api.fahmirahim0.workers.dev';
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let KEY = sessionStorage.getItem('pf-admin') || '', COURSE = sessionStorage.getItem('pf-course') || 'deriv';
+let CLASS = [], MAP = {}, STUDENTS = [], RESULTS = [], ROWS = [], SORT = { k: 'name', d: 1 };
+const LSK = () => 'pf-classlist-' + COURSE;
+
+async function api(path, opt = {}) {
+  const r = await fetch(API + path, { method: opt.method || 'GET', headers: { 'Content-Type': 'application/json', 'X-Admin-Key': KEY }, body: opt.body ? JSON.stringify(opt.body) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (r.status === 403) throw new Error('The admin key is not right.');
+  if (!j.ok) throw new Error(j.error || 'Server error');
+  return j;
+}
+function parseList(txt) {
+  const out = [], seen = new Set();
+  txt.split(/\r?\n/).forEach((line) => {
+    const m = line.match(/\b(\d{10})\b/); if (!m) return;
+    const id = m[1]; if (seen.has(id)) return; seen.add(id);
+    const cells = line.split(/[,\t;]/).map((c) => c.trim().replace(/^"|"$/g, '')).filter((c) => c && c !== id);
+    const grp = cells.find((c) => /^(?=.*\d)(?=.*[A-Z])[A-Z0-9]{3,10}$/i.test(c) && !/^\d+$/.test(c)) || '';
+    const name = cells.filter((c) => c !== grp && /[A-Za-z]/.test(c)).sort((a, b) => b.length - a.length)[0] || '';
+    out.push({ id, name: name.toUpperCase(), grp: grp.toUpperCase() });
+  });
+  return out;
+}
+async function openPanel() {
+  $('#lmsg').textContent = 'Checking…';
+  try {
+    await api('/v1/admin/students?course=' + COURSE);
+    sessionStorage.setItem('pf-admin', KEY); sessionStorage.setItem('pf-course', COURSE);
+    $('#login').classList.add('hide'); $('#classlist').classList.remove('hide');
+    $('#hd').textContent = ($('#course').selectedOptions[0] || {}).text + ' · class progress';
+    const saved = localStorage.getItem(LSK()); if (saved) { $('#cl').value = saved; $('#clkeep').checked = true; await match(); }
+  } catch (e) { $('#lmsg').textContent = e.message; sessionStorage.removeItem('pf-admin'); }
+}
+async function match() {
+  CLASS = parseList($('#cl').value);
+  if ($('#clkeep').checked) localStorage.setItem(LSK(), $('#cl').value); else localStorage.removeItem(LSK());
+  $('#cmsg').textContent = CLASS.length ? `${CLASS.length} students read. Matching…` : 'No 10-digit student IDs found. You can still see progress by coded ID.';
+  try {
+    MAP = {};
+    for (let i = 0; i < CLASS.length; i += 500) { const j = await api('/v1/admin/hash', { method: 'POST', body: { ids: CLASS.slice(i, i + 500).map((c) => c.id) } }); Object.assign(MAP, j.map); }
+    await load();
+    $('#cmsg').textContent = `${CLASS.length} students in your list.`;
+  } catch (e) { $('#cmsg').textContent = e.message; }
+}
+async function load() {
+  const [s, r] = await Promise.all([api('/v1/admin/students?course=' + COURSE), api('/v1/admin/results?course=' + COURSE)]);
+  STUDENTS = s.students; RESULTS = r.results; build(); $('#dash').classList.remove('hide');
+}
+function build() {
+  const byHash = {}; CLASS.forEach((c) => { if (MAP[c.id]) byHash[MAP[c.id]] = c; });
+  const acc = {}; STUDENTS.forEach((s) => { acc[s.sh] = s; });
+  const agg = {};
+  RESULTS.forEach((x) => {
+    const a = agg[x.sh] || (agg[x.sh] = { p1: 0, p1g: 0, p1o: 0, p2: 0, p2g: 0, p2o: 0, mock: null, last: '' });
+    const pct = x.out_of ? x.got / x.out_of : 0;
+    if (x.source === 'Theory') { if (/Mock/.test(x.topic)) a.mock = Math.max(a.mock ?? 0, pct); else { a.p1++; a.p1g += x.got; a.p1o += x.out_of; } }
+    else { a.p2++; a.p2g += x.got; a.p2o += x.out_of; }
+    if (x.time > a.last) a.last = x.time;
+  });
+  ROWS = [];
+  CLASS.forEach((c) => { const h = MAP[c.id], s = acc[h], a = agg[h] || {}; ROWS.push(row(c.name, c.id, c.grp || (s && s.grp) || '', s, a)); });
+  const unknown = STUDENTS.filter((s) => !byHash[s.sh]);
+  unknown.forEach((s) => ROWS.push(row('(not in your list)', s.sh.slice(0, 8) + '…', s.grp, s, agg[s.sh] || {})));
+  $('#unk').textContent = unknown.length ? `${unknown.length} account(s) are not in your class list (shown with a coded ID). They may be students from another group, or a typing error in the student ID.` : '';
+  const groups = [...new Set(ROWS.map((r) => r.grp).filter(Boolean))].sort();
+  const cur = $('#fgrp').value; $('#fgrp').innerHTML = '<option value="">All groups</option>' + groups.map((g) => `<option${g === cur ? ' selected' : ''}>${esc(g)}</option>`).join('');
+  paint();
+}
+function row(name, id, grp, s, a) {
+  return { name, id, grp, acc: !!s, research: s ? !!s.consent_research : null, p1: a.p1 || 0, p1avg: a.p1o ? a.p1g / a.p1o : null, mock: a.mock ?? null, p2: a.p2 || 0, p2avg: a.p2o ? a.p2g / a.p2o : null, last: a.last || '' };
+}
+const pc = (v) => (v === null || v === undefined ? '' : Math.round(v * 100) + '%');
+const barc = (v) => (v === null ? '' : `<span class="bar" style="width:${Math.round(v * 60)}px;background:${v >= 0.7 ? '#16a34a' : v >= 0.5 ? '#c9a227' : '#dc2626'}"></span>`);
+function filtered() {
+  const g = $('#fgrp').value, q = $('#fq').value.trim().toUpperCase();
+  return ROWS.filter((r) => (!g || r.grp === g) && (!q || r.name.includes(q) || String(r.id).includes(q)));
+}
+function paint() {
+  const rows = filtered().sort((a, b) => { const x = a[SORT.k], y = b[SORT.k]; return (x === y ? 0 : x === null || x === '' ? 1 : y === null || y === '' ? -1 : x > y ? 1 : -1) * SORT.d; });
+  const cols = [['name', 'Name'], ['id', 'Student ID'], ['grp', 'Group'], ['acc', 'Account'], ['p1', 'Part 1 sets'], ['p1avg', 'Part 1 avg'], ['mock', 'Mock best'], ['p2', 'Part 2 questions'], ['p2avg', 'Part 2 avg'], ['last', 'Last active'], ['research', 'Research consent']];
+  $('#tbl').innerHTML = '<thead><tr>' + cols.map(([k, t]) => `<th data-k="${k}">${t}${SORT.k === k ? (SORT.d > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>' + rows.map((r) => `<tr><td>${esc(r.name)}</td><td>${esc(r.id)}</td><td>${esc(r.grp)}</td><td>${r.acc ? '<span class="pill p-ok">Yes</span>' : '<span class="pill p-no">Not yet</span>'}</td><td class="n">${r.p1 || ''}</td><td class="n">${barc(r.p1avg)}${pc(r.p1avg)}</td><td class="n">${pc(r.mock)}</td><td class="n">${r.p2 || ''}</td><td class="n">${barc(r.p2avg)}${pc(r.p2avg)}</td><td>${esc(r.last)}</td><td>${r.research === null ? '' : r.research ? '<span class="pill p-ok">Yes</span>' : '<span class="pill p-mid">No</span>'}</td></tr>`).join('') + '</tbody>';
+  document.querySelectorAll('#tbl th').forEach((th) => th.addEventListener('click', () => { const k = th.dataset.k; SORT = { k, d: SORT.k === k ? -SORT.d : 1 }; paint(); }));
+  const act = rows.filter((r) => r.acc), used = rows.filter((r) => r.p1 + r.p2 > 0);
+  const avg = (arr) => (arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null);
+  const in7 = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
+  $('#kpis').innerHTML = [[rows.length, 'students shown'], [act.length, 'with an account'], [rows.filter((r) => r.last && r.last >= in7).length, 'active in the last 7 days'], [pc(avg(used.map((r) => r.p1avg).filter((v) => v !== null))) || '–', 'class Part 1 average'], [pc(avg(used.map((r) => r.mock).filter((v) => v !== null))) || '–', 'class Mock Test best (avg)'], [pc(avg(used.map((r) => r.p2avg).filter((v) => v !== null))) || '–', 'class Part 2 average']].map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
+  // by topic
+  const keep = new Set(rows.map((r) => r.id)), hashes = new Set();
+  CLASS.forEach((c) => { if (keep.has(c.id) && MAP[c.id]) hashes.add(MAP[c.id]); });
+  STUDENTS.forEach((s) => { if (keep.has(s.sh.slice(0, 8) + '…')) hashes.add(s.sh); });
+  const t = {};
+  RESULTS.filter((x) => hashes.has(x.sh)).forEach((x) => { const k = x.topic || x.tkey; const a = t[k] || (t[k] = { n: 0, g: 0, o: 0, st: new Set() }); a.n++; a.g += x.got; a.o += x.out_of; a.st.add(x.sh); });
+  const tr = Object.entries(t).map(([k, a]) => ({ k, n: a.n, st: a.st.size, avg: a.o ? a.g / a.o : null })).sort((a, b) => (a.avg ?? 1) - (b.avg ?? 1));
+  $('#ttbl').innerHTML = '<thead><tr><th>Topic</th><th>Students</th><th>Attempts</th><th>Average</th></tr></thead><tbody>' + (tr.length ? tr.map((r) => `<tr><td>${esc(r.k)}</td><td class="n">${r.st}</td><td class="n">${r.n}</td><td class="n">${barc(r.avg)}${pc(r.avg)}</td></tr>`).join('') : '<tr><td colspan="4" class="muted">No results yet.</td></tr>') + '</tbody>';
+}
+function download(name, rows) {
+  const csv = rows.map((r) => r.map((c) => { const s = String(c ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => a.remove(), 500);
+}
+$('#go').addEventListener('click', () => { KEY = $('#key').value.trim(); COURSE = $('#course').value; openPanel(); });
+$('#key').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#go').click(); });
+$('#clfile-btn').addEventListener('click', () => $('#clfile').click());
+$('#clfile').addEventListener('change', (e) => { const f = e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => { $('#cl').value = rd.result; }; rd.readAsText(f); });
+$('#clgo').addEventListener('click', match);
+$('#refresh').addEventListener('click', async () => { $('#refresh').disabled = true; try { await load(); } catch (e) { alert(e.message); } $('#refresh').disabled = false; });
+$('#fgrp').addEventListener('change', paint); $('#fq').addEventListener('input', paint);
+$('#csv').addEventListener('click', () => { const d = new Date().toISOString().slice(0, 10); download(`PraktiFin ${COURSE} class progress ${d}.csv`, [['Name', 'Student ID', 'Group', 'Account', 'Part 1 sets', 'Part 1 avg %', 'Mock best %', 'Part 2 questions', 'Part 2 avg %', 'Last active', 'Research consent']].concat(filtered().map((r) => [r.name, r.id, r.grp, r.acc ? 'Yes' : 'No', r.p1, pc(r.p1avg), pc(r.mock), r.p2, pc(r.p2avg), r.last, r.research === null ? '' : r.research ? 'Yes' : 'No']))); });
+$('#rgo').addEventListener('click', async () => { const id = $('#rid').value.trim(); if (!/^\d{10}$/.test(id)) { $('#rmsg').textContent = 'Type a 10-digit student ID.'; return; } try { const j = await api('/v1/admin/resetpin', { method: 'POST', body: { course: COURSE, id } }); $('#rmsg').textContent = j.found ? 'Done. The student can now choose a new PIN.' : 'No account with this ID in this course.'; } catch (e) { $('#rmsg').textContent = e.message; } });
+$('#resgo').addEventListener('click', async () => { try { const j = await api('/v1/admin/research?course=' + COURSE); download(`PraktiFin ${COURSE} research data ${new Date().toISOString().slice(0, 10)}.csv`, [['participant', 'group', 'time', 'code', 'topic', 'level', 'source', 'got', 'out_of', 'wrong', 'topic_key', 'question_ids', 'first_answers', 'seconds']].concat(j.results.map((x) => [x.participant, x.grp, x.time, x.code, x.topic, x.level, x.source, x.got, x.out_of, x.wrong, x.tkey, x.sid, x.ans, x.secs]))); $('#resmsg').textContent = `${j.participants} participants, ${j.results.length} rows.`; } catch (e) { $('#resmsg').textContent = e.message; } });
+$('#dgo').addEventListener('click', async () => { const id = $('#did').value.trim(); if (!/^\d{10}$/.test(id) || $('#dconf').value !== 'DELETE') { $('#dmsg').textContent = 'Type the 10-digit ID and DELETE in capitals.'; return; } try { await api('/v1/admin/delete', { method: 'POST', body: { course: COURSE, id, confirm: 'DELETE' } }); $('#dmsg').textContent = 'Removed.'; $('#dconf').value = ''; await load(); } catch (e) { $('#dmsg').textContent = e.message; } });
+if (KEY) { $('#course').value = COURSE; openPanel(); }
+</script>
+</body></html>
