@@ -8,6 +8,10 @@
 :root{--navy:#1F2A44;--gold:#C9A227;--ink:#1f2937;--quiet:#6b7280;--line:#e5e7eb;--bg:#f7f8fa;--ok:#067647;--bad:#B42318;--mid:#B54708}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg);font-size:15px}
 header{background:var(--navy);color:#fff;padding:14px 24px;border-bottom:3px solid var(--gold);display:flex;align-items:center;gap:14px}
+.homebtn{color:#fff;text-decoration:none;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:5px 12px;white-space:nowrap}
+.homebtn:hover{background:rgba(255,255,255,.12)}
+.appbtn{margin-left:auto}
+header{flex-wrap:wrap}
 header b{font-size:19px}header b span{color:var(--gold)}header small{opacity:.8}
 main{max-width:1150px;margin:0 auto;padding:20px 24px 60px}
 h1{font-size:24px;margin:6px 0}h2{font-size:18px;margin:26px 0 8px;color:var(--navy)}.sub{color:var(--quiet);margin:4px 0 10px}
@@ -28,7 +32,7 @@ tr.click{cursor:pointer}tr.click:hover{background:#f8fafc}.det td{background:#fb
 </style>
 </head>
 <body>
-<header><b>Prakti<span>Fin</span> Investment</b><small>Class report · for lecturers</small></header>
+<header><a class="homebtn noprint" href="../" title="Back to the PraktiFin home page to choose another module">&#8592; All modules</a><a href="../" style="color:inherit;text-decoration:none"><b>Prakti<span>Fin</span> Investment</b></a><small>Class report · for lecturers</small><a class="homebtn noprint appbtn" href="./" title="Open PraktiFin Investment">Open the app</a></header>
 <main>
 <h1>Class report</h1>
 <div class="sub">Load the results CSV files your students downloaded from <b>My results and progress</b>. Everything stays in this page: nothing is uploaded anywhere.</div>
