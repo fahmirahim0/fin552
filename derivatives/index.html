@@ -5290,7 +5290,7 @@ const PAD = (function () {
           <label class="pk padfinger"><input type="checkbox" id="pad-finger" ${prefs.finger ? 'checked' : ''}> Write with finger</label>
         </div>
         <div class="padwrap"><canvas id="pad-canvas" aria-label="Working paper drawing area"></canvas></div>
-        <div class="row"><button type="button" class="pk" id="pad-more">+ More paper</button><span class="lbl plain" id="pad-msg">Your working is kept on this device for your last ${MAXQ} questions. It is not marked and not sent anywhere.</span></div>
+        <div class="row"><button type="button" class="pk" id="pad-more">+ More paper</button><button type="button" class="pk" id="pad-save">Save as image</button><span class="lbl plain" id="pad-msg">Your working is kept on this device for your last ${MAXQ} questions only. Use Save as image to keep it longer. It is not marked and not sent anywhere.</span></div>
       </div></section>`;
   }
   function mount(code) {
@@ -5340,6 +5340,7 @@ const PAD = (function () {
     });
     $p('pad-finger').addEventListener('change', (e) => { prefs.finger = e.target.checked; savePrefs(); cv.style.touchAction = prefs.finger ? 'none' : 'pan-y'; });
     $p('pad-more').addEventListener('click', () => { st.h += ADD_H; size(); persist(); });
+    $p('pad-save').addEventListener('click', saveImage);
     cv.style.touchAction = prefs.finger ? 'none' : 'pan-y';
     // iPad: stop the page scrolling while the Apple Pencil writes
     const stopScroll = (e) => { const t = e.touches && e.touches[0]; if (t && (t.touchType === 'stylus' || prefs.finger)) e.preventDefault(); };
@@ -5368,12 +5369,48 @@ const PAD = (function () {
     if (prefs.open) size();
     window.addEventListener('resize', onResize);
   }
+  function imageCanvas() {
+    const w = cv.width / (window.devicePixelRatio || 1);
+    let maxY = 0; st.strokes.forEach((x) => { for (let i = 1; i < x.p.length; i += 2) maxY = Math.max(maxY, x.p[i]); });
+    const bodyH = Math.min(st.h, Math.max(320, Math.ceil((maxY + 48) / 32) * 32));
+    const head = 64, sc = 2, out = document.createElement('canvas');
+    out.width = Math.round(w * sc); out.height = Math.round((bodyH + head) * sc);
+    const c = out.getContext('2d'); c.scale(sc, sc);
+    c.fillStyle = '#ffffff'; c.fillRect(0, 0, w, head);
+    c.fillStyle = '#1f2a44'; c.font = '700 15px -apple-system, Segoe UI, Roboto, sans-serif';
+    const t = T(), code = st.code.replace(/-review$/, '');
+    c.fillText(`Working paper · ${t.short || t.tab || ''} · ${code}`, 14, 24);
+    c.fillStyle = '#6b7280'; c.font = '13px -apple-system, Segoe UI, Roboto, sans-serif';
+    const who = [STUDENT.name, STUDENT.id, STUDENT.group].filter(Boolean).join(' · ');
+    c.fillText(`${who ? who + ' · ' : ''}${new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })} · PraktiFin`, 14, 46);
+    c.fillStyle = '#c9a227'; c.fillRect(0, head - 3, w, 3);
+    c.save(); c.translate(0, head); c.beginPath(); c.rect(0, 0, w, bodyH); c.clip();
+    const keep = ctx; ctx = c; const h0 = st.h; st.h = bodyH; redraw(); st.h = h0; ctx = keep; c.restore();
+    return { out, code };
+  }
+  function saveImage() {
+    const msg = document.getElementById('pad-msg');
+    if (!st.strokes.length) { if (msg) msg.textContent = 'Nothing to save yet. Write your working first.'; return; }
+    const { out, code } = imageCanvas();
+    const name = `Working ${code} ${new Date().toISOString().slice(0, 10)}.png`;
+    out.toBlob(async (blob) => {
+      if (!blob) return;
+      const file = typeof File !== 'undefined' ? new File([blob], name, { type: 'image/png' }) : null;
+      // iPad / iPhone: the share sheet offers Save Image (Photos) and Save to Files
+      if (file && navigator.canShare && navigator.canShare({ files: [file] }) && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent) && 'ontouchend' in document) {
+        try { await navigator.share({ files: [file], title: name }); if (msg) msg.textContent = 'Saved. Choose Save Image to keep it in Photos.'; return; } catch (e) { if (e && e.name === 'AbortError') return; }
+      }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+      if (msg) msg.textContent = `Saved as "${name}" in your Downloads.`;
+    }, 'image/png');
+  }
   function onResize() { if (document.getElementById('pad-canvas') === cv) size(); }
   function syncBar() {
     document.querySelectorAll('.pcol').forEach((b) => b.setAttribute('aria-pressed', String(prefs.tool === 'pen' && prefs.color === b.dataset.col)));
     const er = document.getElementById('pad-eraser'); if (er) er.setAttribute('aria-pressed', String(prefs.tool === 'eraser'));
   }
-  return { mount, get state() { return st; } };
+  return { mount, imageCanvas: () => imageCanvas(), get state() { return st; } };
 })();
 
 const _renderPad = render;
