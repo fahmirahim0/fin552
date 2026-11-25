@@ -116,7 +116,7 @@ function readFile(name, text) {
     if (!r.length || r[0] === 'TOTAL' || r[0].startsWith('#')) continue;
     const g = (h) => (ix(h) >= 0 ? (r[ix(h)] || '').trim() : '');
     const code = g('Scenario code'), t = topicOf(code, g('Topic'));
-    f.rows.push({ name: g('Name'), id: g('Student ID'), group: g('Group').toUpperCase(), time: g('Time'), date: g('Time').slice(0, 10), topic: t ? t.short : g('Topic'), tk: t ? t.key : g('Topic'), code, level: +g('Level') || 0, source: g('Source') || 'Bank', mark: +g('Mark') || 0, of: +g('Out of') || 10, wrong: g('Wrong on first attempt'), mt: g('Mistake types'), hasMT: ix('Mistake types') >= 0 });
+    f.rows.push({ name: g('Name'), id: g('Student ID'), group: g('Group').toUpperCase(), time: g('Time'), date: g('Time').slice(0, 10), topic: t ? t.short : g('Topic'), tk: t ? t.key : g('Topic'), code, level: +g('Level') || 0, source: g('Source') || 'Bank', mark: (+g('Out of') || 10) === 10 ? (+g('Mark') || 0) : Math.round((+g('Mark') || 0) * 100 / (+g('Out of'))) / 10, raw: +g('Mark') || 0, of: +g('Out of') || 10, wrong: g('Wrong on first attempt'), mt: g('Mistake types'), hasMT: ix('Mistake types') >= 0 });
   }
   f.id = f.rows[0] ? f.rows[0].id : ''; f.sname = f.rows[0] ? f.rows[0].name : '';
   if (!f.rows.length) { f.error = 'No questions in this file'; }
@@ -187,7 +187,7 @@ function render() {
   const need = SL.filter((s) => s.flag);
   out.innerHTML = `
   <section class="card"><div class="eyebrow">Summary</div><h2>${esc($('#f-group').value || 'All groups')}${$('#f-from').value || $('#f-to').value ? ` · ${esc($('#f-from').value || '…')} to ${esc($('#f-to').value || '…')}` : ''}</h2>
-    <div class="tiles"><div class="tile"><b>${SL.length}</b><span>students</span></div><div class="tile"><b>${R.length}</b><span>questions done</span></div><div class="tile"><b>${f1(avg(R.map((r) => r.mark)))}</b><span>average mark out of 10</span></div><div class="tile"><b>${pct(good, R.length)}%</b><span>of questions scored 8 or more</span></div><div class="tile"><b>${TL.length}</b><span>of 24 question sets used</span></div></div>
+    <div class="tiles"><div class="tile"><b>${SL.length}</b><span>students</span></div><div class="tile"><b>${R.length}</b><span>questions done</span></div><div class="tile"><b>${f1(avg(R.map((r) => r.mark)))}</b><span>average mark out of 10</span></div><div class="tile"><b>${pct(good, R.length)}%</b><span>of questions scored 8 or more</span></div><div class="tile"><b>${TL.length}</b><span>question sets used (theory sets are scaled to marks out of 10)</span></div></div>
     ${edited ? `<p class="note">${edited} file${edited > 1 ? 's were' : ' was'} edited after export${$('#f-edited').checked ? ' and are included' : ' and are left out'}. See the file list above.</p>` : ''}
     <div class="row noprint" style="margin-top:10px"><button class="btn primary" id="dl-stud">Download student summary (CSV)</button><button class="btn" id="dl-all">Download all questions (CSV)</button><button class="btn" onclick="window.print()">Print or save as PDF</button></div>
   </section>
@@ -208,7 +208,7 @@ function render() {
   document.querySelectorAll('#stab th[data-s]').forEach((th) => th.onclick = () => { const k = th.dataset.s; S.sortSt = { k, d: S.sortSt.k === k ? -S.sortSt.d : (typeof SL[0][k] === 'string' ? 1 : -1) }; render(); });
   if (S.selTopic && T[S.selTopic]) topicDetail(TL.find((t) => t.key === S.selTopic));
   $('#dl-stud').onclick = () => download('PraktiFin Derivatives class summary.csv', [['Name', 'Student ID', 'Group', 'Questions', 'Average mark', 'Sets tried', 'Highest level', 'Sets at Level 3', 'Last active', 'File check', 'Note']].concat(SL.map((s) => [s.name, s.id, s.group, s.n, f1(s.avg), s.topics, s.maxL || '', s.l3, s.last, STAT[s.fst][1], s.flag])));
-  $('#dl-all').onclick = () => download('PraktiFin Derivatives all questions.csv', [['Name', 'Student ID', 'Group', 'Time', 'Question set', 'Scenario code', 'Level', 'Source', 'Mark', 'Out of', 'Wrong on first attempt', 'Mistake types', 'File check']].concat(R.map((r) => [r.name, r.id, r.group, r.time, r.topic, r.code, r.level || '', r.source, r.mark, r.of, r.wrong, r.mt, STAT[r.fst][1]])));
+  $('#dl-all').onclick = () => download('PraktiFin Derivatives all questions.csv', [['Name', 'Student ID', 'Group', 'Time', 'Question set', 'Scenario code', 'Level', 'Source', 'Mark', 'Out of', 'Wrong on first attempt', 'Mistake types', 'File check']].concat(R.map((r) => [r.name, r.id, r.group, r.time, r.topic, r.code, r.level || '', r.source, r.raw, r.of, r.wrong, r.mt, STAT[r.fst][1]])));
 }
 function topicDetail(t) {
   const meta = TOPICS.find((x) => x.key === t.key), Q = meta ? meta.Q : Object.keys(t.qs).map((k) => [k, '']);
