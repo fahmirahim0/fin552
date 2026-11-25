@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PraktiFin · Derivatives</title>
-<meta name="description" content="PraktiFin Derivatives: self-marking practice for Malaysian futures hedging, speculation, spreading and arbitrage.">
+<meta name="description" content="PraktiFin Derivatives: self-marking practice for Malaysian futures and options.">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#10254E">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -198,7 +198,7 @@ ol.qs{list-style:none;padding:0;margin:10px 0;display:grid;gap:12px}
 @media print{.top,.picker,.noprint,#app>article:not(.qcard),#results,.foot{display:none!important}.card{box-shadow:none;border:0}body{background:#fff}}
 
 .adapt{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}.adapt .lvl{display:grid;gap:2px;padding:8px 14px;border-radius:10px;min-width:230px}.adapt .lvl b{font-size:15px}.adapt .lvl span{font-size:12.5px}.lvl1{background:#E7F3EA;color:#1D5B2E}.lvl2{background:#FFF4D6;color:#6B4A00}.lvl3{background:#FBE4E1;color:#7A1F14}.ainfo{display:grid;gap:4px;flex:1;min-width:240px}.streak{display:flex;gap:6px}.dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--gold);display:inline-block}.dot.on{background:var(--gold)}.abtns{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}.adapt .pk.gen{font-size:14px;padding:10px 18px}.adapt .pk#hist{font-size:14px;padding:10px 16px}.msg.review{display:grid;gap:8px}.msg.review .pk.gen{margin-left:0}.pk.rvb{padding:4px 10px;font-size:12px}
-.welcome h2{margin-bottom:4px}.wfields{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin:10px 0}.wfields .f{display:grid;gap:4px}.wfields input{width:100%;padding:10px 12px;font-size:15px}@media (max-width:700px){.wfields{grid-template-columns:1fr}}.who{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:14px}.who .wn{margin-right:auto}details.why{margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:#FBFAF6}details.why summary{cursor:pointer;font-weight:700;color:var(--navy)}details.why ul{margin:6px 0 2px 18px;padding:0}details.why li{margin:3px 0}.aicard .row{flex-wrap:wrap}.aicard a.btn{text-decoration:none;color:var(--ink)}a.pk.guide{text-decoration:none;display:inline-flex;align-items:center}a.inl.guide{font-weight:700;color:var(--navy)}.who.lect{background:#FFF4D6}.who.lect .lv{display:flex;gap:6px;margin:0 auto}.opt{font-style:normal;font-weight:400;color:var(--muted)}.inst ol{margin:6px 0 8px 20px;padding:0}.inst li{margin:4px 0}
+.welcome h2{margin-bottom:4px}.wfields{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin:10px 0}.wfields .f{display:grid;gap:4px}.wfields input{width:100%;padding:10px 12px;font-size:15px}@media (max-width:700px){.wfields{grid-template-columns:1fr}}.who{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:14px}.who .wn{margin-right:auto}details.why{margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:#FBFAF6}details.why summary{cursor:pointer;font-weight:700;color:var(--navy)}details.why ul{margin:6px 0 2px 18px;padding:0}details.why li{margin:3px 0}.aicard .row{flex-wrap:wrap}.aicard a.btn{text-decoration:none;color:var(--ink)}a.pk.guide{text-decoration:none;display:inline-flex;align-items:center}a.inl.guide{font-weight:700;color:var(--navy)}.who.lect{background:#FFF4D6}.who.lect .lv{display:flex;gap:6px;margin:0 auto}.opt{font-style:normal;font-weight:400;color:var(--muted)}.inst ol{margin:6px 0 8px 20px;padding:0}.paywrap{margin:8px 0;max-width:600px}.paysvg{width:100%;height:auto;border:1px solid var(--line);border-radius:10px}.legs .opts{gap:4px}.legs .opt{padding:4px 10px}.inst li{margin:4px 0}
 .ctabs .tab{font-size:16px}.stabs{border-bottom:1px solid var(--line);margin-top:-6px}.stabs .tab{font-size:13px;padding:7px 12px}
 /* ---- scenario documents ---- */
 .doc{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0;background:var(--surface)}
@@ -235,9 +235,9 @@ ol.qs{list-style:none;padding:0;margin:10px 0;display:grid;gap:12px}
 caption{caption-side:top;text-align:left;font-size:12px;color:var(--muted);padding:2px 0}
 </style></head>
 <body>
-<header class="top"><div class="top-in"><div class="brand">PRAKTI<span style="color:var(--gold)">FIN</span> <small>Derivatives · Malaysian futures</small></div><div class="score" id="hdr-topic"></div></div></header>
+<header class="top"><div class="top-in"><div class="brand">PRAKTI<span style="color:var(--gold)">FIN</span> <small>Derivatives · Malaysian futures and options</small></div><div class="score" id="hdr-topic"></div></div></header>
 <main class="wrap"><div id="app" style="display:grid;gap:16px"></div><article class="card" id="results"></article>
-<div class="foot">Calculations follow the PraktiFin step method for Malaysian futures. Firms and prices in the scenarios are fictional and for practice only. PraktiFin © 2026 Universiti Teknologi MARA. Developed by Dr Fahmi Abdul Rahim, Faculty of Business and Management, UiTM Cawangan Melaka.</div></main>
+<div class="foot">Calculations follow the PraktiFin step method for Malaysian futures and options. Firms and prices in the scenarios are fictional and for practice only. PraktiFin © 2026 Universiti Teknologi MARA. Developed by Dr Fahmi Abdul Rahim, Faculty of Business and Management, UiTM Cawangan Melaka.</div></main>
 <script>
 /*!
  * html2canvas 1.4.1 <https://html2canvas.hertzen.com>
@@ -2309,6 +2309,7 @@ const AG = (() => {
   /* ---------------- level of a scenario (what makes it harder) ---------------- */
   function levelOf(t, s) {
     s._c = t.c;
+    if (t.levelOf) return t.levelOf(s);
     const B = t.build(s), r = B.res.result, bc = +s.bc || 0;
     if (t.st === 'hedge') return r.pl < 0 ? 3 : bc > 0 ? 2 : 1;
     if (t.st === 'spec') return r.calls >= 2 ? 3 : r.calls === 1 || bc > 0 ? 2 : 1;
@@ -2500,6 +2501,7 @@ const AG = (() => {
   }
   function candidate(t, g, L) {
     const c = t.c;
+    if (t.gen) return t.gen(g, L);
     if (t.st === 'hedge') return c === 'FCPO' ? hedgeFCPO(g, L) : c === 'SSF' ? hedgeSSF(g, L) : c === 'FKB3' ? hedgeFKB3(g, L) : c === 'FMG' ? hedgeFMG(g, L) : hedgeIndex(c, g, L);
     if (t.st === 'spec') return spec(c, g, L);
     if (t.st === 'spread') return spread(c, g, L);
@@ -2542,7 +2544,7 @@ const AG = (() => {
     const s = Object.assign({}, t.bank[i]), L = bankLevels(key)[i];
     // match the document style to the level: Level 1 reads like the notes, Level 2 always has tables, Level 3 keeps its own style
     if (L === 1) s.fmt = { f: 'book', table: true };
-    else if (L === 2 && t.st !== 'inter') { s._c = t.c; const f = formatOf(t.st, s); s.fmt = { f: f.f, table: true }; }
+    else if (L === 2 && t.st !== 'inter' && !t.levelOf) { s._c = t.c; const f = formatOf(t.st, s); s.fmt = { f: f.f, table: true }; }
     return s;
   }
   function nextId(key) {
@@ -2686,7 +2688,7 @@ function moveMsg() {
 function wire() {
   const go = () => (ST.lecturer ? lecturerNext() : load());
   document.querySelectorAll('.tab[data-t]').forEach((b) => b.addEventListener('click', () => { ST.topic = b.dataset.t; ST.last[T().c] = ST.topic; go(); }));
-  document.querySelectorAll('.tab[data-c]').forEach((b) => b.addEventListener('click', () => { const c = b.dataset.c; ST.topic = ST.last[c] || (c + '|hedge'); go(); }));
+  document.querySelectorAll('.tab[data-c]').forEach((b) => b.addEventListener('click', () => { const c = b.dataset.c; ST.topic = ST.last[c] || (TOPICS[c + '|hedge'] ? c + '|hedge' : Object.values(TOPICS).find((x) => x.c === c).key); go(); }));
   const g0 = $('#gen'); if (g0) g0.addEventListener('click', () => { if (!ST.preview) AG.advance(ST.topic); load(); window.scrollTo(0, 0); });
   const h0 = $('#hist'); if (h0) h0.addEventListener('click', () => { if (LOG.length) openReview(LOG.length - 1); });
   const rp = $('#rv-prev'), rn = $('#rv-next'), rb = $('#rv-back');
@@ -2949,6 +2951,8 @@ function wireAI(B) {
 function mistakeTag(lines, q) {
   const t = (lines && lines[0]) || '';
   if (q.type === 'mtm') { const m = t.match(/The first one is (\w+)/); return 'MTM table ' + (m ? m[1] : ''); }
+  if (q.type === 'legs') return 'Choice of option contracts';
+  if (q.type === 'lim' && /no limit|limited|break-even point/.test(t)) return 'Unlimited, capped or one BEP';
   if (q.type === 'choice') return 'Strategy choice';
   if (/No option was chosen/.test(t)) return 'Left blank';
   if (/could not be read/.test(t)) return 'Not a number';
@@ -2975,6 +2979,7 @@ function mistakeTypes(r) {
     const s = AG.scenario(key, sid); if (!s) return '';
     ST.topic = key; s._c = TOPICS[key].c;
     const B = TOPICS[key].build(s); B.c = TOPICS[key].c; ST.B = B;
+    if (TOPICS[key].rekey) TOPICS[key].rekey(B, r.ans);
     const out = [];
     for (const q of TOPICS[key].Q) {
       const tag = q.type === 'mtm' ? 'Table' : 'Q' + q.n;
@@ -3019,6 +3024,563 @@ function installHTML() {
   <ol>${steps.map((x) => `<li>${x}</li>`).join('')}</ol>${note}
   <div class="row">${now}<button type="button" class="btn" id="in-close">Close</button></div></article>`;
 }
+
+/* =================================== OPTIONS MODULE ===================================
+   Method from the lecture slides 16 to 24 (Dr Fahmi Abdul Rahim) and Chapters 9 to 11 of the textbook.
+   Per share or per index point, no contract multiplier. Where the slides and the correct result differ,
+   the correct result is used (agreed with Fahmi, 25 Nov 2026):
+   long put max profit = XP - PRM, short put max loss = -(XP - PRM), bear call BEP = low XP + net credit,
+   bear put BEP = high XP - net debit, short put when MP > XP = +PRM.
+   Any combination of contracts that correctly builds the strategy is accepted (for example, any straddle). */
+CONTRACTS.push('OPT');
+CNAME.OPT = 'Options';
+Object.assign(STRAT, { concept: 'Concepts', prem: 'Premium', basic: 'Basic strategies', synth: 'Synthetic strategies' });
+Object.assign(STRAT_T, { concept: 'Option concepts', prem: 'Option premium', basic: 'Basic option strategies', synth: 'Synthetic option strategies' });
+const OPT_LVL = {
+  concept: { 1: 'Rights, obligations, premium and moneyness: the basic ideas.', 2: 'Exercise decisions, option styles and what moves the premium.', 3: 'Choosing a strategy for a market view and how synthetic strategies are built.' },
+  prem: { 1: 'KLCI index options (OKLI) with whole numbers, like the slides.', 2: 'Stock options in ringgit and sen.', 3: 'Stock options with the figures hidden in the text of an email.' },
+  basic: { 1: 'Buying a call or a put, figures in a table.', 2: 'Writing (selling) a call or a put.', 3: 'Any basic strategy on stock options, figures hidden in the text.' },
+  synth: { 1: 'Long straddle and long strangle with two exercise prices.', 2: 'Bull and bear spreads with two exercise prices.', 3: 'Any synthetic strategy, three exercise prices, figures in the text.' }
+};
+
+/* ---------------- shared helpers ---------------- */
+const OP = {
+  isIdx: (s) => s.und === 'okli',
+  r: (s, x) => { const v = Math.round(x * 100) / 100; return v === 0 ? 0 : v; },
+  f: (s, x) => (s.und === 'okli' ? E.num(x) : 'RM ' + Number(x).toFixed(2)),
+  n: (s, x) => (s.und === 'okli' ? E.num(x) : Number(x).toFixed(2)),
+  unit: (s) => (s.und === 'okli' ? 'points' : 'RM'),
+  tol: (s) => (s.und === 'okli' ? 0.5 : 0.01),
+  what: (s) => (s.und === 'okli' ? 'FBM KLCI' : 'share price'),
+  pos: { L: 'Long', S: 'Short' },
+  typ: { call: 'Call', put: 'Put' }
+};
+function legPL(type, pos, x, p, mp) {
+  const g = type === 'call' ? (mp > x ? mp - x : 0) : (mp < x ? x - mp : 0);
+  return pos === 'L' ? g - p : p - g;
+}
+function legRow(s, leg, mp) {
+  const { type, pos, x, p } = leg, N = (v) => OP.n(s, v);
+  const cond = mp < x ? 'MP < XP' : mp > x ? 'MP > XP' : 'MP = XP';
+  const live = type === 'call' ? mp > x : mp < x;
+  let form, calc;
+  if (!live) { form = pos === 'L' ? '−PRM' : '+PRM'; calc = (pos === 'L' ? '−' : '+') + N(p); }
+  else if (type === 'call') { form = pos === 'L' ? 'MP − XP − PRM' : 'XP − MP + PRM'; calc = pos === 'L' ? `${N(mp)} − ${N(x)} − ${N(p)}` : `${N(x)} − ${N(mp)} + ${N(p)}`; }
+  else { form = pos === 'L' ? 'XP − MP − PRM' : 'MP − XP + PRM'; calc = pos === 'L' ? `${N(x)} − ${N(mp)} − ${N(p)}` : `${N(mp)} − ${N(x)} + ${N(p)}`; }
+  return { cond, form, calc, pl: OP.r(s, legPL(type, pos, x, p, mp)) };
+}
+const totPL = (s, legs, mp) => OP.r(s, legs.reduce((a, l) => a + legPL(l.type, l.pos, l.x, l.p, mp), 0));
+/* max profit, max loss and break-even points from the piecewise-linear payoff */
+function optMetrics(s, legs) {
+  const xs = [...new Set(legs.map((l) => l.x))].sort((a, b) => a - b);
+  const f = (m) => legs.reduce((a, l) => a + legPL(l.type, l.pos, l.x, l.p, m), 0);
+  const slopeUp = legs.reduce((a, l) => a + (l.type === 'call' ? (l.pos === 'L' ? 1 : -1) : 0), 0);
+  const pts = [0, ...xs].map((m) => ({ m, v: f(m) }));
+  const vals = pts.map((p) => p.v);
+  let maxP = Math.max(...vals), maxL = Math.min(...vals);
+  const unlP = slopeUp > 0, unlL = slopeUp < 0;
+  const beps = [];
+  const segs = [...pts, { m: xs[xs.length - 1] * 10 + 1000, v: f(xs[xs.length - 1] * 10 + 1000) }];
+  for (let i = 0; i < segs.length - 1; i++) {
+    const a = segs[i], b = segs[i + 1];
+    if (a.v === 0 && i > 0) { if (!beps.some((z) => Math.abs(z - a.m) < 1e-9)) beps.push(a.m); continue; }
+    if ((a.v < 0 && b.v > 0) || (a.v > 0 && b.v < 0)) beps.push(a.m + (b.m - a.m) * (0 - a.v) / (b.v - a.v));
+  }
+  return { maxP: unlP ? null : OP.r(s, maxP), maxL: unlL ? null : OP.r(s, -maxL), beps: beps.map((b) => OP.r(s, b)).sort((a, b) => a - b) };
+}
+const SPEC = {
+  lc: { name: 'Long call', legs: [['call', 'L']], view: 'bullish' },
+  sc: { name: 'Short call', legs: [['call', 'S']], view: 'bearish' },
+  lp: { name: 'Long put', legs: [['put', 'L']], view: 'bearish' },
+  sp: { name: 'Short put', legs: [['put', 'S']], view: 'bullish' },
+  lstrad: { name: 'Long straddle', legs: [['call', 'L'], ['put', 'L']], ok: (A) => A.callL.x === A.putL.x, rule: 'a long call and a long put with the SAME exercise price' },
+  sstrad: { name: 'Short straddle', legs: [['call', 'S'], ['put', 'S']], ok: (A) => A.callS.x === A.putS.x, rule: 'a short call and a short put with the SAME exercise price' },
+  lstran: { name: 'Long strangle', legs: [['call', 'L'], ['put', 'L']], ok: (A) => A.callL.x > A.putL.x, rule: 'a long call with the HIGHER exercise price and a long put with the LOWER exercise price' },
+  sstran: { name: 'Short strangle', legs: [['call', 'S'], ['put', 'S']], ok: (A) => A.callS.x > A.putS.x, rule: 'a short call with the HIGHER exercise price and a short put with the LOWER exercise price' },
+  bullc: { name: 'Bull call spread', legs: [['call', 'S'], ['call', 'L']], ok: (A) => A.callL.x < A.callS.x, rule: 'a long call with the LOWER exercise price (higher premium) and a short call with the HIGHER exercise price (lower premium)' },
+  bullp: { name: 'Bull put spread', legs: [['put', 'S'], ['put', 'L']], ok: (A) => A.putS.x > A.putL.x, rule: 'a short put with the HIGHER exercise price (higher premium) and a long put with the LOWER exercise price (lower premium)' },
+  bearc: { name: 'Bear call spread', legs: [['call', 'L'], ['call', 'S']], ok: (A) => A.callL.x > A.callS.x, rule: 'a short call with the LOWER exercise price (higher premium) and a long call with the HIGHER exercise price (lower premium)' },
+  bearp: { name: 'Bear put spread', legs: [['put', 'L'], ['put', 'S']], ok: (A) => A.putL.x > A.putS.x, rule: 'a long put with the HIGHER exercise price (higher premium) and a short put with the LOWER exercise price (lower premium)' }
+};
+/* contracts on offer: [{k, type, x, p}] */
+function contractsOf(s) { return s.cons.map((c, i) => ({ k: 'k' + i, type: c[0], x: c[1], p: c[2] })); }
+function comboValid(st, picks) {
+  const sp = SPEC[st];
+  if (picks.length !== sp.legs.length) return false;
+  const need = sp.legs.map((l) => l[0] + l[1]).sort().join(), have = picks.map((l) => l.type + l.pos).sort().join();
+  if (need !== have) return false;
+  if (!sp.ok) return true;
+  const A = {}; picks.forEach((l) => { A[l.type + l.pos] = l; });
+  return sp.ok(A);
+}
+function allCombos(s) {
+  const C = contractsOf(s), sp = SPEC[s.strat], out = [];
+  const rec = (i, acc) => {
+    if (acc.length === sp.legs.length) { if (comboValid(s.strat, acc)) out.push(acc.slice()); return; }
+    for (let j = i; j < C.length; j++) for (const pos of ['L', 'S']) { acc.push(Object.assign({ pos }, C[j])); rec(j + 1, acc); acc.pop(); }
+  };
+  rec(0, []);
+  return out;
+}
+function picksOf(s, a) {
+  return contractsOf(s).map((c) => Object.assign({ pos: a['q1_' + c.k] }, c)).filter((c) => c.pos === 'L' || c.pos === 'S');
+}
+
+/* ---------------- payoff diagram (SVG) ---------------- */
+function payoffSVG(s, legs, M) {
+  const xs = legs.map((l) => l.x), lo = Math.min(...xs, ...(M.beps.length ? M.beps : xs)), hi = Math.max(...xs, ...(M.beps.length ? M.beps : xs));
+  const pad = Math.max((hi - lo) * 0.6, hi * 0.06), x0 = Math.max(0, lo - pad), x1 = hi + pad;
+  const f = (m) => legs.reduce((a, l) => a + legPL(l.type, l.pos, l.x, l.p, m), 0);
+  const ptsM = [x0, ...[...new Set(xs)].sort((a, b) => a - b), x1];
+  const vals = ptsM.map(f), vmax = Math.max(...vals, 0), vmin = Math.min(...vals, 0), vr = (vmax - vmin) || 1;
+  const W = 560, H = 260, L = 50, R = 20, T = 20, Bm = 40;
+  const X = (m) => L + ((m - x0) / (x1 - x0)) * (W - L - R), Y = (v) => T + ((vmax - v) / vr) * (H - T - Bm);
+  const N = (v) => OP.n(s, v);
+  let g = `<svg viewBox="0 0 ${W} ${H}" class="paysvg" role="img" aria-label="Payoff diagram"><rect x="0" y="0" width="${W}" height="${H}" fill="#fff"/>`;
+  g += `<line x1="${L}" y1="${Y(0)}" x2="${W - R}" y2="${Y(0)}" stroke="#5A6479"/><line x1="${L}" y1="${T}" x2="${L}" y2="${H - Bm}" stroke="#5A6479"/>`;
+  g += `<text x="${L - 6}" y="${T + 10}" text-anchor="end" font-size="11" fill="#1D7A4C">Profit</text><text x="${L - 6}" y="${H - Bm}" text-anchor="end" font-size="11" fill="#B42318">Loss</text><text x="${W - R}" y="${Y(0) - 6}" text-anchor="end" font-size="11" fill="#5A6479">MP</text>`;
+  g += `<polyline fill="none" stroke="#10254E" stroke-width="2.5" points="${ptsM.map((m) => `${X(m).toFixed(1)},${Y(f(m)).toFixed(1)}`).join(' ')}"/>`;
+  [...new Set(xs)].forEach((x) => { g += `<line x1="${X(x)}" y1="${Y(0) - 4}" x2="${X(x)}" y2="${Y(0) + 4}" stroke="#5A6479"/><text x="${X(x)}" y="${Y(0) + (f(x) < 0 ? -10 : 16)}" text-anchor="middle" font-size="11" fill="#5A6479">XP ${N(x)}</text>`; });
+  M.beps.forEach((b) => { g += `<circle cx="${X(b)}" cy="${Y(0)}" r="4" fill="#C8A24B"/><text x="${X(b)}" y="${Y(0) + 30}" text-anchor="middle" font-size="11" fill="#9A5B00">BEP ${N(b)}</text>`; });
+  const flats = ptsM.map((m, i) => ({ m, v: vals[i] }));
+  const top = flats.reduce((a, b) => (b.v > a.v ? b : a)), bot = flats.reduce((a, b) => (b.v < a.v ? b : a));
+  if (M.maxP !== null && top.v > 0) g += `<text x="${Math.min(W - R - 4, Math.max(L + 30, X(top.m)))}" y="${Y(top.v) - 6}" text-anchor="middle" font-size="11" fill="#1D7A4C">${N(M.maxP)}</text>`;
+  if (M.maxL !== null && bot.v < 0) g += `<text x="${Math.min(W - R - 4, Math.max(L + 30, X(bot.m)))}" y="${Y(bot.v) + 14}" text-anchor="middle" font-size="11" fill="#B42318">−${N(M.maxL)}</text>`;
+  return g + '</svg>';
+}
+
+/* ---------------- question definitions ---------------- */
+const MNY = [['ITM', 'In the money'], ['ATM', 'At the money'], ['OTM', 'Out of the money']];
+const QPR = [
+  { id: 'q1', n: 1, label: 'Part A: moneyness of the call option', type: 'choice', opts: MNY, hint: 'Call is in the money when MP > XP, at the money when MP = XP, out of the money when MP < XP.' },
+  { id: 'q2', n: 2, label: 'Part A: intrinsic value of the call option', type: 'num', hint: 'IV of a call = MP − XP. Change it to 0 if the answer is negative.' },
+  { id: 'q3', n: 3, label: 'Part A: premium of the call option', type: 'num', hint: 'Premium = intrinsic value + time value.' },
+  { id: 'q4', n: 4, label: 'Part A: moneyness of the put option', type: 'choice', opts: MNY, hint: 'Put is in the money when MP < XP, at the money when MP = XP, out of the money when MP > XP.' },
+  { id: 'q5', n: 5, label: 'Part A: intrinsic value of the put option', type: 'num', hint: 'IV of a put = XP − MP. Change it to 0 if the answer is negative.' },
+  { id: 'q6', n: 6, label: 'Part A: premium of the put option', type: 'num', hint: 'Premium = intrinsic value + time value.' },
+  { id: 'q7', n: 7, label: 'Part A: total premium for a straddle (one call and one put at this exercise price)', type: 'num', hint: 'A straddle buys one call and one put with the same exercise price: total premium = call premium + put premium.' },
+  { id: 'q8', n: 8, label: 'Part B: intrinsic value of the call option', type: 'num', hint: 'IV of a call = MP − XP, or 0 if negative. Use the Part B exercise price.' },
+  { id: 'q9', n: 9, label: 'Part B: time value of the call option', type: 'num', hint: 'Time value = premium − intrinsic value.' },
+  { id: 'q10', n: 10, label: 'Part B: time value of the put option', type: 'num', hint: 'Put IV = XP − MP (or 0); time value = premium − intrinsic value.' }
+];
+const QB = [
+  { id: 'q1', n: 1, label: 'Choose the option contract for this strategy, and long or short', type: 'legs', hint: 'Long = buy the option (pay the premium); short = sell (write) the option (receive the premium). A call strategy uses the call; a put strategy uses the put.' },
+  { id: 'q2', n: 2, label: 'Maximum profit', type: 'lim', special: ['U', 'Unlimited'], hint: 'Long call: unlimited. Short call and short put: + PRM. Long put: XP − PRM (reached if the price falls to zero).' },
+  { id: 'q3', n: 3, label: 'Maximum loss', type: 'lim', special: ['U', 'Unlimited'], hint: 'Long call and long put: − PRM. Short call: unlimited. Short put: − (XP − PRM), if the price falls to zero.' },
+  { id: 'q4', n: 4, label: 'Break-even point (BEP)', type: 'num', hint: 'Calls: BEP = XP + PRM. Puts: BEP = XP − PRM.' },
+  { id: 'q5', n: 5, label: 'Profit or loss at the given market price', type: 'dirval', dirs: [['profit', 'Profit'], ['loss', 'Loss']], hint: 'Step 1 compare MP with XP; step 2 choose the formula; step 3 calculate.' },
+  { id: 'q6', n: 6, label: 'Payoff table, row 1', type: 'num', signed: true, hint: 'Compare this market price with XP, choose the formula, calculate. Type a loss with a minus sign.' },
+  { id: 'q7', n: 7, label: 'Payoff table, row 2', type: 'num', signed: true, hint: 'Compare this market price with XP, choose the formula, calculate. Type a loss with a minus sign.' },
+  { id: 'q8', n: 8, label: 'Payoff table, row 3', type: 'num', signed: true, hint: 'Compare this market price with XP, choose the formula, calculate. Type a loss with a minus sign.' },
+  { id: 'q9', n: 9, label: 'Payoff table, row 4', type: 'num', signed: true, hint: 'Compare this market price with XP, choose the formula, calculate. Type a loss with a minus sign.' },
+  { id: 'q10', n: 10, label: 'Payoff table, row 5', type: 'num', signed: true, hint: 'Compare this market price with XP, choose the formula, calculate. Type a loss with a minus sign.' }
+];
+const QSY = [
+  { id: 'q1', n: 1, label: 'Choose the two option contracts that create this strategy, and long or short for each', type: 'legs', hint: 'Straddle: call and put with the same XP. Strangle: call with the higher XP, put with the lower XP. Bull call: long lower-XP call, short higher-XP call. Bull put: short higher-XP put, long lower-XP put. Bear call: short lower-XP call, long higher-XP call. Bear put: long higher-XP put, short lower-XP put.' },
+  { id: 'q2', n: 2, label: 'Maximum profit', type: 'lim', special: ['U', 'Unlimited'], hint: 'Long straddle/strangle: unlimited. Short straddle/strangle: total premium received. Net debit spreads: (high XP − low XP) − net debit. Net credit spreads: the net credit.' },
+  { id: 'q3', n: 3, label: 'Maximum loss', type: 'lim', special: ['U', 'Unlimited'], hint: 'Long straddle/strangle: total premium paid. Short straddle/strangle: unlimited. Net debit spreads: the net debit. Net credit spreads: (high XP − low XP) − net credit.' },
+  { id: 'q4', n: 4, label: 'Break-even point 1 (the lower one, or the only one)', type: 'num', hint: 'Straddle: XP − total premium. Strangle: put XP − total premium. Bull call: low XP + net debit. Bull put: high XP − net credit. Bear call: low XP + net credit. Bear put: high XP − net debit.' },
+  { id: 'q5', n: 5, label: 'Break-even point 2 (the higher one)', type: 'lim', special: ['N', 'Only one BEP'], hint: 'Straddles and strangles have two break-even points (XP or call XP + total premium). Spreads have only one.' },
+  { id: 'q6', n: 6, label: 'Payoff table, row 1', type: 'num', signed: true, hint: 'Work out the profit of each option at this market price, then add the two. Type a loss with a minus sign.' },
+  { id: 'q7', n: 7, label: 'Payoff table, row 2', type: 'num', signed: true, hint: 'Work out the profit of each option at this market price, then add the two. Type a loss with a minus sign.' },
+  { id: 'q8', n: 8, label: 'Payoff table, row 3', type: 'num', signed: true, hint: 'Work out the profit of each option at this market price, then add the two. Type a loss with a minus sign.' },
+  { id: 'q9', n: 9, label: 'Payoff table, row 4', type: 'num', signed: true, hint: 'Work out the profit of each option at this market price, then add the two. Type a loss with a minus sign.' },
+  { id: 'q10', n: 10, label: 'Payoff table, row 5', type: 'num', signed: true, hint: 'Work out the profit of each option at this market price, then add the two. Type a loss with a minus sign.' }
+];
+const QCO = Array.from({ length: 10 }, (_, i) => ({ id: 'q' + (i + 1), n: i + 1, label: 'Question ' + (i + 1), type: 'mcq', hint: 'Go back to the definitions in Chapter 9 and the option strategies in Chapters 10 and 11.' }));
+const setUnits = (Q, s) => Q.forEach((q) => { if (q.type === 'num' || q.type === 'dirval' || q.type === 'lim') { q.unit = OP.unit(s); q.tol = OP.tol(s); } });
+
+/* ---------------- builders ---------------- */
+function buildPrem(s) {
+  setUnits(QPR, s);
+  const N = (v) => OP.n(s, v), r = (v) => OP.r(s, v);
+  const cIV = r(Math.max(s.mp - s.x1, 0)), pIV = r(Math.max(s.x1 - s.mp, 0)), cP = r(cIV + s.tv), pP = r(pIV + s.tv), st = r(cP + pP);
+  const cIV2 = r(Math.max(s.mp - s.x2, 0)), pIV2 = r(Math.max(s.x2 - s.mp, 0)), cTV2 = r(s.pc2 - cIV2), pTV2 = r(s.pp2 - pIV2);
+  const mny = (call, x) => (s.mp === x ? 'ATM' : (call ? s.mp > x : s.mp < x) ? 'ITM' : 'OTM');
+  const key = { q1: mny(true, s.x1), q2: cIV, q3: cP, q4: mny(false, s.x1), q5: pIV, q6: pP, q7: st, q8: cIV2, q9: cTV2, q10: pTV2 };
+  const mtxt = (k) => MNY.find((m) => m[0] === k)[1].toLowerCase();
+  const steps = [
+    { title: 'Part A: the information', lines: [`MP (current market price) = ${N(s.mp)}`, `XP (exercise price) = ${N(s.x1)}`, `TV (time value) = ${N(s.tv)}`] },
+    { title: 'Part A: call option', lines: [`Compare MP with XP: ${N(s.mp)} ${s.mp > s.x1 ? '>' : s.mp < s.x1 ? '<' : '='} ${N(s.x1)}, so the call is ${mtxt(key.q1)}.`, 'IV of call option = MP − XP', `= ${N(s.mp)} − ${N(s.x1)}`, `= ${N(r(s.mp - s.x1))}${s.mp - s.x1 < 0 ? ' = 0 (change to 0 if negative)' : ''}`, 'Call option premium = IV + TV', `= ${N(cIV)} + ${N(s.tv)}`, `= ${N(cP)}`] },
+    { title: 'Part A: put option', lines: [`Compare MP with XP: ${N(s.mp)} ${s.mp > s.x1 ? '>' : s.mp < s.x1 ? '<' : '='} ${N(s.x1)}, so the put is ${mtxt(key.q4)}.`, 'IV of put option = XP − MP', `= ${N(s.x1)} − ${N(s.mp)}`, `= ${N(r(s.x1 - s.mp))}${s.x1 - s.mp < 0 ? ' = 0 (change to 0 if negative)' : ''}`, 'Put option premium = IV + TV', `= ${N(pIV)} + ${N(s.tv)}`, `= ${N(pP)}`] },
+    { title: 'Part A: straddle', lines: ['Straddle premium = call premium + put premium (same exercise price)', `= ${N(cP)} + ${N(pP)}`, `= ${N(st)}`] },
+    { title: 'Part B: intrinsic value and time value from the quoted premiums', lines: [`MP = ${N(s.mp)}, XP = ${N(s.x2)}, call premium = ${N(s.pc2)}, put premium = ${N(s.pp2)}`, `IV of call = MP − XP = ${N(s.mp)} − ${N(s.x2)} = ${N(r(s.mp - s.x2))}${s.mp - s.x2 < 0 ? ' = 0' : ''}`, `TV of call = premium − IV = ${N(s.pc2)} − ${N(cIV2)} = ${N(cTV2)}`, `IV of put = XP − MP = ${N(s.x2)} − ${N(s.mp)} = ${N(r(s.x2 - s.mp))}${s.x2 - s.mp < 0 ? ' = 0' : ''}`, `TV of put = premium − IV = ${N(s.pp2)} − ${N(pIV2)} = ${N(pTV2)}`], note: 'Time value is what the buyer pays on top of the intrinsic value. It shrinks to zero at expiry.' }
+  ];
+  return { s, key, res: { title: 'Option premium: intrinsic value and time value', steps, result: {} }, c: 'OPT' };
+}
+function stratLines(s, st, legs, M) {
+  const N = (v) => OP.n(s, v), A = {}; legs.forEach((l) => { A[l.type + l.pos] = l; });
+  const tot = legs.reduce((a, l) => a + l.p, 0), T2 = N(OP.r(s, tot));
+  const U = 'UNLIMITED';
+  switch (st) {
+    case 'lc': { const l = A.callL; return ['MAX LOSS = − PRM', `= − ${N(l.p)}`, `MAX PROFIT = ${U}`, 'BEP = XP + PRM', `= ${N(l.x)} + ${N(l.p)}`, `= ${N(M.beps[0])}`]; }
+    case 'sc': { const l = A.callS; return ['MAX PROFIT = + PRM', `= + ${N(l.p)}`, `MAX LOSS = ${U}`, 'BEP = XP + PRM', `= ${N(l.x)} + ${N(l.p)}`, `= ${N(M.beps[0])}`]; }
+    case 'lp': { const l = A.putL; return ['MAX LOSS = − PRM', `= − ${N(l.p)}`, 'MAX PROFIT = XP − PRM (if the market price falls to zero)', `= ${N(l.x)} − ${N(l.p)}`, `= ${N(M.maxP)}`, 'BEP = XP − PRM', `= ${N(l.x)} − ${N(l.p)}`, `= ${N(M.beps[0])}`]; }
+    case 'sp': { const l = A.putS; return ['MAX PROFIT = + PRM', `= + ${N(l.p)}`, 'MAX LOSS = − ( XP − PRM ) (if the market price falls to zero)', `= − ( ${N(l.x)} − ${N(l.p)} )`, `= − ${N(M.maxL)}`, 'BEP = XP − PRM', `= ${N(l.x)} − ${N(l.p)}`, `= ${N(M.beps[0])}`]; }
+    case 'lstrad': case 'sstrad': { const c = A.callL || A.callS, p = A.putL || A.putS, lg = st === 'lstrad'; return [`${lg ? 'MAX LOSS' : 'MAX PROFIT'} = PRM PUT + PRM CALL`, `= ${N(p.p)} + ${N(c.p)}`, `= ${T2}`, `${lg ? 'MAX PROFIT' : 'MAX LOSS'} = ${U}`, 'BEP 1 = XP − TOTAL PRM', `= ${N(c.x)} − ${T2}`, `= ${N(M.beps[0])}`, 'BEP 2 = XP + TOTAL PRM', `= ${N(c.x)} + ${T2}`, `= ${N(M.beps[1])}`]; }
+    case 'lstran': case 'sstran': { const c = A.callL || A.callS, p = A.putL || A.putS, lg = st === 'lstran'; return [`${lg ? 'MAX LOSS' : 'MAX PROFIT'} = PRM PUT + PRM CALL`, `= ${N(p.p)} + ${N(c.p)}`, `= ${T2}`, `${lg ? 'MAX PROFIT' : 'MAX LOSS'} = ${U}`, 'BEP 1 = XP PUT − TOTAL PRM', `= ${N(p.x)} − ${T2}`, `= ${N(M.beps[0])}`, 'BEP 2 = XP CALL + TOTAL PRM', `= ${N(c.x)} + ${T2}`, `= ${N(M.beps[1])}`]; }
+    case 'bullc': { const L = A.callL, S = A.callS, d = N(OP.r(s, L.p - S.p)); return ['Net debit = PRM LONG CALL − PRM SHORT CALL', `= ${N(L.p)} − ${N(S.p)} = ${d}`, 'MAX LOSS = net debit', `= ${d}`, 'MAX PROFIT = ( XP SHORT CALL − XP LONG CALL ) − net debit', `= ( ${N(S.x)} − ${N(L.x)} ) − ${d}`, `= ${N(M.maxP)}`, 'BEP = XP LONG CALL + net debit', `= ${N(L.x)} + ${d}`, `= ${N(M.beps[0])}`]; }
+    case 'bullp': { const L = A.putL, S = A.putS, c = N(OP.r(s, S.p - L.p)); return ['Net credit = PRM SHORT PUT − PRM LONG PUT', `= ${N(S.p)} − ${N(L.p)} = ${c}`, 'MAX PROFIT = net credit', `= ${c}`, 'MAX LOSS = ( XP SHORT PUT − XP LONG PUT ) − net credit', `= ( ${N(S.x)} − ${N(L.x)} ) − ${c}`, `= ${N(M.maxL)}`, 'BEP = XP SHORT PUT − net credit', `= ${N(S.x)} − ${c}`, `= ${N(M.beps[0])}`]; }
+    case 'bearc': { const L = A.callL, S = A.callS, c = N(OP.r(s, S.p - L.p)); return ['Net credit = PRM SHORT CALL − PRM LONG CALL', `= ${N(S.p)} − ${N(L.p)} = ${c}`, 'MAX PROFIT = net credit', `= ${c}`, 'MAX LOSS = ( XP LONG CALL − XP SHORT CALL ) − net credit', `= ( ${N(L.x)} − ${N(S.x)} ) − ${c}`, `= ${N(M.maxL)}`, 'BEP = XP SHORT CALL + net credit', `= ${N(S.x)} + ${c}`, `= ${N(M.beps[0])}`]; }
+    case 'bearp': { const L = A.putL, S = A.putS, d = N(OP.r(s, L.p - S.p)); return ['Net debit = PRM LONG PUT − PRM SHORT PUT', `= ${N(L.p)} − ${N(S.p)} = ${d}`, 'MAX LOSS = net debit', `= ${d}`, 'MAX PROFIT = ( XP LONG PUT − XP SHORT PUT ) − net debit', `= ( ${N(L.x)} − ${N(S.x)} ) − ${d}`, `= ${N(M.maxP)}`, 'BEP = XP LONG PUT − net debit', `= ${N(L.x)} − ${d}`, `= ${N(M.beps[0])}`]; }
+  }
+  return [];
+}
+const legName = (s, l) => `${OP.pos[l.pos]} ${l.type} (XP ${OP.n(s, l.x)}, PRM ${OP.n(s, l.p)})`;
+function buildStrat(s, legs, isSynth) {
+  const Q = isSynth ? QSY : QB, N = (v) => OP.n(s, v);
+  setUnits(Q, s);
+  const sp = SPEC[s.strat], ord = sp.legs.map((l) => l[0] + l[1]);
+  legs = legs.slice().sort((a, b) => ord.indexOf(a.type + a.pos) - ord.indexOf(b.type + b.pos));
+  const M = optMetrics(s, legs);
+  const lim = (v) => (v === null ? { u: 'U' } : { v });
+  const key = { q1: 'combo', q2: lim(M.maxP), q3: lim(M.maxL), q4: M.beps[0] };
+  if (isSynth) key.q5 = M.beps.length > 1 ? { v: M.beps[1] } : { u: 'N' };
+  else { const v = totPL(s, legs, s.mp1); key.q5 = { d: v >= 0 ? 'profit' : 'loss', v: Math.abs(v) }; Q[4].label = `Profit or loss if the ${OP.what(s)} at expiry is ${OP.f(s, s.mp1)}`; }
+  s.prices.forEach((m, i) => { key['q' + (6 + i)] = totPL(s, legs, m); Q[5 + i].label = `Payoff table: ${isSynth ? 'total ' : ''}profit or loss when MP = ${OP.f(s, m)}`; });
+  const steps = [];
+  steps.push({ title: 'Step 1: Choose the option contract' + (isSynth ? 's' : ''), table: { head: ['Position', 'Option', 'XP', 'PRM'], rows: legs.map((l) => [OP.pos[l.pos], OP.typ[l.type], N(l.x), N(l.p)]) }, note: isSynth ? `${sp.name} = ${sp.rule}.${s.multi ? ' Other combinations from the table that follow this rule are also correct.' : ''}` : '' });
+  steps.push({ title: 'Step 2: Calculate maximum loss, maximum profit and BEP', lines: stratLines(s, s.strat, legs, M) });
+  steps.push({ title: 'Step 3: Payoff diagram', svg: payoffSVG(s, legs, M), lines: [`${sp.name}: ${M.beps.map((b) => 'BEP ' + N(b)).join(', ')}.`] });
+  if (!isSynth) {
+    const r = legRow(s, legs[0], s.mp1);
+    steps.push({ title: `Step 4: Profit or loss at MP = ${N(s.mp1)}`, lines: [`Compare MP with XP: ${r.cond}`, `Formula: PROFIT = ${r.form}`, `= ${r.calc}`, `= ${N(r.pl)}`] });
+    steps.push({ title: 'Step 5: Payoff table', table: { head: ['MP', 'XP', 'Condition', 'Formula', 'Calculation', 'Profit'], rows: s.prices.map((m) => { const z = legRow(s, legs[0], m); return [N(m), N(legs[0].x), z.cond, z.form, z.calc, N(z.pl)]; }) } });
+  } else {
+    legs.forEach((l, j) => steps.push({ title: `Step ${4 + j}: Payoff table, ${legName(s, l)}`, table: { head: ['MP', 'XP', 'Condition', 'Formula', 'Calculation', 'Profit'], rows: s.prices.map((m) => { const z = legRow(s, l, m); return [N(m), N(l.x), z.cond, z.form, z.calc, N(z.pl)]; }) } }));
+    steps.push({ title: `Step ${4 + legs.length}: Sum up the profit from both options`, table: { head: ['MP', ...legs.map((l) => `${OP.pos[l.pos]} ${l.type} ${N(l.x)}`), sp.name], rows: s.prices.map((m) => [N(m), ...legs.map((l) => N(legRow(s, l, m).pl)), N(totPL(s, legs, m))]) } });
+  }
+  return { s, key, legs, M, res: { title: `${sp.name}: ${s.name}`, steps, result: { maxP: M.maxP, maxL: M.maxL } }, c: 'OPT' };
+}
+function buildBasic(s) { const legs = allCombos(s)[0]; return buildStrat(s, legs, false); }
+function buildSynth(s) { const all = allCombos(s); s.multi = all.length > 1; return buildStrat(s, all[0], true); }
+/* rebuild the key on the student's own combination when it is a valid one */
+function optRekey(B, a) {
+  if (!B || !B.s || !B.s.strat) return;
+  const picks = picksOf(B.s, a || {});
+  if (comboValid(B.s.strat, picks)) {
+    const order = allCombos(B.s)[0].map((l) => l.type + l.pos);
+    picks.sort((x, y) => order.indexOf(x.type + x.pos) - order.indexOf(y.type + y.pos));
+    const nb = buildStrat(B.s, picks, T().st === 'synth');
+    Object.assign(B, { key: nb.key, legs: nb.legs, M: nb.M, res: nb.res, own: true });
+  }
+}
+
+/* ---------------- concepts (10 MCQs) ---------------- */
+function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function conceptPool(R) {
+  const pick = (a) => a[Math.floor(R() * a.length)], ri = (a, b) => a + Math.floor(R() * (b - a + 1));
+  const X = ri(30, 36) * 50, d = pick([-80, -50, -30, 0, 30, 50, 80]), MP = X + d, prm = ri(12, 60);
+  const mon = pick(['March', 'June', 'September', 'December']);
+  const mny = (call) => (MP === X ? 'At the money' : (call ? MP > X : MP < X) ? 'In the money' : 'Out of the money');
+  const mOpts = ['In the money', 'At the money', 'Out of the money', 'Deep out of the money and worthless'];
+  const sX = pick([5.5, 6, 7.5, 8, 10.5, 12]), sMP = pick([-1, -0.5, 0.5, 1, 1.5]) + sX;
+  const L1 = [
+    () => ({ q: 'The buyer (holder) of a call option has the:', a: 'Right to buy the underlying asset at the exercise price', w: ['Obligation to buy the underlying asset at the exercise price', 'Right to sell the underlying asset at the exercise price', 'Obligation to sell the underlying asset at the exercise price'] }),
+    () => ({ q: 'The buyer (holder) of a put option has the:', a: 'Right to sell the underlying asset at the exercise price', w: ['Obligation to sell the underlying asset at the exercise price', 'Right to buy the underlying asset at the exercise price', 'Obligation to buy the underlying asset at the exercise price'] }),
+    () => ({ q: 'The seller (writer) of a call option has the:', a: 'Obligation to sell the underlying asset at the exercise price if the buyer exercises', w: ['Right to sell the underlying asset at the exercise price', 'Obligation to buy the underlying asset at the exercise price if the buyer exercises', 'Right to buy the underlying asset at the exercise price'] }),
+    () => ({ q: 'The seller (writer) of a put option has the:', a: 'Obligation to buy the underlying asset at the exercise price if the buyer exercises', w: ['Right to buy the underlying asset at the exercise price', 'Obligation to sell the underlying asset at the exercise price if the buyer exercises', 'Right to sell the underlying asset at the exercise price'] }),
+    () => ({ q: 'When an investor buys an option contract, the premium is:', a: 'Paid by the buyer to the seller (a cash outflow for the buyer)', w: ['Paid by the seller to the buyer (a cash inflow for the buyer)', 'Paid only if the option is exercised', 'Shared equally by the buyer and the seller'] }),
+    () => ({ q: 'Compared with a futures contract, an option contract:', a: 'Gives the buyer a right but not an obligation', w: ['Obliges both the buyer and the seller to complete the contract', 'Gives the seller the right to choose whether to complete the contract', 'Has no price to pay when it is opened'] }),
+    () => ({ q: `An OKLI ${mon} ${X} call option when the FBM KLCI is at ${MP} is:`, a: mny(true), w: mOpts }),
+    () => ({ q: `An OKLI ${mon} ${X} put option when the FBM KLCI is at ${MP} is:`, a: mny(false), w: mOpts }),
+    () => ({ q: `A share is trading at RM ${sMP.toFixed(2)}. What is the intrinsic value of its call option with an exercise price of RM ${sX.toFixed(2)}?`, a: 'RM ' + Math.max(sMP - sX, 0).toFixed(2), w: ['RM ' + Math.abs(sMP - sX).toFixed(2), 'RM ' + (sMP - sX < 0 ? (sMP - sX).toFixed(2) : '0.00'), 'RM ' + sX.toFixed(2), 'RM ' + sMP.toFixed(2)] })
+  ];
+  const L2 = [
+    () => ({ q: `At expiry the share price is RM ${sMP.toFixed(2)} and the put option exercise price is RM ${sX.toFixed(2)}. The put holder should:`, a: sMP < sX ? 'Exercise the put and sell the share at the exercise price' : 'Not exercise the put and let it expire', w: [sMP < sX ? 'Not exercise the put and let it expire' : 'Exercise the put and sell the share at the exercise price', 'Exercise the put and buy the share at the exercise price', 'Ask the seller to return the premium'] }),
+    () => ({ q: `At expiry the FBM KLCI is ${MP} and the OKLI call exercise price is ${X}. The call holder should:`, a: MP > X ? 'Exercise the call, because it is in the money' : 'Not exercise the call, because it is not in the money', w: [MP > X ? 'Not exercise the call, because it is not in the money' : 'Exercise the call, because it is in the money', 'Exercise the call to get back the premium', 'Sell the underlying index to the call seller'] }),
+    () => ({ q: 'KLCI options (OKLI) on Bursa Malaysia Derivatives are:', a: 'European style: exercised only at expiry and settled in cash', w: ['American style: exercised on any day before expiry', 'European style: settled by delivering the shares in the index', 'American style: settled by delivering the shares in the index'] }),
+    () => ({ q: 'An American-style option can be exercised:', a: 'On or before the expiry date', w: ['Only on the expiry date', 'Only after the expiry date', 'Only when the seller agrees'] }),
+    () => ({ q: 'Other things equal, a call option with a HIGHER exercise price has:', a: 'A lower premium, because its intrinsic value is lower', w: ['A higher premium, because its intrinsic value is higher', 'The same premium as a call with a lower exercise price', 'A higher premium, because it expires later'] }),
+    () => ({ q: 'Other things equal, a put option with a HIGHER exercise price has:', a: 'A higher premium, because its intrinsic value is higher', w: ['A lower premium, because its intrinsic value is lower', 'The same premium as a put with a lower exercise price', 'A lower premium, because it expires earlier'] }),
+    () => ({ q: 'A longer time to expiration makes the premium of calls and puts:', a: 'Higher, because there is more time for the option to move into the money', w: ['Lower, because the option is less likely to be exercised', 'Higher for calls but lower for puts', 'Unchanged, because only the exercise price matters'] }),
+    () => ({ q: 'If the price of the underlying asset rises, the premiums of its options:', a: 'The call premium rises and the put premium falls', w: ['The call premium falls and the put premium rises', 'Both premiums rise', 'Both premiums fall'] }),
+    () => ({ q: `A long call has an exercise price of ${X} and a premium of ${prm}. Its break-even point is:`, a: String(X + prm), w: [String(X - prm), String(X), String(prm), String(X + 2 * prm)] }),
+    () => ({ q: `A long put has an exercise price of ${X} and a premium of ${prm}. Its maximum loss is:`, a: String(prm) + ' (the premium paid)', w: ['Unlimited', String(X - prm), String(X + prm)] })
+  ];
+  const views = { bull: ['Long call', 'Short put', 'Bull call spread', 'Bull put spread'], bear: ['Long put', 'Short call', 'Bear call spread', 'Bear put spread'], flat: ['Short straddle', 'Short strangle'], vol: ['Long straddle', 'Long strangle'] };
+  const vq = (k, txt) => () => { const others = Object.keys(views).filter((z) => z !== k).flatMap((z) => views[z]); return { q: txt, a: pick(views[k]), w: others.sort(() => R() - 0.5) }; };
+  const L3 = [
+    vq('bull', 'An investor expects the share price to rise from RM 4 to RM 6. Which option strategy fits this view?'),
+    vq('bear', 'An investor expects the FBM KLCI to fall over the next month. Which option strategy fits this view?'),
+    vq('flat', 'An investor expects the share price to stay around its current level until expiry. Which option strategy fits this view?'),
+    vq('vol', 'An investor expects a big move in the share price after the results announcement, but is unsure of the direction. Which option strategy fits this view?'),
+    () => ({ q: 'A long straddle is created by:', a: 'Buying a call and buying a put with the same exercise price', w: ['Buying a call and buying a put with different exercise prices', 'Selling a call and selling a put with the same exercise price', 'Buying a call and selling a call with different exercise prices'] }),
+    () => ({ q: 'A long strangle is created by:', a: 'Buying a call with a higher exercise price and buying a put with a lower exercise price', w: ['Buying a call and buying a put with the same exercise price', 'Selling a call with a higher exercise price and selling a put with a lower exercise price', 'Buying a call with a lower exercise price and selling a call with a higher exercise price'] }),
+    () => ({ q: 'A bull call spread is created by:', a: 'Buying a call with a lower exercise price and selling a call with a higher exercise price', w: ['Selling a call with a lower exercise price and buying a call with a higher exercise price', 'Buying a put with a higher exercise price and selling a put with a lower exercise price', 'Buying a call and buying a put with the same exercise price'] }),
+    () => ({ q: 'A bear put spread is created by:', a: 'Buying a put with a higher exercise price and selling a put with a lower exercise price', w: ['Selling a put with a higher exercise price and buying a put with a lower exercise price', 'Buying a call with a lower exercise price and selling a call with a higher exercise price', 'Selling a call and selling a put with the same exercise price'] }),
+    () => ({ q: `A short straddle is made of a call at ${prm} and a put at ${prm + 6}, both with exercise price ${X}. Its maximum profit is:`, a: String(2 * prm + 6) + ' (the total premium received)', w: ['Unlimited', String(prm), String(X + 2 * prm + 6)] }),
+    () => ({ q: 'Which strategy has an UNLIMITED maximum loss?', a: pick(['Short call', 'Short straddle', 'Short strangle']), w: ['Long call', 'Long put', 'Bull call spread', 'Bear put spread', 'Long straddle'] })
+  ];
+  return { L1, L2, L3 };
+}
+function buildConcept(s) {
+  const R = rng(s.seed || 7), P = conceptPool(R), L = s.lv || 1;
+  const take = (arr, n) => { const a = arr.slice(); const out = []; while (out.length < n && a.length) out.push(a.splice(Math.floor(R() * a.length), 1)[0]); return out; };
+  const plan = L === 1 ? take(P.L1, 9).concat(take(P.L2, 1)) : L === 2 ? take(P.L1, 3).concat(take(P.L2, 7)) : take(P.L1, 2).concat(take(P.L2, 3), take(P.L3, 5));
+  const items = plan.map((f) => f()), key = {}, mcqs = {};
+  items.forEach((it, i) => { const id = 'q' + (i + 1); QCO[i].label = it.q; mcqs[id] = mcqFrom(s.id + id + (s.seed || 0), it.a, it.w, ['None of the above']); key[id] = mcqs[id].a; });
+  const steps = [{ title: 'Answers', table: { head: ['No.', 'Question', 'Answer'], rows: items.map((it, i) => [String(i + 1), it.q, it.a]) } }];
+  return { s, key, mcqs, items, res: { title: 'Option concepts: answers', steps, result: {} }, c: 'OPT' };
+}
+
+/* ---------------- question cards ---------------- */
+function conTable(s) {
+  const N = (v) => OP.n(s, v);
+  return `<div class="tw"><table><thead><tr><th>Option</th><th class="num">Exercise price${OP.isIdx(s) ? '' : ' (RM)'}</th><th class="num">Premium${OP.isIdx(s) ? '' : ' (RM)'}</th></tr></thead><tbody>${contractsOf(s).map((c) => `<tr><td>${OP.typ[c.type]}</td><td class="num">${N(c.x)}</td><td class="num">${N(c.p)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+const undTxt = (s) => (OP.isIdx(s) ? `${s.month} OKLI (FBM KLCI options) contracts on Bursa Malaysia Derivatives. Prices and premiums are in index points.` : `${s.month} stock options on <b>${esc(s.stock)}</b>. Prices and premiums are in RM per share.`);
+function optCard(B) {
+  const s = B.s, t = T(), N = (v) => OP.n(s, v), L = s.lv || 1, txt = L === 3 && t.st !== 'concept';
+  const tag = s.book ? ` <span class="book">${esc(s.book)}</span>` : '';
+  let body = '', req = '';
+  if (t.st === 'concept') {
+    body = `<h2>Option concepts${tag}</h2><p>Answer the ${QCO.length} multiple-choice questions below. Each is worth 1 mark. ${L === 1 ? 'They cover the rights and obligations of buyers and sellers, the premium and moneyness.' : L === 2 ? 'They cover exercise decisions, option styles and what moves the premium.' : 'They cover choosing a strategy for a market view and how synthetic strategies are built.'}</p>`;
+    req = '<p class="req"><b>Required:</b> Choose the best answer for each question, then press <b>Check my answers</b>.</p>';
+  } else if (t.st === 'prem') {
+    if (!txt) body = `<h2>Option premium: ${esc(s.name)}${tag}</h2><p>${undTxt(s)}</p>
+      <p><b>Part A.</b> The ${OP.what(s)} is currently <b>${OP.f(s, s.mp)}</b>. An option has a time value of <b>${OP.f(s, s.tv)}</b> and an exercise price of <b>${OP.f(s, s.x1)}</b>. Determine the premium if the option is a call, a put, and a straddle with this exercise price.</p>
+      <p><b>Part B.</b> Options with an exercise price of <b>${OP.f(s, s.x2)}</b> on the same underlying are quoted at <b>${OP.f(s, s.pc2)}</b> for the call and <b>${OP.f(s, s.pp2)}</b> for the put. Determine their intrinsic value and time value.</p>`;
+    else body = `<h2>Option premium: ${esc(s.name)}</h2><p class="lbl plain">Read the email below and pick out the information you need. The figures are in the text.</p>
+      <div class="doc email"><div class="dh"><b>From:</b> ${esc(s.name)}<br><b>To:</b> Derivatives desk<br><b>Subject:</b> ${esc(s.stock)} options, quick check</div>
+      <p>Hi team,</p><p>${esc(s.stock)} closed at ${OP.f(s, s.mp)} a share today. For the ${s.month} options with an exercise price of ${OP.f(s, s.x1)}, our model puts the time value at ${OP.f(s, s.tv)}. Could you work out what the call and the put should cost, and what a straddle at that strike would cost us in total?</p>
+      <p>Also, the ${OP.f(s, s.x2)} ${s.month} options are trading at ${OP.f(s, s.pc2)} for the call and ${OP.f(s, s.pp2)} for the put. How much of each is intrinsic value and how much is time value?</p><p>Thanks,<br>${esc(s.name)}</p></div>`;
+    req = '<p class="req"><b>Required:</b> Using IV and TV as in the slides, work out each answer on paper, then enter it below and press <b>Check my answers</b>.</p>';
+  } else {
+    const sp = SPEC[s.strat], synth = t.st === 'synth';
+    const ask = synth ? `create a <b>${sp.name.toLowerCase()}</b> from the options available` : `use a <b>${sp.name.toLowerCase()}</b> strategy`;
+    const prices = s.prices.map((m) => OP.f(s, m)).join(', ');
+    if (!txt) body = `<h2>${sp.name}: ${esc(s.name)}${tag}</h2><p>${esc(s.name)}, ${esc(s.who)}, ${esc(s.view)}. The following ${undTxt(s)}</p>${conTable(s)}
+      <p>${esc(s.name.split(' ')[0] === 'Puan' || s.name.split(' ')[0] === 'Cik' ? 'She' : 'He')} decides to ${ask}.${synth ? '' : ` At expiry the ${OP.what(s)} turns out to be <b>${OP.f(s, s.mp1)}</b>.`}</p>
+      <p>Prepare the payoff table for these market prices at expiry: <b>${prices}</b>.</p>`;
+    else body = `<h2>${sp.name}: ${esc(s.name)}</h2><p class="lbl plain">Read the chat below and pick out the information you need. The figures are in the text.</p>
+      <div class="doc email"><div class="dh"><b>From:</b> ${esc(s.name)}<br><b>To:</b> Options desk<br><b>Subject:</b> ${esc(s.stock)} ${s.month} options</div>
+      <p>Hi,</p><p>I ${esc(s.view.replace(/^expects/, 'expect').replace(/^believes/, 'believe').replace(/^thinks/, 'think'))}. Your screen shows the ${s.month} ${esc(s.stock)} options as follows: ${contractsOf(s).map((c) => `the ${N(c.x)} ${c.type} at ${N(c.p)}`).join(', ')}.</p>
+      <p>I would like to ${ask.replace(/<\/?b>/g, '')}.${synth ? '' : ` Assume ${esc(s.stock)} ends at ${OP.f(s, s.mp1)} at expiry.`} Please also show me the payoff at expiry if the share price is ${prices}.</p><p>${esc(s.name)}</p></div>`;
+    req = `<p class="req"><b>Required:</b> ${synth ? 'Choose the two option contracts that create the strategy' : 'Choose the option contract'}, calculate the maximum profit, maximum loss and break-even point${synth ? 's' : ''}${synth ? '' : ', the profit or loss at the given price'} and prepare the payoff table, as in the slides. Then enter your answers below and press <b>Check my answers</b>.</p>`;
+  }
+  return `<article class="card qcard" id="qcard"><div class="eyebrow">Tutorial question · Code ${t.code}${s.id} · ${txt ? 'Email' : t.st === 'concept' ? 'Quiz' : 'Case study'}</div>${body}${req}
+  <div class="row noprint"><button type="button" class="btn primary" id="qpdf">Download question (PDF)</button><button type="button" class="btn" id="print">Print question</button><span class="lbl plain" id="qpdf-msg" aria-live="polite"></span></div></article>`;
+}
+
+/* ---------------- banks (slides 16 to 24 and exam July 2026) ---------------- */
+const SLIDE4 = [['put', 1618, 68], ['put', 1668, 74], ['call', 1668, 83], ['call', 1618, 91]];
+const SLIDE2 = [['put', 1618, 68], ['call', 1668, 83]];
+const sb = (o) => Object.assign({ und: 'okli', month: 'December', who: 'an investor with an options account', name: 'Encik Hafiz' }, o);
+const BANK_BASIC = [
+  sb({ id: '01', book: 'Slides 18 to 20', lv: 1, strat: 'lc', cons: SLIDE2, mp1: 1762, prices: [1488, 1540, 1668, 1750, 1880], view: 'expects the FBM KLCI to rise' }),
+  sb({ id: '02', book: 'Slides 18 to 20', lv: 1, strat: 'lp', cons: SLIDE2, mp1: 1543, prices: [1420, 1590, 1618, 1780, 1900], view: 'expects the FBM KLCI to fall', name: 'Puan Aisyah' }),
+  sb({ id: '03', book: 'Slides 18 to 20', lv: 2, strat: 'sc', cons: SLIDE2, mp1: 1762, prices: [1488, 1540, 1668, 1750, 1880], view: 'expects the FBM KLCI to stay flat or fall', name: 'Encik Kumar' }),
+  sb({ id: '04', book: 'Slides 18 to 20', lv: 2, strat: 'sp', cons: SLIDE2, mp1: 1543, prices: [1420, 1590, 1618, 1780, 1900], view: 'expects the FBM KLCI to stay flat or rise', name: 'Cik Mei Ling' })
+];
+const SYP = [1450, 1540, 1640, 1700, 1850];
+const BANK_SYNTH = [
+  sb({ id: '01', book: 'Slides 21 to 23', lv: 1, strat: 'lstrad', cons: SLIDE4, prices: SYP, view: 'expects a big move in the FBM KLCI but is unsure of the direction' }),
+  sb({ id: '02', book: 'Slides 21 to 23', lv: 1, strat: 'lstran', cons: SLIDE4, prices: SYP, view: 'expects a big move in the FBM KLCI but is unsure of the direction', name: 'Puan Aisyah' }),
+  sb({ id: '03', book: 'Slides 21 to 23', lv: 2, strat: 'bullc', cons: SLIDE4, prices: SYP, view: 'expects the FBM KLCI to rise moderately', name: 'Encik Kumar' }),
+  sb({ id: '04', book: 'Slides 21 to 23', lv: 2, strat: 'bullp', cons: SLIDE4, prices: SYP, view: 'expects the FBM KLCI to rise moderately', name: 'Cik Mei Ling' }),
+  sb({ id: '05', book: 'Slides 21 to 23', lv: 2, strat: 'bearc', cons: SLIDE4, prices: SYP, view: 'expects the FBM KLCI to fall moderately', name: 'Encik Daniel' }),
+  sb({ id: '06', book: 'Slides 21 to 23', lv: 2, strat: 'bearp', cons: SLIDE4, prices: SYP, view: 'expects the FBM KLCI to fall moderately', name: 'Cik Nurul' }),
+  sb({ id: '07', book: 'Slides 21 to 23', lv: 3, strat: 'sstrad', cons: SLIDE4, prices: SYP, view: 'expects the FBM KLCI to stay around its current level', name: 'Encik Arvind' }),
+  sb({ id: '08', book: 'Slides 21 to 23', lv: 3, strat: 'sstran', cons: SLIDE4, prices: SYP, view: 'expects the FBM KLCI to stay around its current level', name: 'Puan Siew Lan' })
+];
+const BANK_PREM = [
+  { id: '01', book: 'Slide 17', lv: 2, und: 'stock', stock: 'Maxi Berhad', name: 'Maxi Berhad', month: 'June', mp: 13.9, x1: 10.5, tv: 0.15, x2: 13.5, pc2: 0.62, pp2: 0.18 },
+  { id: '02', book: 'Exam July 2026', lv: 2, und: 'stock', stock: 'Seri Bayu Berhad', name: 'Seri Bayu Berhad', month: 'September', mp: 5.8, x1: 5.5, tv: 0.13, x2: 6, pc2: 0.18, pp2: 0.35 },
+  { id: '03', book: 'Slide 16', lv: 1, und: 'okli', name: 'OKLI', month: 'December', mp: 1720, x1: 1660, tv: 18, x2: 1700, pc2: 45, pp2: 22 }
+];
+BANK_PREM.unshift(BANK_PREM.pop()); BANK_PREM.forEach((b, i) => { b.id = '0' + (i + 1); });
+const BANK_CONCEPT = [{ id: '01', lv: 1, seed: 101 }, { id: '02', lv: 1, seed: 102 }, { id: '03', lv: 2, seed: 201 }, { id: '04', lv: 2, seed: 202 }, { id: '05', lv: 3, seed: 301 }, { id: '06', lv: 3, seed: 302 }];
+
+/* ---------------- generators ---------------- */
+const OPT_PEOPLE = ['Encik Faris', 'Puan Aisyah', 'Encik Kumar', 'Cik Mei Ling', 'Encik Daniel', 'Cik Nurul', 'Encik Arvind', 'Puan Siew Lan', 'Encik Amirul', 'Cik Hannah', 'Encik Ridzuan', 'Cik Priya'];
+const OPT_STOCKS = ['Maxi Berhad', 'Malaya Steel Berhad', 'Seri Bayu Berhad', 'Nusa Telco Berhad', 'Permata Glove Berhad', 'Laksana Energy Berhad', 'Kenanga Plantations Berhad', 'Delima Bank Berhad'];
+const OPT_WHO = ['an individual investor', 'a dealer at an investment bank', 'a fund manager', 'a retail investor with an options account', 'a proprietary trader'];
+const OPT_MON = ['March', 'June', 'September', 'December'];
+function optPrem(type, mp, x, tvA, scale, und) {
+  const iv = type === 'call' ? Math.max(mp - x, 0) : Math.max(x - mp, 0);
+  const tv = tvA * Math.exp(-Math.abs(mp - x) / scale);
+  const v = iv + tv;
+  return und === 'okli' ? Math.max(1, Math.round(v)) : Math.max(0.05, Math.round(v * 20) / 20);
+}
+function optMarket(g, L, nStrikes) {
+  const idx = L === 1;
+  if (idx) {
+    const mp = g.ri(30, 36) * 50 + g.pick([0, 10, 20, 30, 40]), step = 50, base = Math.round(mp / step) * step - (nStrikes === 3 ? step : g.pick([0, step]));
+    const xs = Array.from({ length: nStrikes }, (_, i) => base + i * step), tvA = g.ri(35, 70), scale = g.ri(60, 120);
+    return { und: 'okli', mp, xs, tvA, scale, month: g.pick(OPT_MON) };
+  }
+  const mp = Math.round(g.rf(3, 15) * 20) / 20, step = mp < 6 ? 0.5 : 1, base = Math.round(mp / step) * step - (nStrikes === 3 ? step : g.pick([0, step]));
+  const xs = Array.from({ length: nStrikes }, (_, i) => Math.round((base + i * step) * 100) / 100), tvA = Math.round(g.rf(0.15, 0.4) * mp * 0.1 * 20) / 20 + 0.1, scale = step * g.rf(0.8, 1.6);
+  return { und: 'stock', mp, xs, tvA, scale, month: g.pick(OPT_MON), stock: g.pick(OPT_STOCKS) };
+}
+function consOf(m, types) {
+  const out = [];
+  m.xs.forEach((x) => types.forEach((ty) => out.push([ty, x, optPrem(ty, m.mp, x, m.tvA, m.scale, m.und)])));
+  return out;
+}
+function genPrices(g, s, legs) {
+  const xs = legs.map((l) => l.x), lo = Math.min(...xs), hi = Math.max(...xs), w = Math.max(hi - lo, s.und === 'okli' ? 50 : 0.5);
+  const M = optMetrics(s, legs), pts = new Set();
+  const r = (v) => (s.und === 'okli' ? Math.round(v / 10) * 10 : Math.round(v * 10) / 10);
+  [lo - w * 1.6, lo - w * 0.4, (lo + hi) / 2, hi + w * 0.4, hi + w * 1.6].forEach((v) => pts.add(r(v + (g.R() - 0.5) * w * 0.3)));
+  if (g.R() < 0.5) pts.add(r(lo)); if (M.beps[0] && g.R() < 0.3) pts.add(r(M.beps[0]));
+  const arr = [...pts].filter((v) => v > 0).sort((a, b) => a - b);
+  while (arr.length > 5) arr.splice(Math.floor(g.R() * arr.length), 1);
+  return arr.length === 5 && new Set(arr).size === 5 ? arr : null;
+}
+const VIEW_TXT = { bullish: ['expects the price to rise', 'believes the share will rally after strong results'], bearish: ['expects the price to fall', 'thinks the market will weaken next month'], flat: ['expects the price to stay around its current level'], vol: ['expects a big move after the results announcement but is unsure of the direction'] };
+const STRAT_VIEW = { lc: 'bullish', sp: 'bullish', bullc: 'bullish', bullp: 'bullish', sc: 'bearish', lp: 'bearish', bearc: 'bearish', bearp: 'bearish', sstrad: 'flat', sstran: 'flat', lstrad: 'vol', lstran: 'vol' };
+function genBasic(g, L) {
+  const strat = L === 1 ? g.pick(['lc', 'lp']) : L === 2 ? g.pick(['sc', 'sp']) : g.pick(['lc', 'sc', 'lp', 'sp']);
+  const m = optMarket(g, L === 3 ? 2 : L, 1), x = m.xs[0];
+  const s = { und: m.und, month: m.month, stock: m.stock, name: g.pick(OPT_PEOPLE), who: g.pick(OPT_WHO), strat, lv: L };
+  const xc = x + (m.und === 'okli' ? g.pick([0, 50]) : g.pick([0, 0.5])), xp = x - (m.und === 'okli' ? g.pick([0, 50]) : g.pick([0, 0.5]));
+  s.cons = [['put', xp, optPrem('put', m.mp, xp, m.tvA, m.scale, m.und)], ['call', xc, optPrem('call', m.mp, xc, m.tvA, m.scale, m.und)]];
+  s.view = g.pick(VIEW_TXT[STRAT_VIEW[strat]]);
+  const legs = allCombos(s)[0]; if (!legs) return null;
+  s.prices = genPrices(g, s, legs); if (!s.prices) return null;
+  const lx = legs[0].x, wv = m.und === 'okli' ? 100 : 1;
+  s.mp1 = OP.r(s, s.prices[g.ri(0, 4)] + (g.R() < 0.5 ? 0 : (g.R() - 0.5) * wv * 0.3)); if (s.mp1 === lx) s.mp1 = OP.r(s, lx + wv * 0.2);
+  if (m.und === 'okli') s.mp1 = Math.round(s.mp1);
+  return s;
+}
+function genSynth(g, L) {
+  const strat = L === 1 ? g.pick(['lstrad', 'lstran']) : L === 2 ? g.pick(['bullc', 'bullp', 'bearc', 'bearp']) : g.pick(Object.keys(SPEC).filter((k) => k.length > 2));
+  const m = optMarket(g, L === 3 ? 2 : L, L === 3 ? 3 : 2);
+  const s = { und: m.und, month: m.month, stock: m.stock, name: g.pick(OPT_PEOPLE), who: g.pick(OPT_WHO), strat, lv: L, cons: consOf(m, ['call', 'put']) };
+  // premiums must make sense: calls fall and puts rise with the exercise price, and every spread keeps a positive width
+  const calls = s.cons.filter((c) => c[0] === 'call'), puts = s.cons.filter((c) => c[0] === 'put');
+  for (let i = 1; i < calls.length; i++) { if (!(calls[i][2] < calls[i - 1][2]) || calls[i - 1][2] - calls[i][2] >= calls[i][1] - calls[i - 1][1]) return null; if (!(puts[i][2] > puts[i - 1][2]) || puts[i][2] - puts[i - 1][2] >= puts[i][1] - puts[i - 1][1]) return null; }
+  s.cons.sort((a, b) => (a[0] === b[0] ? a[1] - b[1] : a[0] === 'put' ? -1 : 1));
+  s.view = g.pick(VIEW_TXT[STRAT_VIEW[strat]]);
+  const all = allCombos(s); if (!all.length) return null;
+  s.prices = genPrices(g, s, all[0]); if (!s.prices) return null;
+  return s;
+}
+function genPremium(g, L) {
+  const m = optMarket(g, L === 1 ? 1 : 2, 2), r = (v) => (m.und === 'okli' ? Math.round(v) : Math.round(v * 100) / 100);
+  const x1 = g.pick(m.xs) + (m.und === 'okli' ? g.pick([-50, 0, 50]) : g.pick([-1, 0, 1]) * (m.mp < 6 ? 0.5 : 1));
+  let x2 = g.pick(m.xs); if (x2 === x1) x2 = r(x1 + (m.und === 'okli' ? 50 : (m.mp < 6 ? 0.5 : 1)));
+  const tv = m.und === 'okli' ? g.ri(8, 40) : Math.round(g.rf(0.05, 0.4) * 100) / 100;
+  const pc2 = optPrem('call', m.mp, x2, m.tvA, m.scale, m.und), pp2 = optPrem('put', m.mp, x2, m.tvA, m.scale, m.und);
+  if (pc2 < Math.max(m.mp - x2, 0) || pp2 < Math.max(x2 - m.mp, 0) || x1 <= 0) return null;
+  return { und: m.und, month: m.month, stock: m.stock || 'OKLI', name: m.und === 'okli' ? 'OKLI' : m.stock, mp: m.mp, x1, tv, x2, pc2, pp2, lv: L };
+}
+function genConcept(g, L) { return { lv: L, seed: g.ri(1, 2000000000) }; }
+
+/* ---------------- topics ---------------- */
+const optTopic = (st, L, bank, build, Q, gen, method) => ({ key: 'OPT|' + st, c: 'OPT', st, code: `T-OPT-${L}-`, bank, tab: STRAT_T[st], short: STRAT_T[st], method, nameOf: (s) => s.name || STRAT_T[st], build, Q, gen, levelOf: (s) => s.lv || 1, lvlInfo: OPT_LVL[st], rekey: st === 'basic' || st === 'synth' ? optRekey : null });
+TOPICS['OPT|concept'] = optTopic('concept', 'C', BANK_CONCEPT, buildConcept, QCO, genConcept, 'Chapter 9 concepts');
+TOPICS['OPT|prem'] = optTopic('prem', 'R', BANK_PREM, buildPrem, QPR, genPremium, 'IV + TV method');
+TOPICS['OPT|basic'] = optTopic('basic', 'B', BANK_BASIC, buildBasic, QB, genBasic, '3-step method');
+TOPICS['OPT|synth'] = optTopic('synth', 'Y', BANK_SYNTH, buildSynth, QSY, genSynth, '5-step method');
+if (!ST.last.OPT) ST.last.OPT = 'OPT|concept';
+
+/* ---------------- app hooks for the new answer types ---------------- */
+const _renderQuestionO = renderQuestion;
+renderQuestion = function (B) { return T().c === 'OPT' ? optCard(B) : _renderQuestionO(B); };
+const _renderPickerO = renderPicker;
+renderPicker = function () { const t = T(); if (!t.lvlInfo) return _renderPickerO(); const keep = Object.assign({}, LVL_INFO); Object.assign(LVL_INFO, t.lvlInfo); const h = _renderPickerO(); Object.assign(LVL_INFO, keep); return h; };
+const _gradeO = grade;
+grade = function () { const t = T(); if (t.rekey) t.rekey(ST.B, ST.ans); return _gradeO(); };
+const syncLegs = () => { if (T().c !== 'OPT') return; T().Q.forEach((q) => { if (q.type === 'legs') ST.ans[q.id] = picksOf(ST.B.s, ST.ans).length ? 'picked' : ''; }); };
+const _completeO = complete;
+complete = function () {
+  if (T().c !== 'OPT') return _completeO();
+  syncLegs();
+  const a = ST.ans, has = (k) => a[k] !== undefined && a[k] !== '';
+  return T().Q.every((q) => (q.type === 'legs' ? !!a[q.id] : q.type === 'lim' ? a[q.id + 'c'] === q.special[0] || has(q.id + 'v') : q.type === 'dirval' ? has(q.id + 'd') && has(q.id + 'v') : has(q.id)));
+};
+const _judgeQO = judgeQ;
+judgeQ = function (q, a, B) {
+  if (q.type === 'legs') return comboValid(B.s.strat, picksOf(B.s, a)) ? fullMarks(q) : 0;
+  if (q.type === 'lim') {
+    const k = B.key[q.id], c = a[q.id + 'c'] === q.special[0], v = numIn(a[q.id + 'v']);
+    if (k.u) return c ? fullMarks(q) : 0;
+    return !c && v !== null && Math.abs(Math.abs(v) - Math.abs(k.v)) <= q.tol ? fullMarks(q) : 0;
+  }
+  return _judgeQO(q, a, B);
+};
+const _inputForO = inputFor;
+inputFor = function (q, B) {
+  const a = ST.ans, dis = isLocked(q) ? 'disabled' : '';
+  if (q.type === 'legs') {
+    const s = B.s, N = (v) => OP.n(s, v);
+    return `<div class="tw legs"><table><thead><tr><th>Option</th><th class="num">XP</th><th class="num">PRM</th><th>Position</th></tr></thead><tbody>${contractsOf(s).map((c) => { const id = 'q1_' + c.k, cur = a[id] || 'N'; return `<tr><td>${OP.typ[c.type]}</td><td class="num">${N(c.x)}</td><td class="num">${N(c.p)}</td><td><div class="opts">${[['N', 'Not used'], ['L', 'Long'], ['S', 'Short']].map(([v, l]) => `<button type="button" class="opt" data-q="${id}" data-v="${v}" aria-pressed="${cur === v}" ${dis}>${l}</button>`).join('')}</div></td></tr>`; }).join('')}</tbody></table></div>`;
+  }
+  if (q.type === 'lim') {
+    const on = a[q.id + 'c'] === q.special[0], unit = q.unit === 'RM' ? '<span class="unit">RM</span>' : '';
+    return `<div class="dv"><div class="opts"><button type="button" class="opt" data-q="${q.id}c" data-v="${on ? '' : q.special[0]}" aria-pressed="${on}" ${dis}>${q.special[1]}</button></div><div class="numin">${unit}<input type="text" inputmode="decimal" data-q="${q.id}v" value="${esc(a[q.id + 'v'] ?? '')}" ${dis || (on ? 'disabled' : '')} aria-label="${esc(q.label)}" placeholder="${on ? '' : 'amount'}">${q.unit !== 'RM' ? `<span class="unit">${q.unit}</span>` : ''}</div></div>`;
+  }
+  const h = _inputForO(q, B);
+  return q.signed ? h.replace('</div>', '<span class="lbl plain">(minus sign for a loss)</span></div>') : h;
+};
+const _correctTextO = correctText;
+correctText = function (q, B) {
+  if (T().c !== 'OPT') return _correctTextO(q, B);
+  const s = B.s, k = B.key[q.id], F = (v) => (OP.isIdx(s) ? E.num(v) + ' points' : RM(v));
+  if (q.type === 'legs') return (B.legs || []).map((l) => legName(s, l)).join(' + ') + (s.multi ? ' (or another valid combination)' : '');
+  if (q.type === 'lim') return k.u ? q.special[1] : F(k.v);
+  if (q.type === 'num') return F(k);
+  if (q.type === 'dirval') return (k.d === 'profit' ? 'Profit' : 'Loss') + ' of ' + F(k.v);
+  return _correctTextO(q, B);
+};
+const _diagnoseO = diagnose;
+diagnose = function (q, a, B, reveal) {
+  if (q.type === 'legs') {
+    const p = picksOf(B.s, a), sp = SPEC[B.s.strat];
+    const out = [];
+    if (p.length !== sp.legs.length) out.push(`This strategy uses ${sp.legs.length === 1 ? 'one option contract' : 'two option contracts'}; you chose ${p.length}.`);
+    else if (p.map((l) => l.type).sort().join() !== sp.legs.map((l) => l[0]).sort().join()) out.push(`The type of option is wrong. A ${sp.name.toLowerCase()} uses ${sp.legs.map((l) => 'a ' + l[0]).join(' and ')}.`);
+    else if (p.map((l) => l.type + l.pos).sort().join() !== sp.legs.map((l) => l[0] + l[1]).sort().join()) out.push('Long and short are mixed up. Long = buy the option (pay premium); short = sell it (receive premium).');
+    else out.push('The exercise prices do not match the rule: ' + (sp.rule || 'check the strategy') + '.');
+    if (reveal) out.push('One correct answer: ' + allCombos(B.s)[0].map((l) => legName(B.s, l)).join(' + ') + '.');
+    return out;
+  }
+  if (q.type === 'lim') {
+    const k = B.key[q.id], c = a[q.id + 'c'] === q.special[0];
+    if (k.u && !c) return [q.special[0] === 'U' ? 'This one has no limit: the line in the payoff diagram keeps going as the price rises. Press “Unlimited”.' : 'This strategy has only one break-even point. Press “Only one BEP”.', q.hint];
+    if (!k.u && c) return [q.special[0] === 'U' ? 'This one is limited. Look at where the payoff line goes flat (or reaches a price of zero) and work out that amount.' : 'This strategy has two break-even points: work out the higher one.', q.hint].concat(reveal ? ['Answer: ' + OP.n(B.s, k.v) + '.'] : []);
+    return numberClues(q, numIn(a[q.id + 'v']) === null ? null : Math.abs(numIn(a[q.id + 'v'])), Math.abs(k.v), B, reveal);
+  }
+  return _diagnoseO(q, a, B, reveal);
+};
+const _ansTextO = ansText;
+ansText = function (q, a, B) {
+  if (q.type === 'legs') { const p = picksOf(B.s, a); return p.length ? p.map((l) => legName(B.s, l)).join(' + ') : '(none chosen)'; }
+  if (q.type === 'lim') return a[q.id + 'c'] === q.special[0] ? q.special[1] : (a[q.id + 'v'] || '(blank)');
+  return _ansTextO(q, a, B);
+};
+/* worked answer: allow an SVG diagram in a step, and say which combination was marked */
+renderSteps = function (out) {
+  return out.steps.map((s) => {
+    let h = `<section class="step"><h3>${esc(s.title)}</h3>`;
+    if (s.svg) h += `<div class="paywrap">${s.svg}</div>`;
+    (s.lines || []).forEach((l, k) => { h += `<div class="ln${k === 0 && /^[A-Z][a-z]/.test(l) && !/=/.test(l.slice(0, 40)) ? ' first' : ''}">${esc(l)}</div>`; });
+    if (s.table) {
+      h += '<div class="tw"><table><thead><tr>' + s.table.head.map((x) => `<th>${esc(x)}</th>`).join('') + '</tr></thead><tbody>';
+      s.table.rows.forEach((r) => { h += '<tr>' + r.map((x) => `<td>${esc(x)}</td>`).join('') + '</tr>'; });
+      h += '</tbody></table></div>';
+    }
+    if (s.note) h += `<div class="note">${esc(s.note)}</div>`;
+    return h + '</section>';
+  }).join('');
+};
+const _renderAnswersO = renderAnswers;
+renderAnswers = function (B) {
+  const h = _renderAnswersO(B);
+  if (T().c !== 'OPT') return h;
+  const s = B.s, tol = OP.isIdx(s) ? '±0.5 points' : '±RM0.01';
+  const txt = T().st === 'concept' ? 'Choose one answer for each question.' : T().st === 'prem' ? `Type each figure as a positive number. Answers are accepted within ${tol}.` : `For maximum profit and maximum loss, type the amount (a minus sign is optional) or press <b>Unlimited</b>. In the payoff table, type a loss with a minus sign. Answers are accepted within ${tol}.`;
+  return h.replace(/<p class="lbl plain">Outside the table[\s\S]*?<\/p>/, `<p class="lbl plain">${txt}</p>`);
+};
+const _renderWorkingO = renderWorking;
+renderWorking = function (B) {
+  const h = _renderWorkingO(B);
+  if (!h || T().c !== 'OPT' || !B.s.multi) return h;
+  return h.replace('</h2>', `</h2><div class="msg info">${B.own ? 'You chose a valid combination, so the working below uses your contracts.' : 'More than one combination of contracts is correct here. The working below uses one of them; any combination that follows the rule earns the mark.'}</div>`);
+};
 
 const _renderResults = renderResults;
 renderResults = function () {
