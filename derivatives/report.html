@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PraktiFin Derivatives: Class Report</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F6FA;--surface:#fff;--ink:#0E1A33;--muted:#5A6479;--line:#DCE1EB;--navy:#10254E;--gold:#C8A24B;--gold-soft:#F6EEDB;--good:#1D7A4C;--good-soft:#E3F3EA;--bad:#B42318;--bad-soft:#FBE7E5;--warn:#9A5B00;--warn-soft:#FFF3DC;--zebra:#F2F5FA;--shadow:0 1px 2px rgba(16,37,78,.06),0 4px 16px rgba(16,37,78,.06);--fd:"Archivo",system-ui,sans-serif;--fb:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--fb)}
+header{background:var(--navy);color:#fff;padding:18px 24px;border-bottom:4px solid var(--gold)}header h1{font:800 22px var(--fd);margin:0}header p{margin:4px 0 0;color:#D6DCEA;font-size:14px}
+main{max-width:1180px;margin:0 auto;padding:18px;display:grid;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.eyebrow{font:700 11px var(--fb);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}h2{font:700 18px var(--fd);margin:2px 0 8px;color:var(--navy)}h3{font:700 15px var(--fd);margin:12px 0 6px;color:var(--navy)}
+.muted{color:var(--muted);font-size:13.5px}.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:600 14px var(--fb);border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:8px 14px;cursor:pointer}.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}.btn:disabled{opacity:.5;cursor:default}.btn.sm{padding:3px 9px;font-size:12.5px}
+.drop{border:2px dashed #B9C2D6;border-radius:12px;padding:22px;text-align:center;background:#FAFBFD;cursor:pointer}.drop.over{border-color:var(--gold);background:var(--gold-soft)}
+textarea{width:100%;font:12px ui-monospace,monospace;border:1px solid var(--line);border-radius:8px;padding:8px}
+select,input[type=date]{font:14px var(--fb);padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.tile{background:var(--zebra);border-radius:12px;padding:10px 12px}.tile b{display:block;font:800 24px var(--fd);color:var(--navy)}.tile span{font-size:12.5px;color:var(--muted)}
+@media (max-width:800px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13.5px}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--zebra);font-weight:600;white-space:nowrap}th[data-s]{cursor:pointer}th[data-s]:after{content:" ↕";color:#9AA3B5}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.clk{cursor:pointer}tr.clk:hover td{background:#FBF7EC}tr.sel td{background:var(--gold-soft)}
+.bar{position:relative;height:9px;background:#E8ECF3;border-radius:5px;min-width:80px}.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--navy)}.bar.bad i{background:var(--bad)}.bar.gold i{background:var(--gold)}
+.pill{display:inline-block;font-size:11.5px;font-weight:600;border-radius:20px;padding:1px 8px}.p-ok{background:var(--good-soft);color:var(--good)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-warn{background:var(--warn-soft);color:var(--warn)}
+.flist{display:grid;gap:4px;margin-top:10px;max-height:220px;overflow:auto}.flist div{display:flex;gap:8px;align-items:center;font-size:13px;border-bottom:1px dashed var(--line);padding:3px 0}.flist div span.n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note{background:var(--warn-soft);border-radius:10px;padding:8px 12px;font-size:13.5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.hide{display:none}
+@media print{header{background:#fff;color:var(--navy);border-bottom:2px solid var(--gold)}header p{color:var(--muted)}.noprint{display:none!important}.card{box-shadow:none;break-inside:avoid}body{background:#fff}main{padding:0}}
+</style>
+</head>
+<body>
+<header><h1>PraktiFin Derivatives: Class Report</h1><p>Combine the results files your students submit into one report. Everything happens in this browser: no file is uploaded anywhere.</p></header>
+<main>
+<section class="card noprint" id="in">
+  <div class="eyebrow">Step 1</div><h2>Add the students' results files</h2>
+  <div class="drop" id="drop" tabindex="0" role="button"><b>Drop the CSV files here</b> or click to choose them<br><span class="muted">You can select many files at once. Files named "PraktiFin Derivatives results ….csv" or "FIN549 tutorial results ….csv".</span></div>
+  <input type="file" id="file" accept=".csv,.txt,text/csv" multiple hidden>
+  <details style="margin-top:10px"><summary>Or paste the CSV text a student sent (for example in a chat or a submission box)</summary>
+    <textarea id="paste" rows="5" placeholder="Paste one student's CSV text here"></textarea>
+    <div class="row" style="margin-top:6px"><button class="btn" id="paste-go">Add this text</button><span class="muted" id="paste-msg"></span></div></details>
+  <div class="flist" id="flist"></div>
+  <div class="row" style="margin-top:8px"><button class="btn sm" id="clear" disabled>Remove all files</button></div>
+</section>
+
+<section class="card noprint" id="filters" hidden>
+  <div class="eyebrow">Step 2</div><h2>Choose what to include</h2>
+  <div class="row">
+    <label>Group <select id="f-group"><option value="">All groups</option></select></label>
+    <label>From <input type="date" id="f-from"></label>
+    <label>To <input type="date" id="f-to"></label>
+    <label><input type="checkbox" id="f-edited"> Include files that failed the check</label>
+  </div>
+  <p class="muted">Marks are first-attempt marks, the same marks students see in their results list.</p>
+</section>
+
+<div id="out"></div>
+</main>
+<script>
+const TOPICS = [{"key":"FCPO|hedge","c":"FCPO","short":"Hedging FCPO","code":"T-FCPO-H-","Q":[["Q1","Type of hedging strategy"],["Q2","Number of FCPO contracts"],["Q3","Hedging table: transaction in the SPOT market TODAY"],["Q4","Hedging table: transaction in the FUTURES market TODAY"],["Q5","Hedging table: transaction in the SPOT market LATER"],["Q6","Hedging table: transaction in the FUTURES market LATER"],["Q7","Profit or loss from the futures market"],["Q8","Total cash flow from the spot market (total revenue or total cost)"],["Q9","Total net effect"],["Q10","Effective price of the hedging strategy (RM per metric tonne)"]]},{"key":"FCPO|spec","c":"FCPO","short":"Speculation FCPO","code":"T-FCPO-S-","Q":[["Q1","Position taken in the FCPO market"],["Q2","Total initial margin (TIM)"],["Q3","Total maintenance margin (TMM)"],["Table","Marked-to-market table (4 marks: one for each column fully correct)"],["Q8","Total profit or loss from the FCPO market (after commission)"],["Q9","Rate of return on margin"],["Q10","Percentage change in the FCPO price from Day 0 to Day 5"]]},{"key":"FCPO|spread","c":"FCPO","short":"Spreading FCPO","code":"T-FCPO-P-","Q":[["Q1","Type of spread strategy"],["Q2","Spread table: NEAR TERM contract TODAY"],["Q3","Spread table: FURTHER TERM contract TODAY"],["Q4","Spread table: NEAR TERM contract LATER"],["Q5","Spread table: FURTHER TERM contract LATER"],["Q6","Basis point TODAY (use \u2212 if negative)"],["Q7","Profit or loss on the NEAR TERM contract (after commission)"],["Q8","Profit or loss on the FURTHER TERM contract (after commission)"],["Q9","Net profit or loss of the spread strategy"],["Q10","Basis point LATER (use \u2212 if negative)"]]},{"key":"FCPO|arb","c":"FCPO","short":"Arbitrage FCPO","code":"T-FCPO-A-","Q":[["Q1","Number of days to maturity (t)"],["Q2","Fair value of the FCPO contract"],["Q3","Arbitrage strategy"],["Q4a","Arbitrage table: SPOT market TODAY"],["Q4b","Arbitrage table: FCPO market TODAY"],["Q4c","Arbitrage table: SPOT market AT MATURITY"],["Q4d","Arbitrage table: FCPO market AT MATURITY"],["Q5","Total revenue from selling FCPO contracts (0 if no arbitrage)"],["Q6","Total cost of buying CPO (0 if no arbitrage)"],["Q7","Total interest expenses on borrowing (0 if no arbitrage)"],["Q8","Total storage cost of CPO (0 if no arbitrage)"],["Q9","Total net profit or loss of the arbitrage strategy (0 if no arbitrage)"]]},{"key":"FKLI|hedge","c":"FKLI","short":"Hedging FKLI","code":"T-FKLI-H-","Q":[["Q1","Type of hedging strategy"],["Q2","Number of FKLI contracts"],["Q3","Hedging table: SPOT market TODAY"],["Q4","Hedging table: FUTURES market TODAY"],["Q5","Hedging table: SPOT market LATER"],["Q6","Hedging table: FUTURES market LATER"],["Q7","Profit or loss from the futures market"],["Q8","Change in value of the shares in the spot market"],["Q9","Total net effect"],["Q10","Effective price of the hedging strategy (index points)"]]},{"key":"FKLM|hedge","c":"FKLM","short":"Hedging FKLM","code":"T-FKLM-H-","Q":[["Q1","Type of hedging strategy"],["Q2","Number of FKLM contracts"],["Q3","Hedging table: SPOT market TODAY"],["Q4","Hedging table: FUTURES market TODAY"],["Q5","Hedging table: SPOT market LATER"],["Q6","Hedging table: FUTURES market LATER"],["Q7","Profit or loss from the futures market"],["Q8","Change in value of the shares in the spot market"],["Q9","Total net effect"],["Q10","Effective price of the hedging strategy (index points)"]]},{"key":"SSF|hedge","c":"SSF","short":"Hedging SSF","code":"T-SSF-H-","Q":[["Q1","Type of hedging strategy"],["Q2","Number of SSF contracts"],["Q3","Hedging table: SPOT market TODAY"],["Q4","Hedging table: FUTURES market TODAY"],["Q5","Hedging table: SPOT market LATER"],["Q6","Hedging table: FUTURES market LATER"],["Q7","Profit or loss from the futures market"],["Q8","Value of the shares in the spot market (sale value or purchase cost)"],["Q9","Total net effect"],["Q10","Effective price of the hedging strategy (RM per share)"]]},{"key":"FKB3|hedge","c":"FKB3","short":"Hedging FKB3","code":"T-FKB3-H-","Q":[["Q1","Type of hedging strategy"],["Q2","Number of FKB3 contracts"],["Q3","Hedging table: CASH (money) market TODAY"],["Q4","Hedging table: FUTURES market TODAY"],["Q5","Hedging table: CASH (money) market LATER"],["Q6","Hedging table: FUTURES market LATER"],["Q7","Profit or loss from the futures market"],["Q8","Interest in the cash market for 3 months"],["Q9","Total net effect"],["Q10","Effective interest rate (EIR)"]]},{"key":"FMG|hedge","c":"FMG","short":"Hedging FMG5","code":"T-FMG-H-","Q":[["Q1","Type of hedging strategy"],["Q2","Number of FMG5 contracts"],["Q3","Hedging table: SPOT market TODAY"],["Q4","Hedging table: FUTURES market TODAY"],["Q5","Hedging table: SPOT market LATER"],["Q6","Hedging table: FUTURES market LATER"],["Q7","Profit or loss from the futures market"],["Q8","Change in value of the bonds in the spot market"],["Q9","Total net effect"],["Q10","Effective price of the hedging strategy (per RM100 nominal)"]]},{"key":"FKLI|spec","c":"FKLI","short":"Speculation FKLI","code":"T-FKLI-S-","Q":[["Q1","Position taken in the FKLI market"],["Q2","Total initial margin (TIM)"],["Q3","Total maintenance margin (TMM)"],["Table","Marked-to-market table (4 marks: one for each column fully correct)"],["Q8","Total profit or loss from the FKLI market (after commission)"],["Q9","Rate of return on margin"],["Q10","Percentage change in the FKLI price from Day 0 to Day 5"]]},{"key":"FKLM|spec","c":"FKLM","short":"Speculation FKLM","code":"T-FKLM-S-","Q":[["Q1","Position taken in the FKLM market"],["Q2","Total initial margin (TIM)"],["Q3","Total maintenance margin (TMM)"],["Table","Marked-to-market table (4 marks: one for each column fully correct)"],["Q8","Total profit or loss from the FKLM market (after commission)"],["Q9","Rate of return on margin"],["Q10","Percentage change in the FKLM price from Day 0 to Day 5"]]},{"key":"FKB3|spec","c":"FKB3","short":"Speculation FKB3","code":"T-FKB3-S-","Q":[["Q1","Position taken in the FKB3 market"],["Q2","Total initial margin (TIM)"],["Q3","Total maintenance margin (TMM)"],["Table","Marked-to-market table (4 marks: one for each column fully correct)"],["Q8","Total profit or loss from the FKB3 market (after commission)"],["Q9","Rate of return on margin"],["Q10","Percentage change in the FKB3 price from Day 0 to Day 5"]]},{"key":"FMG|spec","c":"FMG","short":"Speculation FMG5","code":"T-FMG-S-","Q":[["Q1","Position taken in the FMG5 market"],["Q2","Total initial margin (TIM)"],["Q3","Total maintenance margin (TMM)"],["Table","Marked-to-market table (4 marks: one for each column fully correct)"],["Q8","Total profit or loss from the FMG5 market (after commission)"],["Q9","Rate of return on margin"],["Q10","Percentage change in the FMG5 price from Day 0 to Day 5"]]},{"key":"SSF|spec","c":"SSF","short":"Speculation SSF","code":"T-SSF-S-","Q":[["Q1","Position taken in the SSF market"],["Q2","Total initial margin (TIM)"],["Q3","Total maintenance margin (TMM)"],["Table","Marked-to-market table (4 marks: one for each column fully correct)"],["Q8","Total profit or loss from the SSF market (after commission)"],["Q9","Rate of return on margin"],["Q10","Percentage change in the SSF price from Day 0 to Day 5"]]},{"key":"FKLI|spread","c":"FKLI","short":"Spreading FKLI","code":"T-FKLI-P-","Q":[["Q1","Type of spread strategy"],["Q2","Spread table: NEAR TERM contract TODAY"],["Q3","Spread table: FURTHER TERM contract TODAY"],["Q4","Spread table: NEAR TERM contract LATER"],["Q5","Spread table: FURTHER TERM contract LATER"],["Q6","Basis point TODAY (use \u2212 if negative)"],["Q7","Profit or loss on the NEAR TERM contract (after commission)"],["Q8","Profit or loss on the FURTHER TERM contract (after commission)"],["Q9","Net profit or loss of the spread strategy"],["Q10","Basis point LATER (use \u2212 if negative)"]]},{"key":"FKLM|spread","c":"FKLM","short":"Spreading FKLM","code":"T-FKLM-P-","Q":[["Q1","Type of spread strategy"],["Q2","Spread table: NEAR TERM contract TODAY"],["Q3","Spread table: FURTHER TERM contract TODAY"],["Q4","Spread table: NEAR TERM contract LATER"],["Q5","Spread table: FURTHER TERM contract LATER"],["Q6","Basis point TODAY (use \u2212 if negative)"],["Q7","Profit or loss on the NEAR TERM contract (after commission)"],["Q8","Profit or loss on the FURTHER TERM contract (after commission)"],["Q9","Net profit or loss of the spread strategy"],["Q10","Basis point LATER (use \u2212 if negative)"]]},{"key":"FKB3|spread","c":"FKB3","short":"Spreading FKB3","code":"T-FKB3-P-","Q":[["Q1","Type of spread strategy"],["Q2","Spread table: NEAR TERM contract TODAY"],["Q3","Spread table: FURTHER TERM contract TODAY"],["Q4","Spread table: NEAR TERM contract LATER"],["Q5","Spread table: FURTHER TERM contract LATER"],["Q6","Basis point TODAY (use \u2212 if negative)"],["Q7","Profit or loss on the NEAR TERM contract (after commission)"],["Q8","Profit or loss on the FURTHER TERM contract (after commission)"],["Q9","Net profit or loss of the spread strategy"],["Q10","Basis point LATER (use \u2212 if negative)"]]},{"key":"FMG|spread","c":"FMG","short":"Spreading FMG5","code":"T-FMG-P-","Q":[["Q1","Type of spread strategy"],["Q2","Spread table: NEAR TERM contract TODAY"],["Q3","Spread table: FURTHER TERM contract TODAY"],["Q4","Spread table: NEAR TERM contract LATER"],["Q5","Spread table: FURTHER TERM contract LATER"],["Q6","Basis point TODAY (use \u2212 if negative)"],["Q7","Profit or loss on the NEAR TERM contract (after commission)"],["Q8","Profit or loss on the FURTHER TERM contract (after commission)"],["Q9","Net profit or loss of the spread strategy"],["Q10","Basis point LATER (use \u2212 if negative)"]]},{"key":"SSF|spread","c":"SSF","short":"Spreading SSF","code":"T-SSF-P-","Q":[["Q1","Type of spread strategy"],["Q2","Spread table: NEAR TERM contract TODAY"],["Q3","Spread table: FURTHER TERM contract TODAY"],["Q4","Spread table: NEAR TERM contract LATER"],["Q5","Spread table: FURTHER TERM contract LATER"],["Q6","Basis point TODAY (use \u2212 if negative)"],["Q7","Profit or loss on the NEAR TERM contract (after commission)"],["Q8","Profit or loss on the FURTHER TERM contract (after commission)"],["Q9","Net profit or loss of the spread strategy"],["Q10","Basis point LATER (use \u2212 if negative)"]]},{"key":"FKLI|arb","c":"FKLI","short":"Arbitrage FKLI","code":"T-FKLI-A-","Q":[["Q1","Number of days to maturity (t)"],["Q2","Fair value of the FKLI contract"],["Q3","Arbitrage strategy"],["Q4a","Arbitrage table: SPOT market TODAY"],["Q4b","Arbitrage table: FKLI market TODAY"],["Q4c","Arbitrage table: SPOT market AT MATURITY"],["Q4d","Arbitrage table: FKLI market AT MATURITY"],["Q5","Profit or loss from the FKLI contracts (0 if no arbitrage)"],["Q6","Profit or loss from the share portfolio (0 if no arbitrage)"],["Q7","Total interest expenses on borrowing (0 if no arbitrage)"],["Q8","Total dividend received (0 if no arbitrage)"],["Q9","Total net profit or loss of the arbitrage (0 if no arbitrage)"]]},{"key":"FKLM|arb","c":"FKLM","short":"Arbitrage FKLM","code":"T-FKLM-A-","Q":[["Q1","Number of days to maturity (t)"],["Q2","Fair value of the FKLM contract"],["Q3","Arbitrage strategy"],["Q4a","Arbitrage table: SPOT market TODAY"],["Q4b","Arbitrage table: FKLM market TODAY"],["Q4c","Arbitrage table: SPOT market AT MATURITY"],["Q4d","Arbitrage table: FKLM market AT MATURITY"],["Q5","Profit or loss from the FKLM contracts (0 if no arbitrage)"],["Q6","Profit or loss from the share portfolio (0 if no arbitrage)"],["Q7","Total interest expenses on borrowing (0 if no arbitrage)"],["Q8","Total dividend received (0 if no arbitrage)"],["Q9","Total net profit or loss of the arbitrage (0 if no arbitrage)"]]},{"key":"SSF|arb","c":"SSF","short":"Arbitrage SSF","code":"T-SSF-A-","Q":[["Q1","Number of days to maturity (t)"],["Q2","Fair value of the SSF contract"],["Q3","Arbitrage strategy"],["Q4a","Arbitrage table: SPOT market TODAY"],["Q4b","Arbitrage table: SSF market TODAY"],["Q4c","Arbitrage table: SPOT market AT MATURITY"],["Q4d","Arbitrage table: SSF market AT MATURITY"],["Q5","Profit or loss from the SSF contracts (0 if no arbitrage)"],["Q6","Profit or loss from the shares (0 if no arbitrage)"],["Q7","Total interest expenses on borrowing (0 if no arbitrage)"],["Q8","Total dividend received (0 if no arbitrage)"],["Q9","Total net profit or loss of the arbitrage (0 if no arbitrage)"]]},{"key":"FKB3|arb","c":"FKB3","short":"Arbitrage FKB3","code":"T-FKB3-A-","Q":[["Q1","Fair value (forward) rate for the FKB3 period"],["Q2","Fair value price of FKB3"],["Q3","Arbitrage strategy"],["Q4","Number of FKB3 contracts"],["Q5a","Trading activity: MONEY market TODAY"],["Q5b","Trading activity: FKB3 market TODAY"],["Q5c","Trading activity: MONEY market LATER"],["Q5d","Trading activity: FKB3 market LATER"],["Q6","Futures profit or loss"],["Q7","Total interest expense from borrowing"],["Q8","Total interest revenue from lending"],["Q9","Net profit or loss of the arbitrage"]]},{"key":"FKLI|inter","c":"FKLI","short":"Inter-market spread FKLI","code":"T-FKLI-I-","Q":[["Q1","Inter-market spread strategy"],["Q2","Contract value of the foreign index futures (in its own currency)"],["Q3","Contract value of the foreign index futures in RM"],["Q4","Contract value of FKLI"],["Q5","Spread ratio: number of FKLI contracts for 1 foreign contract"],["Q6a","Spread table: FOREIGN futures TODAY"],["Q6b","Spread table: FKLI TODAY"],["Q6c","Spread table: FOREIGN futures LATER"],["Q6d","Spread table: FKLI LATER"],["Q7","Profit or loss from the foreign index futures, in RM"],["Q8","Profit or loss from FKLI"],["Q9","Net profit or loss of the inter-market spread"]]}];
+const TIPS = {
+  'Sign (gain vs loss)': 'Right size, wrong sign. Drill the sign rule: a long (buyer) gains when the price rises; a short (seller) gains when it falls.',
+  'Commission': 'Off by exactly the brokerage commission: either not deducted, or deducted twice. Go over when and how commission is charged.',
+  'Contract rounding': 'One contract away. Remind them the number of contracts is always rounded DOWN.',
+  'Decimal or size factor': 'Off by 10, 100 or 1000. Usually contract size, tick value, or percentage versus decimal.',
+  'Figure from another step': 'They typed the answer to a different step. The steps are confused, not the arithmetic.',
+  'Rounding too early': 'Very close to the answer. They round in the middle steps; keep full figures until the end.',
+  'Method or inputs': 'Not close to the answer: wrong formula, or the wrong price, date or quantity used.',
+  'Trade direction': 'Buy and sell (or lend and borrow) reversed. Revisit what each leg of the strategy must do.',
+  'Contract month': 'Wrong futures month. Link the month to the timing of the deal in the question.',
+  'Transaction or not': 'Unsure whether a transaction happens at all (for example reverse cash and carry being impractical).',
+  'Figure in trade statement': 'Direction right but a number in the trade statement wrong: contracts, or a price from the wrong date or market.',
+  'Strategy choice': 'Chose the wrong strategy type (for example short versus long hedge).',
+  'Left blank': 'No option chosen.',
+  'Not a number': 'Typed something that is not a number.',
+  'Other': ''
+};
+const S = { files: [], sortSt: { k: 'avg', d: 1 }, selTopic: null };
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function fnv(str, seed) { let h = seed >>> 0; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(16).padStart(8, '0'); }
+function checkCode(body) { return (fnv(body, 2166136261 ^ 5491) + fnv(body, 0x9e3779b9)).toUpperCase().replace(/(.{4})/g, '$1-').slice(0, -1); }
+function parseCSV(t) {
+  const rows = []; let row = [], cell = '', q = false;
+  for (let i = 0; i < t.length; i++) {
+    const ch = t[i];
+    if (q) { if (ch === '"') { if (t[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ',') { row.push(cell); cell = ''; }
+    else if (ch === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += ch;
+  }
+  if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+function topicOf(code, name) {
+  let best = null;
+  for (const t of TOPICS) if (code && code.startsWith(t.code) && (!best || t.code.length > best.code.length)) best = t;
+  return best || TOPICS.find((t) => t.short === name) || null;
+}
+function readFile(name, text) {
+  text = text.replace(/^﻿/, '').replace(/\r\n?/g, '\n').trim();
+  const f = { name, status: 'nocode', rows: [], error: '' };
+  const m = text.match(/\n#check,([0-9A-F-]+)\s*$/);
+  const cut = text.lastIndexOf('\nTOTAL,');
+  if (m && cut > 0) f.status = checkCode(text.slice(0, cut)) === m[1] ? 'valid' : 'edited';
+  const rows = parseCSV(cut > 0 ? text.slice(0, cut) : text);
+  const head = rows[0] || [], ix = (h) => head.indexOf(h);
+  if (ix('Student ID') < 0 || ix('Mark') < 0) { f.error = 'Not a Tutorial Lab results file'; f.status = 'bad'; return f; }
+  for (const r of rows.slice(1)) {
+    if (!r.length || r[0] === 'TOTAL' || r[0].startsWith('#')) continue;
+    const g = (h) => (ix(h) >= 0 ? (r[ix(h)] || '').trim() : '');
+    const code = g('Scenario code'), t = topicOf(code, g('Topic'));
+    f.rows.push({ name: g('Name'), id: g('Student ID'), group: g('Group').toUpperCase(), time: g('Time'), date: g('Time').slice(0, 10), topic: t ? t.short : g('Topic'), tk: t ? t.key : g('Topic'), code, level: +g('Level') || 0, source: g('Source') || 'Bank', mark: +g('Mark') || 0, of: +g('Out of') || 10, wrong: g('Wrong on first attempt'), mt: g('Mistake types'), hasMT: ix('Mistake types') >= 0 });
+  }
+  f.id = f.rows[0] ? f.rows[0].id : ''; f.sname = f.rows[0] ? f.rows[0].name : '';
+  if (!f.rows.length) { f.error = 'No questions in this file'; }
+  return f;
+}
+function addFile(name, text) {
+  const f = readFile(name, text);
+  S.files.push(f); dedupe(); render();
+}
+function dedupe() {
+  // one file per student: keep the one with the most questions (the latest export)
+  const best = {};
+  S.files.forEach((f, i) => { f.dup = false; if (!f.id) return; const b = best[f.id]; if (b === undefined || f.rows.length >= S.files[b].rows.length) best[f.id] = i; });
+  S.files.forEach((f, i) => { if (f.id && best[f.id] !== i) f.dup = true; });
+}
+const STAT = { valid: ['p-ok', 'Check OK'], edited: ['p-bad', 'Edited after export'], nocode: ['p-warn', 'No check code'], bad: ['p-bad', 'Not readable'] };
+function fileList() {
+  $('#flist').innerHTML = S.files.map((f, i) => `<div><span class="n" title="${esc(f.name)}">${esc(f.sname || f.name)} ${f.id ? '· ' + esc(f.id) : ''} <span class="muted">(${f.rows.length} questions)</span></span><span class="pill ${STAT[f.status][0]}">${STAT[f.status][1]}</span>${f.dup ? '<span class="pill p-warn">Older copy, not used</span>' : ''}${f.error ? `<span class="pill p-bad">${esc(f.error)}</span>` : ''}<button class="btn sm" data-rm="${i}">Remove</button></div>`).join('');
+  document.querySelectorAll('[data-rm]').forEach((b) => b.onclick = () => { S.files.splice(+b.dataset.rm, 1); dedupe(); render(); });
+  $('#clear').disabled = !S.files.length;
+}
+function rowsInUse() {
+  const g = $('#f-group').value, from = $('#f-from').value, to = $('#f-to').value, ed = $('#f-edited').checked;
+  const out = [];
+  for (const f of S.files) {
+    if (f.dup || f.status === 'bad' || (f.status === 'edited' && !ed)) continue;
+    for (const r of f.rows) { if (g && r.group !== g) continue; if (from && r.date < from) continue; if (to && r.date > to) continue; out.push(Object.assign({ fst: f.status }, r)); }
+  }
+  return out;
+}
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+const avg = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
+const f1 = (x) => (Math.round(x * 10) / 10).toFixed(1);
+const bar = (v, max, cls) => `<div class="bar ${cls || ''}"><i style="width:${max ? Math.min(100, (v / max) * 100) : 0}%"></i></div>`;
+function wrongTags(r) { return r.wrong && r.wrong !== 'none' ? r.wrong.replace(/\(\d+\/\d+\)/g, '').split(/\s+/).filter(Boolean) : []; }
+function mtList(r) { return r.mt ? r.mt.split(/;\s*/).map((x) => { const m = x.match(/^(Q\d+[a-z]?|Table)\s+(.*)$/); return m ? { q: m[1], tag: m[2].startsWith('MTM table') ? m[2] : m[2] } : null; }).filter(Boolean) : []; }
+function tagBase(t) { return t.startsWith('MTM table') ? 'MTM table' : t; }
+function render() {
+  fileList();
+  const groups = [...new Set(S.files.flatMap((f) => f.rows.map((r) => r.group)).filter(Boolean))].sort();
+  const sel = $('#f-group').value;
+  $('#f-group').innerHTML = '<option value="">All groups</option>' + groups.map((g) => `<option ${g === sel ? 'selected' : ''}>${esc(g)}</option>`).join('');
+  $('#filters').hidden = !S.files.length;
+  const R = rowsInUse(), out = $('#out');
+  if (!R.length) { out.innerHTML = S.files.length ? '<section class="card"><p class="muted">No questions match these choices.</p></section>' : ''; return; }
+  const studs = {};
+  for (const r of R) { const s = studs[r.id] || (studs[r.id] = { id: r.id, name: r.name, group: r.group, rows: [], fst: r.fst }); s.rows.push(r); }
+  const SL = Object.values(studs);
+  const edited = S.files.filter((f) => f.status === 'edited' && !f.dup).length, noMT = R.filter((r) => !r.hasMT).length;
+  const good = R.filter((r) => r.mark >= 8).length;
+  // topics
+  const T = {};
+  for (const r of R) { const t = T[r.tk] || (T[r.tk] = { key: r.tk, name: r.topic, rows: [], studs: new Set() }); t.rows.push(r); t.studs.add(r.id); }
+  const TL = Object.values(T).map((t) => {
+    const qs = {}; t.rows.forEach((r) => wrongTags(r).forEach((q) => { qs[q] = (qs[q] || 0) + 1; }));
+    const top = Object.entries(qs).sort((a, b) => b[1] - a[1])[0];
+    const meta = TOPICS.find((x) => x.key === t.key);
+    const lab = top && meta ? (meta.Q.find((x) => x[0] === top[0]) || [, ''])[1] : '';
+    return Object.assign(t, { n: t.rows.length, avg: avg(t.rows.map((r) => r.mark)), good: pct(t.rows.filter((r) => r.mark >= 8).length, t.rows.length), top, lab, qs });
+  }).sort((a, b) => a.avg - b.avg);
+  // mistake types overall
+  const M = {}; let mtN = 0;
+  R.forEach((r) => mtList(r).forEach((x) => { const k = tagBase(x.tag); M[k] = (M[k] || 0) + 1; mtN++; }));
+  const ML = Object.entries(M).sort((a, b) => b[1] - a[1]);
+  // students
+  SL.forEach((s) => { s.n = s.rows.length; s.avg = avg(s.rows.map((r) => r.mark)); s.topics = new Set(s.rows.map((r) => r.tk)).size; s.maxL = Math.max(0, ...s.rows.map((r) => r.level)); s.l3 = new Set(s.rows.filter((r) => r.level === 3).map((r) => r.tk)).size; s.last = s.rows.map((r) => r.time).sort().pop() || ''; s.flag = s.n < 3 ? 'Few questions' : s.avg < 5 ? 'Low marks' : ''; });
+  const sk = S.sortSt; SL.sort((a, b) => { const x = a[sk.k], y = b[sk.k]; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * sk.d; });
+  const need = SL.filter((s) => s.flag);
+  out.innerHTML = `
+  <section class="card"><div class="eyebrow">Summary</div><h2>${esc($('#f-group').value || 'All groups')}${$('#f-from').value || $('#f-to').value ? ` · ${esc($('#f-from').value || '…')} to ${esc($('#f-to').value || '…')}` : ''}</h2>
+    <div class="tiles"><div class="tile"><b>${SL.length}</b><span>students</span></div><div class="tile"><b>${R.length}</b><span>questions done</span></div><div class="tile"><b>${f1(avg(R.map((r) => r.mark)))}</b><span>average mark out of 10</span></div><div class="tile"><b>${pct(good, R.length)}%</b><span>of questions scored 8 or more</span></div><div class="tile"><b>${TL.length}</b><span>of 24 question sets used</span></div></div>
+    ${edited ? `<p class="note">${edited} file${edited > 1 ? 's were' : ' was'} edited after export${$('#f-edited').checked ? ' and are included' : ' and are left out'}. See the file list above.</p>` : ''}
+    <div class="row noprint" style="margin-top:10px"><button class="btn primary" id="dl-stud">Download student summary (CSV)</button><button class="btn" id="dl-all">Download all questions (CSV)</button><button class="btn" onclick="window.print()">Print or save as PDF</button></div>
+  </section>
+  <section class="card"><div class="eyebrow">Where the class struggles</div><h2>Question sets, weakest first</h2><p class="muted">Click a row to see which steps went wrong in that set.</p>
+    <div class="tw"><table><thead><tr><th>Question set</th><th class="num">Students</th><th class="num">Questions</th><th class="num">Average</th><th></th><th class="num">8 or more</th><th>Step most often wrong</th></tr></thead><tbody>
+    ${TL.map((t) => `<tr class="clk${S.selTopic === t.key ? ' sel' : ''}" data-tk="${esc(t.key)}"><td><b>${esc(t.name)}</b></td><td class="num">${t.studs.size}</td><td class="num">${t.n}</td><td class="num">${f1(t.avg)}</td><td style="width:110px">${bar(t.avg, 10, t.avg < 5 ? 'bad' : '')}</td><td class="num">${t.good}%</td><td>${t.top ? `${esc(t.top[0])}${t.lab ? ': ' + esc(t.lab) : ''} <span class="muted">(${pct(t.top[1], t.n)}% of attempts)</span>` : '<span class="muted">none</span>'}</td></tr>`).join('')}
+    </tbody></table></div><div id="tdet"></div></section>
+  <section class="card"><div class="eyebrow">Mistake types</div><h2>What kind of mistakes students make</h2>
+    ${ML.length ? `<div class="tw"><table><thead><tr><th>Mistake type</th><th class="num">Times</th><th></th><th>What it usually means</th></tr></thead><tbody>${ML.map(([k, v]) => `<tr><td><b>${esc(k)}</b></td><td class="num">${v} <span class="muted">(${pct(v, mtN)}%)</span></td><td style="width:110px">${bar(v, ML[0][1], 'gold')}</td><td class="muted">${esc(k === 'MTM table' ? 'Errors in the mark-to-market table. The set details above show which column goes wrong first.' : TIPS[k] || '')}</td></tr>`).join('')}</tbody></table></div>` : ''}
+    ${noMT ? `<p class="muted">${noMT} of ${R.length} questions come from files exported before mistake types were added to the app, so they count in the marks but not in this table.${ML.length ? '' : ' Ask students to export again from the updated app to see mistake types.'}</p>` : ''}
+  </section>
+  ${need.length ? `<section class="card"><div class="eyebrow">May need help</div><h2>${need.length} student${need.length > 1 ? 's' : ''} to check on</h2><p class="muted">Fewer than 3 questions done, or an average below 5 out of 10.</p><p>${need.map((s) => `<span class="pill ${s.flag === 'Low marks' ? 'p-bad' : 'p-warn'}" style="margin:2px">${esc(s.name)} · ${esc(s.flag)}</span>`).join(' ')}</p></section>` : ''}
+  <section class="card"><div class="eyebrow">Students</div><h2>Each student</h2><p class="muted">Click a column heading to sort.</p>
+    <div class="tw"><table id="stab"><thead><tr><th data-s="name">Name</th><th data-s="id">Student ID</th><th data-s="group">Group</th><th class="num" data-s="n">Questions</th><th class="num" data-s="avg">Average</th><th class="num" data-s="topics">Sets tried</th><th class="num" data-s="maxL">Highest level</th><th class="num" data-s="l3">Sets at Level 3</th><th data-s="last">Last active</th><th>File</th></tr></thead><tbody>
+    ${SL.map((s) => `<tr><td>${esc(s.name)}${s.flag ? ` <span class="pill ${s.flag === 'Low marks' ? 'p-bad' : 'p-warn'}">${esc(s.flag)}</span>` : ''}</td><td>${esc(s.id)}</td><td>${esc(s.group)}</td><td class="num">${s.n}</td><td class="num">${f1(s.avg)}</td><td class="num">${s.topics} / 24</td><td class="num">${s.maxL ? 'L' + s.maxL : ''}</td><td class="num">${s.l3}</td><td>${esc(s.last)}</td><td><span class="pill ${STAT[s.fst][0]}">${STAT[s.fst][1]}</span></td></tr>`).join('')}
+    </tbody></table></div></section>`;
+  document.querySelectorAll('tr.clk').forEach((tr) => tr.onclick = () => { S.selTopic = S.selTopic === tr.dataset.tk ? null : tr.dataset.tk; render(); });
+  document.querySelectorAll('#stab th[data-s]').forEach((th) => th.onclick = () => { const k = th.dataset.s; S.sortSt = { k, d: S.sortSt.k === k ? -S.sortSt.d : (typeof SL[0][k] === 'string' ? 1 : -1) }; render(); });
+  if (S.selTopic && T[S.selTopic]) topicDetail(TL.find((t) => t.key === S.selTopic));
+  $('#dl-stud').onclick = () => download('PraktiFin Derivatives class summary.csv', [['Name', 'Student ID', 'Group', 'Questions', 'Average mark', 'Sets tried', 'Highest level', 'Sets at Level 3', 'Last active', 'File check', 'Note']].concat(SL.map((s) => [s.name, s.id, s.group, s.n, f1(s.avg), s.topics, s.maxL || '', s.l3, s.last, STAT[s.fst][1], s.flag])));
+  $('#dl-all').onclick = () => download('PraktiFin Derivatives all questions.csv', [['Name', 'Student ID', 'Group', 'Time', 'Question set', 'Scenario code', 'Level', 'Source', 'Mark', 'Out of', 'Wrong on first attempt', 'Mistake types', 'File check']].concat(R.map((r) => [r.name, r.id, r.group, r.time, r.topic, r.code, r.level || '', r.source, r.mark, r.of, r.wrong, r.mt, STAT[r.fst][1]])));
+}
+function topicDetail(t) {
+  const meta = TOPICS.find((x) => x.key === t.key), Q = meta ? meta.Q : Object.keys(t.qs).map((k) => [k, '']);
+  const M = {}; t.rows.forEach((r) => mtList(r).forEach((x) => { const k = x.q + '|' + x.tag; M[k] = (M[k] || 0) + 1; }));
+  const byQ = (q) => Object.entries(M).filter(([k]) => k.startsWith(q + '|')).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([k, v]) => `${esc(k.split('|')[1])} (${v})`).join(', ');
+  const lv = [1, 2, 3].map((l) => t.rows.filter((r) => r.level === l).length);
+  $('#tdet').innerHTML = `<h3>${esc(t.name)}: step by step</h3><p class="muted">Share of attempts where each step was wrong on the first try. Attempts by level: L1 ${lv[0]}, L2 ${lv[1]}, L3 ${lv[2]}.</p>
+  <div class="tw"><table><thead><tr><th>Step</th><th>What it asks</th><th class="num">Wrong</th><th></th><th>Main mistake types</th></tr></thead><tbody>${Q.map(([q, lab]) => { const v = t.qs[q] || 0; return `<tr><td>${esc(q)}</td><td>${esc(lab)}</td><td class="num">${pct(v, t.n)}%</td><td style="width:110px">${bar(v, t.n, pct(v, t.n) >= 50 ? 'bad' : '')}</td><td class="muted">${byQ(q)}</td></tr>`; }).join('')}</tbody></table></div>`;
+}
+function download(name, rows) {
+  const cell = (v) => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + rows.map((r) => r.map(cell).join(',')).join('\n')], { type: 'text/csv' })); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+}
+function takeFiles(list) { [...list].forEach((f) => { const rd = new FileReader(); rd.onload = () => addFile(f.name, String(rd.result)); rd.readAsText(f); }); }
+const drop = $('#drop');
+drop.onclick = () => $('#file').click(); drop.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('#file').click(); } };
+$('#file').onchange = (e) => { takeFiles(e.target.files); e.target.value = ''; };
+['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', (e) => takeFiles(e.dataTransfer.files));
+$('#paste-go').onclick = () => { const t = $('#paste').value.trim(); if (!t) return; const n = S.files.length; addFile('Pasted text ' + (n + 1), t); $('#paste').value = ''; $('#paste-msg').textContent = 'Added.'; };
+window.addEventListener('dragover', (e) => e.preventDefault()); window.addEventListener('drop', (e) => e.preventDefault());
+$('#clear').onclick = () => { S.files = []; S.selTopic = null; render(); };
+['f-group', 'f-from', 'f-to', 'f-edited'].forEach((id) => $('#' + id).addEventListener('change', render));
+</script>
+</body>
+</html>
