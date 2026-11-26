@@ -11,4 +11,4 @@ Site: https://fahmirahim0.github.io/praktifin/
 
 Progress is kept in each student's own browser; use Save progress to move it to another device.
 
-PraktiFin © 2026 Universiti Teknologi MARA. Developed by Dr Fahmi Abdul Rahim, Faculty of Business and Management, UiTM Cawangan Melaka.
+PraktiFin © 2026 Universiti Teknologi MARA. Developed by Fahmi Abdul Rahim (lead developer), Amirudin Mohd Nor, Nur Hafidzah Idris, Rohaiza Kamis, Faezah Othman and Mohd Hafiz Bakar, Faculty of Business and Management, UiTM Cawangan Melaka.
