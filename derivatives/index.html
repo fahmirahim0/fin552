@@ -3582,6 +3582,220 @@ renderWorking = function (B) {
   return h.replace('</h2>', `</h2><div class="msg info">${B.own ? 'You chose a valid combination, so the working below uses your contracts.' : 'More than one combination of contracts is correct here. The working below uses one of them; any combination that follows the rule earns the mark.'}</div>`);
 };
 
+/* =================================== MARKET REPORT MODULE ===================================
+   Syllabus 4.3, 5.3, 6.3, 7.3 (Market report), Core layer. Teaching deck: "FIN549 How to Read a Futures Market Report".
+   Level 1: read the 13-column price screen. Level 2: calculate from the screen. Level 3: the same facts in a newspaper
+   report, figures in the text. Two bank items reproduce the real closing figures of 18 Nov 2026 (Bernama) for FCPO and FKLI.
+   Basis = spot - futures. Every set has 10 questions of 1 mark. */
+Object.assign(STRAT, { report: 'Market report' });
+Object.assign(STRAT_T, { report: 'Market report' });
+const MR_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const MR_SH = (m, y) => MR_MON[m].slice(0, 3) + ' ' + y;
+const MR_LVL = {
+  1: 'Read the Bursa price screen: which month, which column, which price.',
+  2: 'Calculate from the price screen: mark-to-market, basis, spread and open interest.',
+  3: 'The same facts in a newspaper report: find the figures in the text, then calculate.'
+};
+/* contract settings: d = decimals, tick = smallest move, val = RM value of a move of 1.00 for one contract */
+const MR_C = {
+  FCPO: { d: 0, tick: 1, val: 25, unit: 'RM per tonne', pu: 'RM', px: (v) => 'RM' + E.num(v), sizeTxt: 'One FCPO contract is 25 tonnes, so RM1 per tonne is worth RM25 per contract.', what: 'CPO futures', spotName: 'physical CPO price' },
+  FKLI: { d: 1, tick: 0.5, val: 50, unit: 'points', pu: 'points', px: (v) => E.num(v, 1), sizeTxt: 'FKLI is quoted in index points; one point is worth RM50 per contract.', what: 'FBM KLCI futures (FKLI)', spotName: 'FBM KLCI' },
+  FKB3: { d: 2, tick: 0.01, val: 2500, unit: '', pu: '', px: (v) => E.num(v, 2), sizeTxt: 'One FKB3 contract has a nominal value of RM1,000,000; a move of 0.01 in the price is worth RM25 per contract.', what: '3-month KLIBOR futures (FKB3)', spotName: '3-month KLIBOR' },
+  FMG: { d: 2, tick: 0.01, val: 1000, unit: '', pu: '', px: (v) => E.num(v, 2), sizeTxt: 'One FMG5 contract has a nominal value of RM100,000; a move of 0.01 in the price is worth RM10 per contract.', what: '5-year MGS futures (FMG5)', spotName: '' }
+};
+const mrR = (c, x) => { const k = Math.pow(10, MR_C[c].d); const v = Math.round(x * k) / k; return v === 0 ? 0 : v; };
+const mrTk = (c, x) => { const t = MR_C[c].tick; return mrR(c, Math.round(x / t) * t); };
+const mrRM = (x) => { const v = Math.round(x * 100) / 100; return v === 0 ? 0 : v; };
+
+/* ---------------- market data ---------------- */
+function mrMarket(c, seed) {
+  const R = rng(seed), ri = (a, b) => a + Math.floor(R() * (b - a + 1)), rf = (a, b) => a + R() * (b - a), pick = (a) => a[Math.floor(R() * a.length)];
+  const y = 2026 + ri(0, 1), m0 = ri(0, 11), day = c === 'FCPO' ? ri(16, 27) : ri(3, 24);
+  const D = { c, date: `${day} ${MR_MON[m0]} ${y}`, dayName: pick(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']) };
+  let months = [];
+  if (c === 'FCPO') for (let i = 1; i <= 6; i++) months.push(m0 + i);
+  else if (c === 'FKLI') { months = [m0, m0 + 1]; let q = m0 + 2; while (months.length < 4) { if ((q % 12) % 3 === 2) months.push(q); q++; } }
+  else { let q = m0 + 1; const n = c === 'FKB3' ? 4 : 3; while (months.length < n) { if ((q % 12) % 3 === 2) months.push(q); q++; } }
+  const lab = months.map((m) => MR_SH(m % 12, y + Math.floor(m / 12)));
+  const up = R() < 0.5, dirUp = R() < 0.5;
+  let base, step, chg0;
+  if (c === 'FCPO') { base = ri(3800, 4800); step = () => ri(25, 110); chg0 = ri(8, 90); }
+  else if (c === 'FKLI') { base = mrTk(c, rf(1450, 1700)); step = () => mrTk(c, rf(1, 9)); chg0 = mrTk(c, rf(1, 18)); }
+  else if (c === 'FKB3') { base = mrTk(c, rf(96.1, 97.0)); step = () => mrTk(c, rf(0.02, 0.09)); chg0 = mrTk(c, rf(0.01, 0.07)); }
+  else { base = mrTk(c, rf(104, 112)); step = () => mrTk(c, rf(0.08, 0.35)); chg0 = mrTk(c, rf(0.05, 0.45)); }
+  const sett = [base];
+  for (let i = 1; i < months.length; i++) sett.push(mrR(c, sett[i - 1] + (up ? 1 : -1) * step()));
+  const chg = sett.map(() => { const n = c === 'FCPO' ? ri(-9, 9) : mrTk(c, rf(-0.3, 0.3) * chg0); return mrR(c, (dirUp ? 1 : -1) * Math.max(MR_C[c].tick, chg0 + n)); });
+  const prev = sett.map((s, i) => mrR(c, s - chg[i]));
+  const t = MR_C[c].tick, w = (k) => mrTk(c, k * t);
+  const rows = sett.map((s, i) => {
+    const last = mrR(c, s + w(ri(-3, 3))), open = mrR(c, prev[i] + w(ri(-12, 12)));
+    const sp = c === 'FKB3' ? [2, 10] : c === 'FMG' ? [4, 25] : [4, 40];
+    const hi = mrR(c, Math.max(open, last, s) + w(ri(sp[0], sp[1]))), lo = mrR(c, Math.min(open, last, s) - w(ri(sp[0], sp[1])));
+    const bid = mrR(c, Math.min(last, s) - w(ri(0, 2))), ask = mrR(c, bid + w(ri(1, 3)));
+    return { m: lab[i], open, bid, ask, last, chg: chg[i], hi, lo, sett: s, prev: prev[i] };
+  });
+  /* activity: FCPO peaks in the third month, FKLI in the spot month, interest rate futures in the nearest month */
+  const shape = c === 'FCPO' ? [0.03, 0.14, 0.52, 0.17, 0.07, 0.03] : c === 'FKLI' ? [0.78, 0.15, 0.05, 0.02] : c === 'FKB3' ? [0.55, 0.28, 0.12, 0.05] : [0.8, 0.15, 0.05];
+  const totV = c === 'FCPO' ? ri(70, 160) * 1000 + ri(0, 999) : c === 'FKLI' ? ri(5, 14) * 1000 + ri(0, 999) : ri(2, 30) * 10 + ri(0, 9);
+  const totOI = c === 'FCPO' ? ri(260, 350) * 1000 + ri(0, 999) : c === 'FKLI' ? ri(38, 60) * 1000 + ri(0, 999) : ri(8, 40) * 100 + ri(0, 99);
+  rows.forEach((r, i) => { r.vol = Math.max(1, Math.round(totV * shape[i] * rf(0.85, 1.15))); r.oi = Math.max(r.vol, Math.round(totOI * shape[i] * rf(0.85, 1.15))); });
+  const top = rows.reduce((a, r, i) => (r.vol > rows[a].vol ? i : a), 0);
+  const allV = rows.reduce((a, r) => a + r.vol, 0) + (c === 'FCPO' ? ri(1500, 4500) : 0), allOI = rows.reduce((a, r) => a + r.oi, 0) + (c === 'FCPO' ? ri(9000, 18000) : 0);
+  const oiUp = R() < 0.5, dOI = c === 'FCPO' ? ri(600, 4200) : c === 'FKLI' ? ri(150, 2600) : ri(10, 300);
+  D.tot = { vol: allV, vol0: Math.max(1, allV + (R() < 0.5 ? 1 : -1) * Math.round(allV * rf(0.05, 0.3))), oi: allOI, oi0: allOI + (oiUp ? -dOI : dOI) };
+  D.rows = rows; D.top = top; D.shape = up ? 'contango' : 'back'; D.dirUp = dirUp;
+  if (c === 'FCPO') { const sm = MR_MON[m0]; D.spot = { name: `physical CPO, ${sm} South`, v: mrR(c, sett[0] + ri(-60, 60) * (R() < 0.7 ? 1 : 0)), ch: (dirUp ? 1 : -1) * ri(1, 9) * 10 }; D.spotLabel = `${sm} South`; }
+  else if (c === 'FKLI') D.spot = { name: 'FBM KLCI at 5 pm', v: Math.round((sett[0] + rf(-6, 6)) * 100) / 100, ch: Math.round((dirUp ? 1 : -1) * rf(1, 15) * 100) / 100 };
+  else if (c === 'FKB3') D.spot = { name: '3-month KLIBOR', v: Math.round((100 - sett[0] + rf(-0.12, 0.12)) * 100) / 100, pct: true };
+  D.analyst = c === 'FCPO' ? [mrR(c, Math.floor(sett[0] / 50) * 50 - 50), mrR(c, Math.ceil(sett[0] / 50) * 50 + 100)] : null;
+  return D;
+}
+/* real closing figures, Bernama, Wednesday 18 Nov 2026 (only settlement, change and totals: newspaper format) */
+function mrReal(c) {
+  if (c === 'FCPO') {
+    const d = [['Dec 2026', 4186, -38], ['Jan 2027', 4301, -47], ['Feb 2027', 4386, -50], ['Mar 2027', 4466, -53], ['Apr 2027', 4537, -53], ['May 2027', 4582, -49]];
+    return { c, real: true, date: '18 November 2026', dayName: 'Wednesday', rows: d.map(([m, s, ch]) => ({ m, sett: s, chg: ch, prev: s - ch })), tot: { vol: 122464, vol0: 136280, oi: 341407, oi0: 343322 }, shape: 'contango', dirUp: false, spot: { name: 'physical CPO, November South', v: 4190, ch: -40 }, spotLabel: 'November South', analyst: [4300, 4450], newSpot: true };
+  }
+  const d = [['Nov 2026', 1564.0, -10.5], ['Dec 2026', 1565.5, -10.5], ['Mar 2027', 1547.0, -11.5], ['Jun 2027', 1549.0, -9.5]];
+  return { c, real: true, date: '18 November 2026', dayName: 'Wednesday', rows: d.map(([m, s, ch]) => ({ m, sett: s, chg: ch, prev: mrR('FKLI', s - ch) })), tot: { vol: 8036, vol0: 10616, oi: 42853, oi0: 45385 }, shape: 'mixed', dirUp: false, spot: { name: 'FBM KLCI at 5 pm', v: 1566.73, ch: -8.42 } };
+}
+function mrMono(D) { const s = D.rows.map((r) => r.sett); let up = true, dn = true; for (let i = 1; i < s.length; i++) { if (s[i] <= s[i - 1]) up = false; if (s[i] >= s[i - 1]) dn = false; } return up ? 'contango' : dn ? 'back' : 'mixed'; }
+
+/* ---------------- questions ---------------- */
+function mrPool(D, R, L) {
+  const c = D.c, C = MR_C[c], rows = D.rows, n = rows.length, P = (v) => C.px(v), pick = (a) => a[Math.floor(R() * a.length)], ri = (a, b) => a + Math.floor(R() * (b - a + 1));
+  const U = C.pu ? ' ' + C.pu : '', mtmVal = (d, k) => mrRM(Math.round(d / C.tick) * C.tick * C.val * k);
+  const ix = () => ri(0, n - 1), ixNot0 = () => ri(1, n - 1);
+  const num = (q, a, extra) => Object.assign({ type: 'num', q, a, unit: C.unit || '', tol: c === 'FCPO' ? 0 : C.tick / 2 }, extra || {});
+  const rm = (q, a, extra) => Object.assign({ type: 'num', q, a, unit: 'RM', tol: 1, signed: true }, extra || {});
+  const mcq = (q, a, w, how, hint) => ({ type: 'mcq', q, a, w, how, hint });
+  const months = rows.map((r) => r.m), spotIx = 0, shape = mrMono(D);
+  const out = {};
+  out.spot = () => mcq('Which contract month is the spot month in this report?', months[0], months.slice(1).concat([D.c === 'FCPO' && D.spotLabel ? D.spotLabel.split(' ')[0] + ' (expired)' : 'None of the months shown']), `The spot month is the nearest month still trading: ${months[0]}.`, 'The spot month is the nearest delivery or expiry month still trading, the first row of the table.');
+  out.sett = (i = ix()) => num(`What is the settlement price of the ${months[i]} contract?`, rows[i].sett, { how: `Read the Sett. Price column for ${months[i]}: ${P(rows[i].sett)}.`, hint: 'Use the settlement price (Sett. Price), not Last Done or Open.' });
+  out.chg = (i = ix()) => num(`By how much did the ${months[i]} contract change today? (minus sign for a fall)`, rows[i].chg, { signed: true, how: `Change for ${months[i]} = ${E.num(rows[i].chg, C.d)}.`, hint: 'The change is today’s settlement minus yesterday’s settlement.' });
+  out.prev = (i = ix()) => num(`What was yesterday’s settlement price for ${months[i]}?`, rows[i].prev, { how: `Yesterday = today’s settlement − change = ${E.num(rows[i].sett, C.d)} − (${E.num(rows[i].chg, C.d)}) = ${E.num(rows[i].prev, C.d)}.`, hint: 'Yesterday’s settlement = today’s settlement − change. Subtracting a negative change adds it back.' });
+  out.active = () => mcq('Which contract month is the most actively traded today?', months[D.top], months.filter((x, i) => i !== D.top), `${months[D.top]} has the highest Vol (${E.num(rows[D.top].vol)} contracts).`, 'Look at the Vol column: the most active month has the most contracts traded.');
+  out.hi = (i = ix()) => num(`What was the highest price traded for ${months[i]} today?`, rows[i].hi, { how: `High column for ${months[i]}: ${P(rows[i].hi)}.`, hint: 'High is the highest trade of the day for that month.' });
+  out.range = (i = ix()) => num(`What was the trading range (High − Low) for ${months[i]} today?`, mrR(c, rows[i].hi - rows[i].lo), { how: `${E.num(rows[i].hi, C.d)} − ${E.num(rows[i].lo, C.d)} = ${E.num(mrR(c, rows[i].hi - rows[i].lo), C.d)}.`, hint: 'Range = High − Low for the same month.' });
+  out.ask = (i = ix()) => num(`A trader wants to buy one ${months[i]} contract immediately at the close. Which price must he pay?`, rows[i].ask, { how: `To buy now you pay the Ask: ${P(rows[i].ask)}.`, hint: 'Buyers pay the Ask (the best price sellers want); sellers receive the Bid.' });
+  out.which = (i = ix()) => mcq(`Which price is used to mark an open ${months[i]} position to market at the end of today?`, `${P(rows[i].sett)} (Sett. Price)`, [`${P(rows[i].last)} (Last Done)`, `${P(rows[i].open)} (Open)`, `${P(rows[i].hi)} (High)`, `${P(rows[i].ask)} (Ask)`].filter((x) => !x.startsWith(P(rows[i].sett) + ' ')), 'Margin accounts are marked to market on the settlement price.', 'The clearing house uses the settlement price, not the last trade.');
+  out.shape = () => mcq('What shape is the futures price curve in this report?', shape === 'contango' ? 'Contango: later months are priced higher' : 'Backwardation: later months are priced lower', ['Contango: later months are priced higher', 'Backwardation: later months are priced lower', 'Flat: every month has the same price', 'Cannot tell without the spot price'], `Settlement prices from ${months[0]} to ${months[n - 1]}: ${rows.map((r) => E.num(r.sett, C.d)).join(', ')}.`, 'Compare the settlement prices from the nearest month to the furthest month.');
+  out.volOI = () => mcq('What is the difference between Vol and OI on the price screen?', 'Vol counts contracts traded today; OI counts contracts still open', ['Vol counts contracts still open; OI counts contracts traded today', 'Both count contracts traded today, OI only for big traders', 'OI is the volume of the previous day', 'Vol is in ringgit; OI is in contracts'], 'Volume restarts at zero every day; open interest carries over from day to day.', 'Volume = trades today. Open interest = positions not yet closed.');
+  const dOI = D.tot.oi - D.tot.oi0;
+  out.oiChg = () => num('By how many contracts did total open interest change today? (minus sign for a fall)', dOI, { unit: 'contracts', tol: 0, signed: true, how: `${E.num(D.tot.oi)} − ${E.num(D.tot.oi0)} = ${E.num(dOI)} contracts.`, hint: 'Change in open interest = today’s total − yesterday’s total.' });
+  out.oiMean = () => mcq('What does the change in total open interest tell you?', dOI > 0 ? 'On balance, traders opened new positions' : 'On balance, traders closed existing positions', ['On balance, traders opened new positions', 'On balance, traders closed existing positions', 'Prices must rise tomorrow', 'Trading volume was zero'], `Open interest ${dOI > 0 ? 'rose' : 'fell'} by ${E.num(Math.abs(dOI))} contracts.`, 'Open interest rises when new buyers and sellers open positions and falls when traders close them.');
+  out.mtmL = (i = ix(), k = pick([2, 3, 4, 5, 8, 10])) => rm(`An investor bought ${k} ${months[i]} contracts at yesterday’s settlement. What is the investor’s mark-to-market gain or loss today? (minus sign for a loss)`, mtmVal(rows[i].chg, k), { how: `Long: (${E.num(rows[i].sett, C.d)} − ${E.num(rows[i].prev, C.d)}) ${c === 'FKB3' || c === 'FMG' ? '÷ 0.01 × RM' + E.num(C.val / 100) : '× RM' + C.val} × ${k} = RM${E.num(mtmVal(rows[i].chg, k))}.`, hint: `Gain or loss = (today’s settlement − yesterday’s settlement) × value per ${c === 'FKB3' || c === 'FMG' ? '0.01 move' : 'point or tonne'} × contracts. ${C.sizeTxt}` });
+  out.mtmS = (i = ix(), k = pick([2, 3, 4, 6, 10, 12])) => rm(`A dealer sold (went short) ${k} ${months[i]} contracts at yesterday’s settlement. What is the dealer’s mark-to-market gain or loss today? (minus sign for a loss)`, mtmVal(-rows[i].chg, k), { how: `Short: (${E.num(rows[i].prev, C.d)} − ${E.num(rows[i].sett, C.d)}) ${c === 'FKB3' || c === 'FMG' ? '÷ 0.01 × RM' + E.num(C.val / 100) : '× RM' + C.val} × ${k} = RM${E.num(mtmVal(-rows[i].chg, k))}.`, hint: `A short position gains when the price falls. ${C.sizeTxt}` });
+  out.spread = () => { const a = ri(1, n - 1), v = mrR(c, rows[a].sett - rows[0].sett); return num(`What is the calendar spread between ${months[a]} and ${months[0]} (${months[a]} − ${months[0]})? (minus sign if negative)`, v, { signed: true, how: `${E.num(rows[a].sett, C.d)} − ${E.num(rows[0].sett, C.d)} = ${E.num(v, C.d)}.`, hint: 'Spread = settlement of the far month − settlement of the near month.' }); };
+  if (D.spot && (c === 'FCPO' || c === 'FKLI')) {
+    out.basis = (i = 0) => { const v = c === 'FKLI' ? Math.round((D.spot.v - rows[i].sett) * 100) / 100 : mrR(c, D.spot.v - rows[i].sett); return num(`Using the ${C.spotName === 'FBM KLCI' ? 'FBM KLCI' : D.spot.name}, what is the basis for ${months[i]}? (basis = spot − futures; minus sign if negative)`, v, { signed: true, tol: c === 'FKLI' ? 0.01 : 0, how: `${E.num(D.spot.v, c === 'FKLI' ? 2 : 0)} − ${E.num(rows[i].sett, C.d)} = ${E.num(v, c === 'FKLI' ? 2 : 0)}.`, hint: 'Basis = spot price − futures price. Use the spot (physical or cash index) figure given in the report.' }); };
+    out.value = (i = ix()) => { const v = mrRM(rows[i].sett * C.val); return rm(`What is the value of one ${months[i]} contract at today’s settlement price?`, v, { signed: false, how: `${E.num(rows[i].sett, C.d)} × ${c === 'FCPO' ? '25 tonnes' : 'RM50'} = RM${E.num(v)}.`, hint: C.sizeTxt }); };
+  }
+  if (c === 'FKB3') out.rate = (i = ix()) => { const v = Math.round((100 - rows[i].sett) * 100) / 100; return num(`What 3-month interest rate does the ${months[i]} FKB3 settlement price imply?`, v, { unit: '%', tol: 0.005, how: `Implied rate = 100 − ${E.num(rows[i].sett, 2)} = ${E.num(v, 2)}%.`, hint: 'FKB3 is quoted as 100 minus the interest rate, so the rate is 100 − price.' }); };
+  if (c === 'FMG') out.tickv = () => mcq('One FMG5 contract moves up by 0.01. What happens to the margin account of a buyer of one contract?', 'It gains RM10', ['It gains RM25', 'It gains RM100', 'It gains RM1,000', 'It loses RM10'], C.sizeTxt, C.sizeTxt);
+  return out;
+}
+function mrPlan(D, P, L, R) {
+  const c = D.c, mono = mrMono(D) !== 'mixed', extra = P.basis ? P.basis : P.rate ? P.rate : P.tickv;
+  const extra2 = P.value ? P.value : P.rate ? P.rate : P.tickv;
+  if (L === 1) return [P.spot, () => P.sett(), () => P.chg(), () => P.prev(), P.active, () => P.hi(), () => P.ask(), () => P.which(), mono ? P.shape : P.volOI, mono ? P.volOI : P.spread];
+  if (L === 2) return [P.active, () => P.which(), () => P.prev(), P.oiChg, P.oiMean, () => P.mtmL(), () => P.mtmS(), () => extra(), P.spread, () => (c === 'FKB3' || c === 'FMG' ? P.range() : extra2())];
+  return [P.spot, () => P.sett(), () => P.prev(), mono ? P.shape : P.spread, P.oiChg, P.oiMean, () => P.mtmL(), () => P.mtmS(), () => extra(), mono ? P.spread : () => (P.value ? P.value() : P.range ? P.prev() : P.prev())];
+}
+const MRQ = {};
+['FCPO', 'FKLI', 'FKB3', 'FMG'].forEach((c) => { MRQ[c] = Array.from({ length: 10 }, (_, i) => ({ id: 'q' + (i + 1), n: i + 1, label: 'Question ' + (i + 1), type: 'num', unit: '', tol: 0, hint: 'Find the right month and the right column first.' })); });
+function buildReport(s) {
+  const c = s._c || s.c, L = s.lv || 1, D = s.real ? mrReal(c) : mrMarket(c, s.seed || 11), R = rng((s.seed || 11) * 31 + L);
+  const P = mrPool(D, R, L), plan = mrPlan(D, P, L, R), Q = MRQ[c], key = {}, mcqs = {}, items = [];
+  const seen = new Set();
+  plan.forEach((f, i) => {
+    let it = f(), tries = 0;
+    while (seen.has(it.q) && tries++ < 6) it = f();
+    seen.add(it.q); items.push(it);
+    const q = Q[i]; Object.assign(q, { label: it.q, type: it.type, unit: it.unit || '', tol: it.tol || 0, signed: !!it.signed, hint: it.hint || q.hint });
+    if (it.type === 'mcq') { mcqs[q.id] = mcqFrom(s.id + q.id + (s.seed || 0) + c, it.a, it.w, ['None of the above']); key[q.id] = mcqs[q.id].a; }
+    else key[q.id] = it.a;
+  });
+  const steps = [{ title: 'Answers and working', table: { head: ['No.', 'Question', 'Answer', 'How'], rows: items.map((it, i) => [String(i + 1), it.q, it.type === 'mcq' ? it.a : (it.unit === 'RM' ? 'RM' + E.num(it.a) : E.num(it.a, Math.abs(it.a % 1) > 0 ? (MR_C[c].d || 2) : 0) + (it.unit && it.unit !== 'RM per tonne' ? ' ' + it.unit : '')), it.how || ''] ) } }];
+  steps.push({ title: 'Remember', lines: ['Mark-to-market always uses the settlement price.', 'Yesterday’s settlement = today’s settlement − change.', 'Basis = spot − futures. Spread = far month − near month.', MR_C[c].sizeTxt] });
+  return { s, D, key, mcqs, items, res: { title: `Market report ${CNAME[c]}: answers`, steps, result: {} }, c };
+}
+
+/* ---------------- the report card ---------------- */
+function mrScreen(D) {
+  const c = D.c, C = MR_C[c], F = (v) => E.num(v, C.d);
+  const head = ['No', 'Name', 'Month', 'Open', 'Bid', 'Ask', 'Last Done', 'Change', 'High', 'Low', 'Vol', 'OI', 'Sett. Price'];
+  const body = D.rows.map((r, i) => `<tr><td>${i + 1}</td><td>${CNAME[c]}</td><td>${r.m}</td><td class="num">${F(r.open)}</td><td class="num">${F(r.bid)}</td><td class="num">${F(r.ask)}</td><td class="num">${F(r.last)}</td><td class="num ${r.chg < 0 ? 'mr-dn' : 'mr-up'}">${r.chg > 0 ? '+' : ''}${F(r.chg)}</td><td class="num">${F(r.hi)}</td><td class="num">${F(r.lo)}</td><td class="num">${E.num(r.vol)}</td><td class="num">${E.num(r.oi)}</td><td class="num mr-st">${F(r.sett)}</td></tr>`).join('');
+  const spot = D.spot ? (D.spot.pct ? `${esc(D.spot.name)}: <b>${E.num(D.spot.v, 2)}%</b>` : `${esc(D.spot.name)}: <b>${E.num(D.spot.v, c === 'FKLI' ? 2 : 0)}</b>${D.spot.ch ? ` (${D.spot.ch > 0 ? '+' : ''}${E.num(D.spot.ch, c === 'FKLI' ? 2 : 0)})` : ''}`) : '';
+  return `<div class="mr-term"><div class="mr-bar">Derivatives prices · ${esc(C.what)} · closing view · ${esc(D.dayName)} ${esc(D.date)}</div><div class="tw"><table class="mr-t"><thead><tr>${head.map((h, i) => `<th class="${i > 2 ? 'num' : ''}">${h}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>
+  <div class="mr-foot">All months: Vol <b>${E.num(D.tot.vol)}</b> (yesterday ${E.num(D.tot.vol0)}) · OI <b>${E.num(D.tot.oi)}</b> (yesterday ${E.num(D.tot.oi0)})${spot ? ' · ' + spot : ''}</div></div>`;
+}
+function mrNews(D, seed) {
+  const c = D.c, C = MR_C[c], F = (v) => E.num(v, C.d), R = rng(seed + 5), pick = (a) => a[Math.floor(R() * a.length)];
+  const papers = ['The Malaysian Market Daily', 'Harian Pasaran', 'The Straits Ledger', 'Business Times Malaya'];
+  const verb = (x) => (x > 0 ? pick(['rose', 'gained', 'added', 'climbed']) : x < 0 ? pick(['fell', 'slid', 'dropped', 'eased']) : 'was unchanged');
+  const unit = c === 'FCPO' ? ' per tonne' : '';
+  const mv = (r) => (r.chg === 0 ? `${r.m} was unchanged at ${c === 'FCPO' ? 'RM' : ''}${F(r.sett)}${unit}` : `${r.m} ${verb(r.chg)} ${c === 'FCPO' ? 'RM' : ''}${F(Math.abs(r.chg))}${c === 'FKLI' ? ' points' : ''} to ${c === 'FCPO' ? 'RM' : ''}${F(r.sett)}${unit}`);
+  const rs = D.rows, first = rs[0];
+  const dir = D.dirUp ? pick(['ended higher', 'closed firmer', 'finished higher']) : pick(['ended lower', 'closed weaker', 'finished lower']);
+  const why = c === 'FCPO' ? (D.dirUp ? pick(['as stronger soybean oil prices lifted sentiment', 'tracking firmer crude oil prices', 'on hopes of better export demand']) : pick(['as weaker crude oil prices weighed on biodiesel demand', 'pressured by high inventories', 'tracking weaker soybean oil prices'])) : c === 'FKLI' ? (D.dirUp ? 'tracking gains in the cash market' : 'tracking losses in the cash market') : c === 'FKB3' ? (D.dirUp ? 'as traders priced in lower interest rates' : 'as traders priced in higher interest rates') : (D.dirUp ? 'as MGS yields eased' : 'as MGS yields rose');
+  const p1 = `${c === 'FCPO' ? 'Crude palm oil (CPO) futures' : C.what} on Bursa Malaysia Derivatives ${dir} on ${D.dayName}, ${why}, dealers said.`;
+  const p2 = `At the close, the ${D.newSpot ? 'new ' : ''}spot-month ${mv(first)}, ${rs.slice(1, -1).map(mv).join(', ')} and ${mv(rs[rs.length - 1])}.`;
+  const p3 = `Trading volume ${D.tot.vol > D.tot.vol0 ? 'rose' : 'fell'} to ${E.num(D.tot.vol)} lots from ${E.num(D.tot.vol0)} the day before, while open interest ${D.tot.oi > D.tot.oi0 ? 'increased' : 'decreased'} to ${E.num(D.tot.oi)} contracts from ${E.num(D.tot.oi0)}.`;
+  let p4 = '';
+  if (c === 'FCPO' && D.spot) p4 = `The ${D.spot.name.replace('physical CPO, ', 'physical CPO price for ')} ${D.spot.ch > 0 ? 'rose' : 'fell'} RM${E.num(Math.abs(D.spot.ch))} to RM${E.num(D.spot.v)} per tonne.`;
+  if (c === 'FKLI' && D.spot) p4 = `In the cash market, the FBM KLCI ${D.spot.ch > 0 ? 'rose' : 'fell'} ${E.num(Math.abs(D.spot.ch), 2)} points to ${E.num(D.spot.v, 2)} at 5 pm.`;
+  if (c === 'FKB3' && D.spot) p4 = `Three-month KLIBOR was quoted at ${E.num(D.spot.v, 2)}%.`;
+  const p5 = D.analyst ? `A palm oil trader expects support at RM${E.num(D.analyst[0])} and resistance at RM${E.num(D.analyst[1])} in the coming days.` : '';
+  return `<div class="doc news"><div class="masthead">${esc(D.real ? 'Market report' : papers[seed % papers.length])}</div><div class="dateline">Kuala Lumpur, ${esc(D.date)}</div><h3>${esc(c === 'FCPO' ? 'CPO futures' : CNAME[c] + ' futures')} ${D.dirUp ? 'close higher' : 'close lower'}</h3><p>${esc(p1)}</p><p>${esc(p2)}</p><p>${esc(p3)}</p>${p4 ? `<p>${esc(p4)}</p>` : ''}${p5 ? `<p>${esc(p5)}</p>` : ''}</div>`;
+}
+function reportCard(B) {
+  const s = B.s, D = B.D, L = s.lv || 1, c = B.c, tag = s.book ? ` <span class="book">${esc(s.book)}</span>` : '';
+  const intro = L === 3 ? `<p class="lbl plain">Read the newspaper report below and pick out the figures you need. There is no table: the figures are in the text.</p>${mrNews(D, s.seed || 3)}` : `<p>The screen below shows the closing prices for ${esc(MR_C[c].what)} on ${esc(D.dayName)}, ${esc(D.date)}. Change is today’s settlement minus yesterday’s settlement.</p>${mrScreen(D)}`;
+  const src = D.real ? '<p class="lbl plain">Real closing figures reported by Bernama for 18 November 2026; the wording of the report is written for this app.</p>' : '';
+  return `<article class="card qcard" id="qcard"><div class="eyebrow">Market report · Code ${T().code}${s.id} · ${L === 3 ? 'Newspaper report' : 'Price screen'}</div><h2>Market report: ${esc(CNAME[c])}${tag}</h2>${intro}${src}<p class="lbl plain">${esc(MR_C[c].sizeTxt)}${c === 'FCPO' || c === 'FKLI' ? ' Basis = spot − futures.' : ''}</p>
+  <p class="req"><b>Required:</b> Answer the ${MRQ[c].length} questions below, then press <b>Check my answers</b>.</p>
+  <div class="row noprint"><button type="button" class="btn primary" id="qpdf">Download question (PDF)</button><button type="button" class="btn" id="print">Print question</button><span class="lbl plain" id="qpdf-msg" aria-live="polite"></span></div></article>`;
+}
+
+/* ---------------- banks and topics ---------------- */
+const mrBank = (c) => { const b = []; [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3].forEach((lv, i) => b.push({ id: String(i + 1).padStart(2, '0'), lv, seed: 1000 * lv + 37 * (i + 1) + c.length * 7 })); if (c === 'FCPO' || c === 'FKLI') b.push({ id: '13', lv: 3, seed: 2611, real: true, book: 'Real report, 18 Nov 2026' }); return b; };
+['FCPO', 'FKLI', 'FKB3', 'FMG'].forEach((c) => {
+  TOPICS[c + '|report'] = { key: c + '|report', c, st: 'report', code: `T-${c}-R-`, bank: mrBank(c), tab: `Market report ${CNAME[c]}`, short: `Market report ${CNAME[c]}`, method: 'read the report, then calculate', nameOf: (s) => (s.real ? 'Real report, 18 Nov 2026' : ['', 'Price screen', 'Price screen, calculate', 'Newspaper report'][s.lv || 1]), build: buildReport, Q: MRQ[c], gen: (g, L) => ({ lv: L, seed: g.ri(1, 2000000000) }), levelOf: (s) => s.lv || 1, lvlInfo: MR_LVL };
+});
+
+/* ---------------- hooks ---------------- */
+(function () { const st = document.createElement('style'); st.textContent = `.mr-term{background:#0F1A30;border-radius:10px;overflow:hidden;margin:10px 0;border:1px solid #2C3F6B}.mr-bar{color:#E8B547;background:#1E2F55;font-weight:600;font-size:13px;padding:8px 12px}.mr-term .tw{margin:0;border:0;border-radius:0}.mr-t{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.mr-t th{background:#16264A;color:#BFCBE0;font-size:12px;padding:6px 8px;white-space:nowrap}.mr-t tbody tr td,.mr-t tbody tr:nth-child(even) td{color:#E6ECF5 !important;font-size:13px;padding:6px 8px;border-bottom:1px solid #22355E;white-space:nowrap;background:#0F1A30 !important}.mr-t tbody tr td.mr-dn{color:#FF9B85 !important}.mr-t tbody tr td.mr-up{color:#8FE3B0 !important}.mr-t tbody tr td.mr-st{color:#E8B547 !important;font-weight:700}.mr-foot{color:#BFCBE0;font-size:12.5px;padding:8px 12px;background:#16264A}.mr-foot b{color:#fff}`; document.head.appendChild(st); })();
+const isMR = () => T() && T().st === 'report';
+const _renderQuestionMR = renderQuestion;
+renderQuestion = function (B) { return isMR() ? reportCard(B) : _renderQuestionMR(B); };
+const _inputForMR = inputFor;
+inputFor = function (q, B) { const h = _inputForMR(q, B); return isMR() ? h.replace('(minus sign for a loss)', '(minus sign for a fall or a loss)') : h; };
+const _correctTextMR = correctText;
+correctText = function (q, B) {
+  if (!isMR() || q.type !== 'num') return _correctTextMR(q, B);
+  const k = B.key[q.id], d = MR_C[B.c].d;
+  if (q.unit === 'RM') return 'RM' + E.num(k);
+  if (q.unit === '%') return E.num(k, 2) + '%';
+  if (q.unit === 'contracts') return E.num(k) + ' contracts';
+  return E.num(k, Math.abs(k % 1) > 0 ? Math.max(d, 1) : 0) + (B.c === 'FCPO' ? ' (RM per tonne)' : B.c === 'FKLI' ? ' points' : '');
+};
+const _diagnoseMR = diagnose;
+diagnose = function (q, a, B, reveal) {
+  if (!isMR()) return _diagnoseMR(q, a, B, reveal);
+  if (q.type === 'mcq') { const o = B.mcqs[q.id].opts; if (a[q.id] === undefined) return ['No option was chosen.']; return [q.hint].concat(reveal ? ['Correct option: ' + o[B.key[q.id]]] : []); }
+  const out = numberClues(q, numIn(a[q.id]), B.key[q.id], B, reveal);
+  return [q.hint].concat(out.filter((x) => !/commission|contract away/.test(x)));
+};
+const _renderAnswersMR = renderAnswers;
+renderAnswers = function (B) {
+  const h = _renderAnswersMR(B);
+  if (!isMR()) return h;
+  return h.replace(/<p class="lbl plain">Outside the table[\s\S]*?<\/p>/, '<p class="lbl plain">Type prices exactly as they appear in the report. Type a fall, a negative figure or a loss with a minus sign, for example −38 or -2350. Commas are fine. Ringgit amounts are accepted within ±RM1.</p>');
+};
+
 /* ================= PART 1: THEORY QUESTION BANK =================
    Source: Malaysian Derivatives textbook (Chapters 1 to 12, 2026) and the Chapter 12 slides.
    Conventions: basis = spot - futures (as in the textbook). FCPO 25 tonnes, FKLI RM50 per point.
@@ -5693,7 +5907,7 @@ AG.reset = function () { SYNC.signout(); return _resetSy.apply(this, arguments);
       These are event rows in the sync stream; they never count in marks, history, levels or the CSV.
    4) Version number in the footer.
 ================================================================================================== */
-const APP_VERSION = 'Version 3.4 · 26 Nov 2026';
+const APP_VERSION = 'Version 3.5 · 26 Nov 2026';
 const FAIR = (function () {
   const LKEY = 'pf-lect-' + SYNC.CFG.course;
   const pad = (n) => String(n).padStart(2, '0');
