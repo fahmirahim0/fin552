@@ -50,7 +50,11 @@ details summary{cursor:pointer;font-weight:600;color:var(--navy)}
     <section class="card" style="margin-top:14px"><h2>3 · By subtopic</h2><p class="muted">Section B average first-attempt mark by subtopic for the students shown above, weakest first. Low averages show where the class needs help.</p><div class="tw" style="max-height:480px"><table id="ttbl"></table></div></section>
     <section class="card" style="margin-top:14px"><h2>4 · Common mistakes</h2><p class="muted">How often each type of mistake ("Why was I wrong?") appeared in first attempts, for the students shown above.</p><div class="tw"><table id="mtbl"></table></div></section>
     <section class="card" style="margin-top:14px"><h2>5 · Reported questions</h2><p class="muted">Questions that students reported with "Report a problem" (students who save online). Check the question in lecturer mode with its code. Students who do not save online send their report to you directly.</p><div class="tw" style="max-height:420px"><table id="rtbl"></table></div></section>
-    <section class="card" style="margin-top:14px"><h2>6 · Manage</h2>
+    <section class="card" style="margin-top:14px"><h2>6 · Research file with assessment marks</h2>
+      <p class="muted">For the impact study, only after UiTM REC approval and after final marks are released. Load a CSV of marks with the student ID in the first column and one column per assessment (for example <i>ID, Test 1, Test 2, Final</i>). The marks stay in this browser. The file you download has only students with research consent, their participant codes (the same codes as the research export), usage measures, survey answers and the marks you loaded: no names and no student IDs.</p>
+      <div class="row"><input type="file" id="mkfile" accept=".csv,text/csv"><button id="mkgo">Build research file</button><span class="msg" id="mkmsg"></span></div>
+    </section>
+    <section class="card" style="margin-top:14px"><h2>7 · Manage</h2>
       <details><summary>Reset a student's PIN</summary><p class="muted">The student's next sign-in sets a new PIN. Their progress is kept.</p><div class="row"><input id="rid" placeholder="Student ID" ><button id="rgo">Reset PIN</button><span class="msg" id="rmsg"></span></div></details>
       <details style="margin-top:10px"><summary>Research data export</summary><p class="muted">Only students who ticked the optional research consent. No names and no student IDs: each student has a fixed participant code. Use this only for research approved by the ethics committee.</p><div class="row"><button id="resgo">Download research CSV</button><span class="msg" id="resmsg"></span></div></details>
       <details style="margin-top:10px"><summary>Remove a student's data (withdrawal)</summary><p class="muted">Deletes the student's account, progress and results on the server for this course. This cannot be undone. Their own device keeps its copy.</p><div class="row"><input id="did" placeholder="Student ID" ><input id="dconf" placeholder="Type DELETE"><button class="danger" id="dgo">Remove data</button><span class="msg" id="dmsg"></span></div></details>
@@ -62,7 +66,7 @@ const API = window.PF_API || 'https://praktifin-api.fahmirahim0.workers.dev';
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 let KEY = sessionStorage.getItem('pf-admin') || '', COURSE = 'invest';
-const EVS = new Set(['Report', 'Show answer', 'Second try', 'AI tutor']);
+const EVS = new Set(['Report', 'Show answer', 'Second try', 'AI tutor', 'Survey']);
 let CLASS = [], MAP = {}, STUDENTS = [], RESULTS = [], EVENTS = [], ROWS = [], SORT = { k: 'name', d: 1 };
 const LSK = () => 'pf-classlist-' + COURSE;
 
@@ -147,7 +151,7 @@ function paint() {
   const act = rows.filter((r) => r.acc), used = rows.filter((r) => r.p1 + r.p2 > 0);
   const avg = (arr) => (arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null);
   const in7 = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
-  $('#kpis').innerHTML = [[rows.length, 'students shown'], [act.length, 'with an account'], [rows.filter((r) => r.last && r.last >= in7).length, 'active in the last 7 days'], [pc(avg(used.map((r) => r.p1avg).filter((v) => v !== null))) || '–', 'class Section A average'], [pc(avg(used.map((r) => r.p2avg).filter((v) => v !== null))) || '–', 'class Section B average'], [rows.filter((r) => r.mock === 3).length, 'reached Level 3'], [EVENTS.filter((x) => x.source === 'Report' && hashes0().has(x.sh)).length, 'questions reported']].map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
+  $('#kpis').innerHTML = [[rows.length, 'students shown'], [act.length, 'with an account'], [rows.filter((r) => r.last && r.last >= in7).length, 'active in the last 7 days'], [pc(avg(used.map((r) => r.p1avg).filter((v) => v !== null))) || '–', 'class Section A average'], [pc(avg(used.map((r) => r.p2avg).filter((v) => v !== null))) || '–', 'class Section B average'], [rows.filter((r) => r.mock === 3).length, 'reached Level 3'], [EVENTS.filter((x) => x.source === 'Report' && hashes0().has(x.sh)).length, 'questions reported'], [(() => { const v = EVENTS.filter((x) => x.source === 'Survey' && hashes0().has(x.sh)).map((x) => +x.got); return v.length ? (v.reduce((a, b) => a + b, 0) / v.length).toFixed(1) + ' (n=' + v.length + ')' : '–'; })(), 'SUS mean (research survey)']].map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
   // by topic
   const keep = new Set(rows.map((r) => r.id)), hashes = new Set();
   CLASS.forEach((c) => { if (keep.has(c.id) && MAP[c.id]) hashes.add(MAP[c.id]); });
@@ -177,6 +181,58 @@ $('#refresh').addEventListener('click', async () => { $('#refresh').disabled = t
 $('#fgrp').addEventListener('change', paint); $('#fq').addEventListener('input', paint);
 $('#csv').addEventListener('click', () => { const d = new Date().toISOString().slice(0, 10); download(`PraktiFin Investment class progress ${d}.csv`, [['Name', 'Student ID', 'Group', 'Account', 'Section A quizzes', 'Section A avg %', 'Section B questions', 'Section B avg %', 'Top level', 'Last active', 'Research consent']].concat(filtered().map((r) => [r.name, r.id, r.grp, r.acc ? 'Yes' : 'No', r.p1, pc(r.p1avg), r.p2, pc(r.p2avg), r.mock || '', r.last, r.research === null ? '' : r.research ? 'Yes' : 'No']))); });
 $('#rgo').addEventListener('click', async () => { const id = $('#rid').value.trim(); if (!/^[0-9A-Za-z]{6,14}$/.test(id)) { $('#rmsg').textContent = 'Type the student ID (6 to 14 letters or digits).'; return; } try { const j = await api('/v1/admin/resetpin', { method: 'POST', body: { course: COURSE, id } }); $('#rmsg').textContent = j.found ? 'Done. The student can now choose a new PIN.' : 'No account with this ID in this course.'; } catch (e) { $('#rmsg').textContent = e.message; } });
+// ---------- research file: usage + survey + marks, consenting students only, participant codes ----------
+let MARKS = null;
+$('#mkfile').addEventListener('change', async (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  const lines = (await f.text()).replace(/^\uFEFF/, '').split(/\r?\n/).filter((l) => l.trim());
+  const split = (l) => l.split(/[,\t;]/).map((c) => c.trim().replace(/^"|"$/g, ''));
+  const head = split(lines[0]); const hasHead = !/^(?=.*\d)[0-9A-Za-z]{6,14}$/.test(head[0]);
+  const cols = hasHead ? head.slice(1) : head.slice(1).map((_, i) => 'mark' + (i + 1));
+  const rows = {}; (hasHead ? lines.slice(1) : lines).forEach((l) => { const c = split(l); const id = (c[0] || '').toUpperCase(); if (/^[0-9A-Z]{6,14}$/.test(id)) rows[id] = c.slice(1); });
+  MARKS = { cols, rows };
+  $('#mkmsg').textContent = `${Object.keys(rows).length} students, columns: ${cols.join(', ')}.`;
+});
+$('#mkgo').addEventListener('click', async () => {
+  const msg = $('#mkmsg');
+  if (!MARKS) { msg.textContent = 'Load the marks CSV first.'; return; }
+  try {
+    msg.textContent = 'Building…';
+    const ids = Object.keys(MARKS.rows).filter((id) => !MAP[id]);
+    if (ids.length) { const j = await api('/v1/admin/hash', { method: 'POST', body: { ids } }); Object.assign(MAP, j.map); }
+    const res = await api('/v1/admin/research?course=' + COURSE);
+    // participant code for each hash: match research rows to the lecturer's rows by time + code
+    // (two students can answer the same question in the same minute, so score every pairing by shared rows and assign the best pairs first)
+    const keyOf = (x) => [x.time, x.code, x.got, x.level, x.source].join('|'), shsOf = {};
+    [...RESULTS, ...EVENTS].forEach((x) => { (shsOf[keyOf(x)] = shsOf[keyOf(x)] || new Set()).add(x.sh); });
+    const score = {}; res.results.forEach((x) => { (shsOf[keyOf(x)] || []).forEach((sh) => { const k = x.participant + ' ' + sh; score[k] = (score[k] || 0) + 1; }); });
+    const P = {}, usedP = new Set();
+    Object.entries(score).sort((a, b) => b[1] - a[1]).forEach(([k]) => { const [pid, sh] = k.split(' '); if (!P[sh] && !usedP.has(pid)) { P[sh] = pid; usedP.add(pid); } });
+    const consent = new Set(STUDENTS.filter((s) => s.consent_research).map((s) => s.sh));
+    const byId = {}; Object.entries(MAP).forEach(([id, sh]) => { byId[sh] = id; });
+    const survey = {}; res.results.filter((x) => x.source === 'Survey').forEach((x) => { try { survey[x.participant] = JSON.parse(x.ans || '{}'); } catch (e) { } });
+    const all = [...RESULTS, ...EVENTS];
+    const med = (a) => { if (!a.length) return ''; const b = a.slice().sort((p, q) => p - q), m = Math.floor(b.length / 2); return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; };
+    const SV = ['sus1', 'sus2', 'sus3', 'sus4', 'sus5', 'sus6', 'sus7', 'sus8', 'sus9', 'sus10', 'pu1', 'pu2', 'pu3', 'pu4', 'fb1', 'fb2', 'fb3', 'fb4', 'device', 'place', 'weekly', 'open1', 'open2'];
+    const head = ['participant', 'group', 'b_questions', 'b_avg', 'a_quizzes', 'a_avg', 'subtopics_level3', 'top_level', 'active_days', 'active_weeks', 'median_seconds', 'second_try_rate', 'show_answer_rate', 'ai_tutor_rate', 'reports', 'sus_score', ...SV, ...MARKS.cols.map((c) => 'mark_' + c)];
+    const out = [head]; let n = 0, noP = 0;
+    STUDENTS.filter((s) => consent.has(s.sh)).forEach((s) => {
+      const pid = P[s.sh]; if (!pid) { noP++; return; }
+      const mine = all.filter((x) => x.sh === s.sh), B = mine.filter((x) => !EVS.has(x.source) && x.source !== 'Concept Check'), A = mine.filter((x) => x.source === 'Concept Check');
+      const avg = (r) => (r.length ? (r.reduce((a, x) => a + x.got / (x.out_of || 1), 0) / r.length * 100).toFixed(1) : '');
+      const lv3 = new Set(B.filter((x) => String(x.level) === '3').map((x) => x.tkey)).size, top = Math.max(0, ...B.map((x) => parseInt(x.level, 10) || 0));
+      const days = new Set(mine.map((x) => String(x.time).slice(0, 10))), weeks = new Set([...days].map((d) => { const t = Date.parse(d); return Math.floor(t / 6048e5); }));
+      const secs = B.map((x) => x.secs).filter((v) => Number.isFinite(v) && v > 0 && v <= 1800);
+      const rate = (src) => (B.length ? (mine.filter((x) => x.source === src).length / B.length).toFixed(3) : '');
+      const sv = survey[pid] || {}, sus = mine.filter((x) => x.source === 'Survey').map((x) => x.got);
+      const id = byId[s.sh], mk = id && MARKS.rows[id] ? MARKS.rows[id] : [];
+      out.push([pid, s.grp || '', B.length, avg(B), A.length, avg(A), lv3, top || '', days.size, weeks.size, med(secs), rate('Second try'), rate('Show answer'), rate('AI tutor'), mine.filter((x) => x.source === 'Report').length, sus.length ? sus.at(-1) : '', ...SV.map((k) => sv[k] ?? ''), ...MARKS.cols.map((_, i) => mk[i] ?? '')]);
+      n++;
+    });
+    download(`PraktiFin Investment research file ${new Date().toISOString().slice(0, 10)}.csv`, out);
+    msg.textContent = `${n} consenting students in the file${noP ? `; ${noP} consenting students with no practice rows yet were left out` : ''}. No names or student IDs.`;
+  } catch (e) { msg.textContent = e.message; }
+});
 $('#resgo').addEventListener('click', async () => { try { const j = await api('/v1/admin/research?course=' + COURSE); download(`PraktiFin Investment research data ${new Date().toISOString().slice(0, 10)}.csv`, [['participant', 'group', 'time', 'code', 'topic', 'level', 'source', 'got', 'out_of', 'wrong', 'topic_key', 'question_ids', 'first_answers', 'seconds']].concat(j.results.map((x) => [x.participant, x.grp, x.time, x.code, x.topic, x.level, x.source, x.got, x.out_of, x.wrong, x.tkey, x.sid, x.ans, x.secs]))); $('#resmsg').textContent = `${j.participants} participants, ${j.results.length} rows.`; } catch (e) { $('#resmsg').textContent = e.message; } });
 $('#dgo').addEventListener('click', async () => { const id = $('#did').value.trim(); if (!/^[0-9A-Za-z]{6,14}$/.test(id) || $('#dconf').value !== 'DELETE') { $('#dmsg').textContent = 'Type the student ID and DELETE in capitals.'; return; } try { await api('/v1/admin/delete', { method: 'POST', body: { course: COURSE, id, confirm: 'DELETE' } }); $('#dmsg').textContent = 'Removed.'; $('#dconf').value = ''; await load(); } catch (e) { $('#dmsg').textContent = e.message; } });
 if (KEY) openPanel();
