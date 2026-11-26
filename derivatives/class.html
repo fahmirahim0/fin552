@@ -48,7 +48,8 @@ details summary{cursor:pointer;font-weight:600;color:var(--navy)}
       <p class="muted" id="unk"></p>
     </section>
     <section class="card" style="margin-top:14px"><h2>3 · By topic</h2><p class="muted">Average first-attempt mark by topic for the students shown above. Low averages show where the class needs help.</p><div class="tw"><table id="ttbl"></table></div></section>
-    <section class="card" style="margin-top:14px"><h2>4 · Manage</h2>
+    <section class="card" style="margin-top:14px"><h2>4 · Reported questions</h2><p class="muted">Problems that students reported with a question (answer key, unclear wording, typos). Check the question by its code in lecturer mode.</p><div class="tw" style="max-height:360px"><table id="rtbl"></table></div></section>
+    <section class="card" style="margin-top:14px"><h2>5 · Manage</h2>
       <details><summary>Reset a student's PIN</summary><p class="muted">The student's next sign-in sets a new PIN. Their progress is kept.</p><div class="row"><input id="rid" placeholder="Student ID" inputmode="numeric"><button id="rgo">Reset PIN</button><span class="msg" id="rmsg"></span></div></details>
       <details style="margin-top:10px"><summary>Research data export</summary><p class="muted">Only students who ticked the optional research consent. No names and no student IDs: each student has a fixed participant code. Use this only for research approved by the ethics committee.</p><div class="row"><button id="resgo">Download research CSV</button><span class="msg" id="resmsg"></span></div></details>
       <details style="margin-top:10px"><summary>Remove a student's data (withdrawal)</summary><p class="muted">Deletes the student's account, progress and results on the server for this course. This cannot be undone. Their own device keeps its copy.</p><div class="row"><input id="did" placeholder="Student ID" inputmode="numeric"><input id="dconf" placeholder="Type DELETE"><button class="danger" id="dgo">Remove data</button><span class="msg" id="dmsg"></span></div></details>
@@ -111,7 +112,7 @@ function build() {
   const byHash = {}; CLASS.forEach((c) => { if (MAP[c.id]) byHash[MAP[c.id]] = c; });
   const acc = {}; STUDENTS.forEach((s) => { acc[s.sh] = s; });
   const agg = {};
-  RESULTS.forEach((x) => {
+  RESULTS.filter(isQ).forEach((x) => {
     const a = agg[x.sh] || (agg[x.sh] = { p1: 0, p1g: 0, p1o: 0, p2: 0, p2g: 0, p2o: 0, mock: null, last: '' });
     const pct = x.out_of ? x.got / x.out_of : 0;
     if (x.source === 'Theory') { if (/Mock/.test(x.topic)) a.mock = Math.max(a.mock ?? 0, pct); else { a.p1++; a.p1g += x.got; a.p1o += x.out_of; } }
@@ -130,6 +131,7 @@ function build() {
 function row(name, id, grp, s, a) {
   return { name, id, grp, acc: !!s, research: s ? !!s.consent_research : null, p1: a.p1 || 0, p1avg: a.p1o ? a.p1g / a.p1o : null, mock: a.mock ?? null, p2: a.p2 || 0, p2avg: a.p2o ? a.p2g / a.p2o : null, last: a.last || '' };
 }
+const isQ = (x) => x.source !== 'Report' && x.source !== 'Event'; // event rows never count in marks
 const pc = (v) => (v === null || v === undefined ? '' : Math.round(v * 100) + '%');
 const barc = (v) => (v === null ? '' : `<span class="bar" style="width:${Math.round(v * 60)}px;background:${v >= 0.7 ? '#16a34a' : v >= 0.5 ? '#c9a227' : '#dc2626'}"></span>`);
 function filtered() {
@@ -144,15 +146,19 @@ function paint() {
   const act = rows.filter((r) => r.acc), used = rows.filter((r) => r.p1 + r.p2 > 0);
   const avg = (arr) => (arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null);
   const in7 = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
-  $('#kpis').innerHTML = [[rows.length, 'students shown'], [act.length, 'with an account'], [rows.filter((r) => r.last && r.last >= in7).length, 'active in the last 7 days'], [pc(avg(used.map((r) => r.p1avg).filter((v) => v !== null))) || '–', 'class Part 1 average'], [pc(avg(used.map((r) => r.mock).filter((v) => v !== null))) || '–', 'class Mock Test best (avg)'], [pc(avg(used.map((r) => r.p2avg).filter((v) => v !== null))) || '–', 'class Part 2 average']].map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
-  // by topic
-  const keep = new Set(rows.map((r) => r.id)), hashes = new Set();
+const keep = new Set(rows.map((r) => r.id)), hashes = new Set();
   CLASS.forEach((c) => { if (keep.has(c.id) && MAP[c.id]) hashes.add(MAP[c.id]); });
   STUDENTS.forEach((s) => { if (keep.has(s.sh.slice(0, 8) + '…')) hashes.add(s.sh); });
-  const t = {};
-  RESULTS.filter((x) => hashes.has(x.sh)).forEach((x) => { const k = x.topic || x.tkey; const a = t[k] || (t[k] = { n: 0, g: 0, o: 0, st: new Set() }); a.n++; a.g += x.got; a.o += x.out_of; a.st.add(x.sh); });
+  $('#kpis').innerHTML = [[rows.length, 'students shown'], [act.length, 'with an account'], [rows.filter((r) => r.last && r.last >= in7).length, 'active in the last 7 days'], [pc(avg(used.map((r) => r.p1avg).filter((v) => v !== null))) || '–', 'class Part 1 average'], [pc(avg(used.map((r) => r.mock).filter((v) => v !== null))) || '–', 'class Mock Test best (avg)'], [pc(avg(used.map((r) => r.p2avg).filter((v) => v !== null))) || '–', 'class Part 2 average'], [RESULTS.filter((x) => x.source === 'Report' && hashes.has(x.sh)).length, 'questions reported']].map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
+  // by topic
+    const t = {};
+  RESULTS.filter((x) => hashes.has(x.sh) && isQ(x)).forEach((x) => { const k = x.topic || x.tkey; const a = t[k] || (t[k] = { n: 0, g: 0, o: 0, st: new Set() }); a.n++; a.g += x.got; a.o += x.out_of; a.st.add(x.sh); });
   const tr = Object.entries(t).map(([k, a]) => ({ k, n: a.n, st: a.st.size, avg: a.o ? a.g / a.o : null })).sort((a, b) => (a.avg ?? 1) - (b.avg ?? 1));
   $('#ttbl').innerHTML = '<thead><tr><th>Topic</th><th>Students</th><th>Attempts</th><th>Average</th></tr></thead><tbody>' + (tr.length ? tr.map((r) => `<tr><td>${esc(r.k)}</td><td class="n">${r.st}</td><td class="n">${r.n}</td><td class="n">${barc(r.avg)}${pc(r.avg)}</td></tr>`).join('') : '<tr><td colspan="4" class="muted">No results yet.</td></tr>') + '</tbody>';
+  const byHash2 = {}; CLASS.forEach((c) => { if (MAP[c.id]) byHash2[MAP[c.id]] = c; });
+  const grpOf = {}; STUDENTS.forEach((x) => { grpOf[x.sh] = x.grp; });
+  const reps = RESULTS.filter((x) => x.source === 'Report' && hashes.has(x.sh)).sort((a, b) => (a.time < b.time ? 1 : -1));
+  $('#rtbl').innerHTML = '<thead><tr><th>Time</th><th>Question</th><th>Topic</th><th>Group</th><th>Student</th><th>Report</th></tr></thead><tbody>' + (reps.length ? reps.map((x) => `<tr><td>${esc(x.time)}</td><td>${esc(String(x.code || '').replace(/#R$/, ''))}</td><td>${esc(x.topic)}</td><td>${esc(x.grp || grpOf[x.sh] || '')}</td><td>${esc((byHash2[x.sh] || {}).name || '')}</td><td style="white-space:normal;min-width:260px">${esc(x.wrong)}</td></tr>`).join('') : '<tr><td colspan="6" class="muted">No reports yet.</td></tr>') + '</tbody>';
 }
 function download(name, rows) {
   const csv = rows.map((r) => r.map((c) => { const s = String(c ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\n');
