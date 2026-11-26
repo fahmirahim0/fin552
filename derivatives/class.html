@@ -19,16 +19,17 @@ button{font:600 14px inherit;padding:8px 14px;border-radius:8px;border:1px solid
 .pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:600}.p-ok{background:#dcfce7;color:var(--good)}.p-no{background:#fee2e2;color:var(--bad)}.p-mid{background:var(--gold-soft);color:#7a5a00}
 .bar{display:inline-block;height:8px;border-radius:4px;background:var(--gold);vertical-align:middle;margin-right:6px}
 details summary{cursor:pointer;font-weight:600;color:var(--navy)}
-.hide{display:none}
+.hide{display:none}body.lect .own{display:none}
 </style></head>
 <body>
 <header><div class="w"><a class="hb" href="../" title="Back to the PraktiFin home page">&#8592; All modules</a><b>PraktiFin</b><span id="hd">Class progress · lecturer</span><a class="hb" href="./" style="margin-left:auto">Open the app</a><button type="button" class="hb hide" id="signout">Sign out</button></div></header>
 <main>
+  <div class="card hide" id="whob" style="padding:10px 16px"></div>
   <section class="card" id="login">
     <h2>Lecturer sign in</h2>
-    <p class="muted">Use the ADMIN_KEY you set in Cloudflare. It is kept only for this browser tab and is never shown to students.</p>
+    <p class="muted">Use your lecturer key (from the PraktiFin owner) or the owner's admin key. It is kept only for this browser tab and is never shown to students. Lecturers see only their own class groups. Use of this page follows the <a href="../terms.html" target="_blank" rel="noopener">Terms of use</a>.</p>
     <div class="row"><select id="course"><option value="deriv">PraktiFin Derivatives (FIN549)</option><option value="invest">PraktiFin Investment (FIN552)</option></select>
-      <input id="key" type="password" placeholder="Admin key" autocomplete="current-password" style="min-width:240px"><button class="pri" id="go">Open class progress</button><span class="msg" id="lmsg"></span></div>
+      <input id="key" type="password" placeholder="Lecturer key or admin key" autocomplete="current-password" style="min-width:240px"><button class="pri" id="go">Open class progress</button><span class="msg" id="lmsg"></span></div>
   </section>
 
   <section class="card hide" id="classlist">
@@ -37,6 +38,13 @@ details summary{cursor:pointer;font-weight:600;color:var(--navy)}
     <textarea id="cl" rows="5" placeholder="2025123456, NUR AISYAH BINTI AHMAD, M1FN7"></textarea>
     <div class="row"><button id="clfile-btn">Load CSV file</button><input type="file" id="clfile" accept=".csv,.txt" hidden><label class="muted"><input type="checkbox" id="clkeep"> Remember this list on this computer</label><button class="pri" id="clgo">Match and show progress</button><span class="msg" id="cmsg"></span></div>
   </section>
+
+  <section class="card own hide" id="lectsec"><h2>Lecturer accounts (owner)</h2>
+      <p class="muted">Give each lecturer their own key instead of your admin key. A lecturer key opens lecturer mode and Class progress, but only for the class groups and courses you choose. Lecturers cannot export research data, remove student data or create other lecturers. The key is shown only once: send it to the lecturer privately.</p>
+      <div class="row"><input id="lname" placeholder="Lecturer name, e.g. Dr Aminah Salleh" style="min-width:240px"><input id="lgroups" placeholder="Class groups, e.g. NBF7M, NBF7N" style="min-width:220px"><label class="muted"><input type="checkbox" class="lc" value="deriv" checked> Derivatives</label><label class="muted"><input type="checkbox" class="lc" value="invest"> Investment</label><button class="pri" id="lcreate">Create key</button><span class="msg" id="lmsg2"></span></div>
+      <div id="lnew" class="hide" style="margin-top:10px;padding:12px;border:1px solid var(--gold);background:var(--gold-soft);border-radius:10px"></div>
+      <div class="tw" style="margin-top:12px"><table id="ltbl"></table></div>
+    </section>
 
   <section class="hide" id="dash">
     <div class="kpis" id="kpis"></div>
@@ -51,8 +59,8 @@ details summary{cursor:pointer;font-weight:600;color:var(--navy)}
     <section class="card" style="margin-top:14px"><h2>4 · Reported questions</h2><p class="muted">Problems that students reported with a question (answer key, unclear wording, typos). Check the question by its code in lecturer mode.</p><div class="tw" style="max-height:360px"><table id="rtbl"></table></div></section>
     <section class="card" style="margin-top:14px"><h2>5 · Manage</h2>
       <details><summary>Reset a student's PIN</summary><p class="muted">The student's next sign-in sets a new PIN. Their progress is kept.</p><div class="row"><input id="rid" placeholder="Student ID" inputmode="numeric"><button id="rgo">Reset PIN</button><span class="msg" id="rmsg"></span></div></details>
-      <details style="margin-top:10px"><summary>Research data export</summary><p class="muted">Only students who ticked the optional research consent. No names and no student IDs: each student has a fixed participant code. Use this only for research approved by the ethics committee.</p><div class="row"><button id="resgo">Download research CSV</button><span class="msg" id="resmsg"></span></div></details>
-      <details style="margin-top:10px"><summary>Remove a student's data (withdrawal)</summary><p class="muted">Deletes the student's account, progress and results on the server for this course. This cannot be undone. Their own device keeps its copy.</p><div class="row"><input id="did" placeholder="Student ID" inputmode="numeric"><input id="dconf" placeholder="Type DELETE"><button class="danger" id="dgo">Remove data</button><span class="msg" id="dmsg"></span></div></details>
+      <details style="margin-top:10px" class="own"><summary>Research data export</summary><p class="muted">Only students who ticked the optional research consent. No names and no student IDs: each student has a fixed participant code. Use this only for research approved by the ethics committee.</p><div class="row"><button id="resgo">Download research CSV</button><span class="msg" id="resmsg"></span></div></details>
+      <details style="margin-top:10px" class="own"><summary>Remove a student's data (withdrawal)</summary><p class="muted">Deletes the student's account, progress and results on the server for this course. This cannot be undone. Their own device keeps its copy.</p><div class="row"><input id="did" placeholder="Student ID" inputmode="numeric"><input id="dconf" placeholder="Type DELETE"><button class="danger" id="dgo">Remove data</button><span class="msg" id="dmsg"></span></div></details>
     </section>
   </section>
 </main>
@@ -61,13 +69,13 @@ const API = window.PF_API || 'https://praktifin-api.fahmirahim0.workers.dev';
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 let KEY = sessionStorage.getItem('pf-admin') || '', COURSE = sessionStorage.getItem('pf-course') || 'deriv';
-let CLASS = [], MAP = {}, STUDENTS = [], RESULTS = [], ROWS = [], SORT = { k: 'name', d: 1 };
+let W = null, CLASS = [], MAP = {}, STUDENTS = [], RESULTS = [], ROWS = [], SORT = { k: 'name', d: 1 };
 const LSK = () => 'pf-classlist-' + COURSE;
 
 async function api(path, opt = {}) {
   const r = await fetch(API + path, { method: opt.method || 'GET', headers: { 'Content-Type': 'application/json', 'X-Admin-Key': KEY }, body: opt.body ? JSON.stringify(opt.body) : undefined });
   const j = await r.json().catch(() => ({}));
-  if (r.status === 403) throw new Error('The admin key is not right.');
+  if (r.status === 403) throw new Error(j.error === 'owner_only' ? 'Only the owner can do this.' : 'This key is not right, or not for this course.');
   if (!j.ok) throw new Error(j.error || 'Server error');
   return j;
 }
@@ -86,8 +94,14 @@ function parseList(txt) {
 async function openPanel() {
   $('#lmsg').textContent = 'Checking…';
   try {
+    W = await api('/v1/admin/whoami');
+    if (!(W.courses || []).includes(COURSE)) throw new Error('This key is not for this course. Choose the other course.');
     await api('/v1/admin/students?course=' + COURSE);
     sessionStorage.setItem('pf-admin', KEY); sessionStorage.setItem('pf-course', COURSE);
+    document.body.classList.toggle('lect', W.role !== 'owner');
+    $('#whob').classList.remove('hide');
+    $('#whob').innerHTML = W.role === 'owner' ? '<b>Signed in as owner.</b> <span class="muted">You see every group and can manage lecturer keys below.</span>' : `<b>Signed in as ${esc(W.name)}.</b> <span class="muted">Your class groups: ${esc((W.groups || []).join(', '))}. You see only these groups.</span>`;
+    if (W.role === 'owner') { $('#lectsec').classList.remove('hide'); loadLecturers(); }
     $('#login').classList.add('hide'); $('#classlist').classList.remove('hide'); $('#signout').classList.remove('hide');
     $('#hd').textContent = ($('#course').selectedOptions[0] || {}).text + ' · class progress';
     const saved = localStorage.getItem(LSK()); if (saved) { $('#cl').value = saved; $('#clkeep').checked = true; await match(); }
@@ -176,6 +190,30 @@ $('#rgo').addEventListener('click', async () => { const id = $('#rid').value.tri
 $('#resgo').addEventListener('click', async () => { try { const j = await api('/v1/admin/research?course=' + COURSE); download(`PraktiFin ${COURSE} research data ${new Date().toISOString().slice(0, 10)}.csv`, [['participant', 'group', 'time', 'code', 'topic', 'level', 'source', 'got', 'out_of', 'wrong', 'topic_key', 'question_ids', 'first_answers', 'seconds']].concat(j.results.map((x) => [x.participant, x.grp, x.time, x.code, x.topic, x.level, x.source, x.got, x.out_of, x.wrong, x.tkey, x.sid, x.ans, x.secs]))); $('#resmsg').textContent = `${j.participants} participants, ${j.results.length} rows.`; } catch (e) { $('#resmsg').textContent = e.message; } });
 $('#dgo').addEventListener('click', async () => { const id = $('#did').value.trim(); if (!/^\d{10}$/.test(id) || $('#dconf').value !== 'DELETE') { $('#dmsg').textContent = 'Type the 10-digit ID and DELETE in capitals.'; return; } try { await api('/v1/admin/delete', { method: 'POST', body: { course: COURSE, id, confirm: 'DELETE' } }); $('#dmsg').textContent = 'Removed.'; $('#dconf').value = ''; await load(); } catch (e) { $('#dmsg').textContent = e.message; } });
 $('#signout').addEventListener('click', () => { sessionStorage.removeItem('pf-admin'); KEY = ''; location.reload(); });
+
+async function loadLecturers() {
+  try {
+    const j = await api('/v1/admin/lecturers');
+    $('#ltbl').innerHTML = '<thead><tr><th>Name</th><th>Groups</th><th>Courses</th><th>Created</th><th>Last used</th><th>Status</th><th></th></tr></thead><tbody>' + (j.lecturers.length ? j.lecturers.map((l) => `<tr><td>${esc(l.name)}</td><td>${esc(l.groups.replace(/,/g, ', '))}</td><td>${esc(l.courses.replace('deriv', 'Derivatives').replace('invest', 'Investment').replace(/,/g, ', '))}</td><td>${esc(String(l.created).slice(0, 10))}</td><td>${esc(l.last_used ? String(l.last_used).slice(0, 10) : 'never')}</td><td>${l.active ? '<span class="pill p-ok">Active</span>' : '<span class="pill p-no">Revoked</span>'}</td><td>${l.active ? `<button class="danger" data-rev="${esc(l.lid)}" data-name="${esc(l.name)}">Revoke</button>` : ''}</td></tr>`).join('') : '<tr><td colspan="7" class="muted">No lecturer keys yet.</td></tr>') + '</tbody>';
+    document.querySelectorAll('[data-rev]').forEach((b) => b.addEventListener('click', async () => {
+      if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = 'Click again to revoke'; return; }
+      try { await api('/v1/admin/lecturers/revoke', { method: 'POST', body: { lid: b.dataset.rev } }); loadLecturers(); } catch (e) { $('#lmsg2').textContent = e.message; }
+    }));
+  } catch (e) { $('#ltbl').innerHTML = `<tbody><tr><td class="muted">${esc(e.message === 'server_error' ? 'Lecturer accounts are not set up on the server yet.' : e.message)}</td></tr></tbody>`; }
+}
+$('#lcreate').addEventListener('click', async () => {
+  const name = $('#lname').value.trim(), groups = $('#lgroups').value.split(/[,\s]+/).map((g) => g.trim().toUpperCase()).filter(Boolean), courses = [...document.querySelectorAll('.lc:checked')].map((c) => c.value);
+  if (name.length < 3 || !groups.length || !courses.length) { $('#lmsg2').textContent = 'Type a name, at least one class group and tick a course.'; return; }
+  try {
+    const j = await api('/v1/admin/lecturers', { method: 'POST', body: { name, groups, courses } });
+    const app = courses.includes('deriv') ? 'https://fahmirahim0.github.io/praktifin/derivatives/' : 'https://fahmirahim0.github.io/praktifin/investment/';
+    const msg = `Your PraktiFin lecturer key: ${j.key}\nClass groups: ${j.groups.join(', ')}\nCourses: ${j.courses.map((c) => (c === 'deriv' ? 'Derivatives' : 'Investment')).join(', ')}\n\nClass progress: ${app}class.html\nLecturer mode: open ${app} and use Open in lecturer mode on the first screen.\n\nPlease keep this key private and do not share it with students. Terms of use: https://fahmirahim0.github.io/praktifin/terms.html`;
+    $('#lnew').classList.remove('hide');
+    $('#lnew').innerHTML = `<b>Key for ${esc(j.name)} created.</b> It is shown only now. Copy the message below and send it to the lecturer privately (for example by WhatsApp).<textarea id="lmsgtxt" rows="8" readonly style="margin-top:8px">${esc(msg)}</textarea><div class="row" style="margin-top:6px"><button id="lcopy">Copy message</button><span class="msg" id="lcmsg"></span></div>`;
+    $('#lcopy').addEventListener('click', async () => { const t = $('#lmsgtxt'); let ok = false; try { await navigator.clipboard.writeText(t.value); ok = true; } catch (e) { t.select(); try { ok = document.execCommand('copy'); } catch (x) {} } $('#lcmsg').textContent = ok ? 'Copied.' : 'Select the text and copy it.'; });
+    $('#lname').value = ''; $('#lgroups').value = ''; $('#lmsg2').textContent = ''; loadLecturers();
+  } catch (e) { $('#lmsg2').textContent = e.message === 'bad_input' ? 'Check the name, groups (letters and digits) and course.' : e.message; }
+});
 if (KEY) { $('#course').value = COURSE; openPanel(); }
 </script>
 </body></html>

@@ -5771,7 +5771,8 @@ welcomeHTML = function (edit) {
   const h = _welcomeHTMLfair(edit);
   if (edit) return h;
   return h.replace('Lecturer mode opens the questions without a student name. Nothing is marked or recorded, and you can choose the level.',
-    'Lecturer mode opens the questions with their answers, without a student name. Nothing is marked or recorded. It needs your lecturer key (the admin key of Class progress) and works on the website only.')
+    'Lecturer mode opens the questions with their answers, without a student name. Nothing is marked or recorded. It needs your lecturer key and works on the website only.')
+    .replace('<div class="row"><button type="button" class="btn primary" id="w-go">', '<p class="lbl plain">By continuing you agree to the <a href="https://fahmirahim0.github.io/praktifin/terms.html" target="_blank" rel="noopener">Terms of use</a>.</p><div class="row"><button type="button" class="btn primary" id="w-go">')
     .replace('<button type="button" class="btn" id="w-lect">Open in lecturer mode</button>', '<input id="w-lkey" type="password" placeholder="Lecturer key" autocomplete="current-password" style="width:200px"><button type="button" class="btn" id="w-lect">Open in lecturer mode</button><span class="lbl plain" id="w-lmsg" aria-live="polite"></span>');
 };
 const _wireWelcomeFair = wireWelcome;
@@ -5789,7 +5790,7 @@ wireWelcome = function (edit) {
     msg('Checking…'); fresh.disabled = true;
     const r = await FAIR.checkKey(key); fresh.disabled = false;
     if (r === 'ok') { sessionStorage.setItem(FAIR.LKEY, '1'); FAIR.enterLecturer(); return; }
-    msg(r === 'wrong' ? 'This lecturer key is not right.' : 'Lecturer mode needs the website link and an internet connection.');
+    msg(r === 'wrong' ? 'This key is not right, or not for this course.' : 'Lecturer mode needs the website link and an internet connection.');
   });
 };
 
@@ -5831,7 +5832,8 @@ document.addEventListener('click', (e) => {
     FAIR.openReport({ qcode: code, topic: T().short, key: ST.topic });
   }
 });
-(function () { const f = document.querySelector('.foot'); if (f && !f.querySelector('.ver')) f.insertAdjacentHTML('beforeend', ` <span class="ver">${APP_VERSION}.</span>`); })();
+const TERMS_URL = 'https://fahmirahim0.github.io/praktifin/terms.html';
+(function () { const f = document.querySelector('.foot'); if (f && !f.querySelector('.ver')) f.insertAdjacentHTML('beforeend', ` <span class="ver">${APP_VERSION}.</span> <a href="${TERMS_URL}" target="_blank" rel="noopener">Terms of use</a>`); })();
 
 const _renderResults = renderResults;
 renderResults = function () {
