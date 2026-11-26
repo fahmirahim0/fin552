@@ -3605,6 +3605,7 @@ const MR_C = {
 };
 const mrR = (c, x) => { const k = Math.pow(10, MR_C[c].d); const v = Math.round(x * k) / k; return v === 0 ? 0 : v; };
 const mrTk = (c, x) => { const t = MR_C[c].tick; return mrR(c, Math.round(x / t) * t); };
+const rmS = (x) => (x < 0 ? '−RM' : 'RM') + E.num(Math.abs(x));
 const mrRM = (x) => { const v = Math.round(x * 100) / 100; return v === 0 ? 0 : v; };
 
 /* ---------------- market data ---------------- */
@@ -3686,8 +3687,8 @@ function mrPool(D, R, L) {
   const dOI = D.tot.oi - D.tot.oi0;
   out.oiChg = () => num('By how many contracts did total open interest change today? (minus sign for a fall)', dOI, { unit: 'contracts', tol: 0, signed: true, how: `${E.num(D.tot.oi)} − ${E.num(D.tot.oi0)} = ${E.num(dOI)} contracts.`, hint: 'Change in open interest = today’s total − yesterday’s total.' });
   out.oiMean = () => mcq('What does the change in total open interest tell you?', dOI > 0 ? 'On balance, traders opened new positions' : 'On balance, traders closed existing positions', ['On balance, traders opened new positions', 'On balance, traders closed existing positions', 'Prices must rise tomorrow', 'Trading volume was zero'], `Open interest ${dOI > 0 ? 'rose' : 'fell'} by ${E.num(Math.abs(dOI))} contracts.`, 'Open interest rises when new buyers and sellers open positions and falls when traders close them.');
-  out.mtmL = (i = ix(), k = pick([2, 3, 4, 5, 8, 10])) => rm(`An investor bought ${k} ${months[i]} contracts at yesterday’s settlement. What is the investor’s mark-to-market gain or loss today? (minus sign for a loss)`, mtmVal(rows[i].chg, k), { how: `Long: (${E.num(rows[i].sett, C.d)} − ${E.num(rows[i].prev, C.d)}) ${c === 'FKB3' || c === 'FMG' ? '÷ 0.01 × RM' + E.num(C.val / 100) : '× RM' + C.val} × ${k} = RM${E.num(mtmVal(rows[i].chg, k))}.`, hint: `Gain or loss = (today’s settlement − yesterday’s settlement) × value per ${c === 'FKB3' || c === 'FMG' ? '0.01 move' : 'point or tonne'} × contracts. ${C.sizeTxt}` });
-  out.mtmS = (i = ix(), k = pick([2, 3, 4, 6, 10, 12])) => rm(`A dealer sold (went short) ${k} ${months[i]} contracts at yesterday’s settlement. What is the dealer’s mark-to-market gain or loss today? (minus sign for a loss)`, mtmVal(-rows[i].chg, k), { how: `Short: (${E.num(rows[i].prev, C.d)} − ${E.num(rows[i].sett, C.d)}) ${c === 'FKB3' || c === 'FMG' ? '÷ 0.01 × RM' + E.num(C.val / 100) : '× RM' + C.val} × ${k} = RM${E.num(mtmVal(-rows[i].chg, k))}.`, hint: `A short position gains when the price falls. ${C.sizeTxt}` });
+  out.mtmL = (i = ix(), k = pick([2, 3, 4, 5, 8, 10])) => rm(`An investor bought ${k} ${months[i]} contracts at yesterday’s settlement. What is the investor’s mark-to-market gain or loss today? (minus sign for a loss)`, mtmVal(rows[i].chg, k), { how: `Long: (${E.num(rows[i].sett, C.d)} − ${E.num(rows[i].prev, C.d)}) ${c === 'FKB3' || c === 'FMG' ? '÷ 0.01 × RM' + E.num(C.val / 100) : '× RM' + C.val} × ${k} = ${rmS(mtmVal(rows[i].chg, k))}.`, hint: `Gain or loss = (today’s settlement − yesterday’s settlement) × value per ${c === 'FKB3' || c === 'FMG' ? '0.01 move' : 'point or tonne'} × contracts. ${C.sizeTxt}` });
+  out.mtmS = (i = ix(), k = pick([2, 3, 4, 6, 10, 12])) => rm(`A dealer sold (went short) ${k} ${months[i]} contracts at yesterday’s settlement. What is the dealer’s mark-to-market gain or loss today? (minus sign for a loss)`, mtmVal(-rows[i].chg, k), { how: `Short: (${E.num(rows[i].prev, C.d)} − ${E.num(rows[i].sett, C.d)}) ${c === 'FKB3' || c === 'FMG' ? '÷ 0.01 × RM' + E.num(C.val / 100) : '× RM' + C.val} × ${k} = ${rmS(mtmVal(-rows[i].chg, k))}.`, hint: `A short position gains when the price falls. ${C.sizeTxt}` });
   out.spread = () => { const a = ri(1, n - 1), v = mrR(c, rows[a].sett - rows[0].sett); return num(`What is the calendar spread between ${months[a]} and ${months[0]} (${months[a]} − ${months[0]})? (minus sign if negative)`, v, { signed: true, how: `${E.num(rows[a].sett, C.d)} − ${E.num(rows[0].sett, C.d)} = ${E.num(v, C.d)}.`, hint: 'Spread = settlement of the far month − settlement of the near month.' }); };
   if (D.spot && (c === 'FCPO' || c === 'FKLI')) {
     out.basis = (i = 0) => { const v = c === 'FKLI' ? Math.round((D.spot.v - rows[i].sett) * 100) / 100 : mrR(c, D.spot.v - rows[i].sett); return num(`Using the ${C.spotName === 'FBM KLCI' ? 'FBM KLCI' : D.spot.name}, what is the basis for ${months[i]}? (basis = spot − futures; minus sign if negative)`, v, { signed: true, tol: c === 'FKLI' ? 0.01 : 0, how: `${E.num(D.spot.v, c === 'FKLI' ? 2 : 0)} − ${E.num(rows[i].sett, C.d)} = ${E.num(v, c === 'FKLI' ? 2 : 0)}.`, hint: 'Basis = spot price − futures price. Use the spot (physical or cash index) figure given in the report.' }); };
@@ -3718,7 +3719,7 @@ function buildReport(s) {
     if (it.type === 'mcq') { mcqs[q.id] = mcqFrom(s.id + q.id + (s.seed || 0) + c, it.a, it.w, ['None of the above']); key[q.id] = mcqs[q.id].a; }
     else key[q.id] = it.a;
   });
-  const steps = [{ title: 'Answers and working', table: { head: ['No.', 'Question', 'Answer', 'How'], rows: items.map((it, i) => [String(i + 1), it.q, it.type === 'mcq' ? it.a : (it.unit === 'RM' ? 'RM' + E.num(it.a) : E.num(it.a, Math.abs(it.a % 1) > 0 ? (MR_C[c].d || 2) : 0) + (it.unit && it.unit !== 'RM per tonne' ? ' ' + it.unit : '')), it.how || ''] ) } }];
+  const steps = [{ title: 'Answers and working', table: { head: ['No.', 'Question', 'Answer', 'How'], rows: items.map((it, i) => [String(i + 1), it.q, it.type === 'mcq' ? it.a : (it.unit === 'RM' ? rmS(it.a) : E.num(it.a, Math.abs(it.a % 1) > 0 ? (MR_C[c].d || 2) : 0) + (it.unit && it.unit !== 'RM per tonne' ? ' ' + it.unit : '')), it.how || ''] ) } }];
   steps.push({ title: 'Remember', lines: ['Mark-to-market always uses the settlement price.', 'Yesterday’s settlement = today’s settlement − change.', 'Basis = spot − futures. Spread = far month − near month.', MR_C[c].sizeTxt] });
   return { s, D, key, mcqs, items, res: { title: `Market report ${CNAME[c]}: answers`, steps, result: {} }, c };
 }
@@ -3777,7 +3778,7 @@ const _correctTextMR = correctText;
 correctText = function (q, B) {
   if (!isMR() || q.type !== 'num') return _correctTextMR(q, B);
   const k = B.key[q.id], d = MR_C[B.c].d;
-  if (q.unit === 'RM') return 'RM' + E.num(k);
+  if (q.unit === 'RM') return rmS(k);
   if (q.unit === '%') return E.num(k, 2) + '%';
   if (q.unit === 'contracts') return E.num(k) + ' contracts';
   return E.num(k, Math.abs(k % 1) > 0 ? Math.max(d, 1) : 0) + (B.c === 'FCPO' ? ' (RM per tonne)' : B.c === 'FKLI' ? ' points' : '');
@@ -3794,6 +3795,185 @@ renderAnswers = function (B) {
   const h = _renderAnswersMR(B);
   if (!isMR()) return h;
   return h.replace(/<p class="lbl plain">Outside the table[\s\S]*?<\/p>/, '<p class="lbl plain">Type prices exactly as they appear in the report. Type a fall, a negative figure or a loss with a minus sign, for example −38 or -2350. Commas are fine. Ringgit amounts are accepted within ±RM1.</p>');
+};
+
+/* =================================== DECISION MODULE ===================================
+   Core layer, CLO1 "associate the mechanics of hedging, speculating and arbitraging ... in order to make decision within
+   its regulatory framework" (C4). The final examination JSU puts 70% of marks at C3 to C4 and 10% at C5 to C6.
+   Level 1 (C3): choose the position, month and size. Level 2 (C4): work out the result and analyse it.
+   Level 3 (C5): judge and justify. Each set: one firm and a short market note, 10 questions of 1 mark.
+   Conventions follow the rest of the app: futures month = month of the spot deal (for quarterly contracts, the first
+   quarterly month on or after the deal); contracts rounded down; reverse cash and carry is impractical (no arbitrage);
+   after a margin call the account is topped up to the initial margin. */
+Object.assign(STRAT, { decide: 'Decisions' });
+Object.assign(STRAT_T, { decide: 'Decisions' });
+const DC_LVL = {
+  1: 'Apply the rules: which position, which month, how many contracts.',
+  2: 'Analyse the result: futures gain or loss, what the hedge did, margin calls.',
+  3: 'Judge and justify: should the firm hedge, how much, and was it the right call?'
+};
+const DC_C = {
+  FCPO: { d: 0, tick: 1, val: 25, cn: 'FCPO', px: (v) => 'RM' + E.num(v), ux: ' per tonne' },
+  FKLI: { d: 1, tick: 0.5, val: 50, cn: 'FKLI', px: (v) => E.num(v, 1), ux: ' points' },
+  FKB3: { d: 2, tick: 0.01, val: 2500, cn: 'FKB3', px: (v) => E.num(v, 2), ux: '' },
+  FMG: { d: 2, tick: 0.01, val: 1000, cn: 'FMG5', px: (v) => E.num(v, 2), ux: '' }
+};
+const dcR = (c, x) => { const k = Math.pow(10, DC_C[c].d); const v = Math.round(x * k) / k; return v === 0 ? 0 : v; };
+const dcTk = (c, x) => { const t = DC_C[c].tick; return dcR(c, Math.round(x / t) * t); };
+const dcPL = (c, d, n) => { const v = Math.round(Math.round(d / DC_C[c].tick) * DC_C[c].tick * DC_C[c].val * n * 100) / 100; return v === 0 ? 0 : v; };
+const DC_FIRMS = {
+  FCPO: { short: ['Ladang Sri Kenanga Berhad', 'Perkebunan Bukit Jati Sdn Bhd', 'Sawit Seri Jaya Berhad'], long: ['Kilang Penapis Selat Berhad', 'Minyak Makan Murni Sdn Bhd', 'Oleo Harmoni Berhad'] },
+  FKLI: { short: ['Dana Amanah Cempaka', 'Tabung Ekuiti Seri', 'Pelaburan Mutiara Berhad'], long: ['Kumpulan Wang Simpanan Seri', 'Dana Pencen Teratai', 'Takaful Wira Berhad'] },
+  FKB3: { short: ['Pembinaan Jaya Berhad', 'Hartanah Puncak Berhad', 'Logistik Nusa Berhad'], long: ['Syarikat Dana Makmur Berhad', 'Koperasi Wawasan Berhad', 'Teknologi Cahaya Berhad'] },
+  FMG: { short: ['Bank Seri Bandar Berhad (treasury)', 'Insurans Damai Berhad', 'Dana Bon Amanah'], long: ['Kumpulan Wang Persaraan Seri', 'Takaful Wira Berhad', 'Dana Pendapatan Tetap Mutiara'] }
+};
+const DC_TRADERS = ['Encik Hafiz', 'Puan Aina', 'Cik Mei Ling', 'Encik Ravi', 'Puan Suraya', 'Encik Daniel'];
+
+function dcScenario(c, seed, L) {
+  const R = rng(seed), ri = (a, b) => a + Math.floor(R() * (b - a + 1)), rf = (a, b) => a + R() * (b - a), pick = (a) => a[Math.floor(R() * a.length)];
+  const C = DC_C[c], y = 2026 + ri(0, 1), m0 = ri(0, 11), side = R() < 0.5 ? 'short' : 'long';
+  const S = { c, side, L, firm: pick(DC_FIRMS[c][side]), today: `${ri(2, 12)} ${MR_MON[m0]} ${y}` };
+  let months = [];
+  if (c === 'FCPO') for (let i = 1; i <= 6; i++) months.push(m0 + i);
+  else if (c === 'FKLI') { months = [m0, m0 + 1]; let q = m0 + 2; while (months.length < 4) { if ((q % 12) % 3 === 2) months.push(q); q++; } }
+  else { let q = m0 + 1; while (months.length < 4) { if ((q % 12) % 3 === 2) months.push(q); q++; } }
+  S.mlab = months.map((m) => MR_MON[m % 12] + ' ' + (y + Math.floor(m / 12)));
+  S.mname = months.map((m) => MR_MON[m % 12]);
+  const di = c === 'FCPO' ? ri(1, 4) : c === 'FKLI' ? ri(1, 2) : ri(0, 2);
+  S.di = di; S.dealMonth = S.mname[di]; S.dealLab = S.mlab[di];
+  /* the deal for FKB3/FMG may fall in a non-quarterly month: the hedge then uses the first quarterly month on or after it */
+  S.dealText = S.dealMonth;
+  if ((c === 'FKB3' || c === 'FMG') && di > 0 && R() < 0.5) { const back = months[di] - ri(1, 2); if (back > m0) S.dealText = MR_MON[back % 12]; }
+  const up = R() < 0.5;
+  let base, step;
+  if (c === 'FCPO') { base = ri(3800, 4800); step = () => ri(20, 90); }
+  else if (c === 'FKLI') { base = dcTk(c, rf(1450, 1700)); step = () => dcTk(c, rf(1, 8)); }
+  else if (c === 'FKB3') { base = dcTk(c, rf(96.1, 97)); step = () => dcTk(c, rf(0.02, 0.08)); }
+  else { base = dcTk(c, rf(104, 112)); step = () => dcTk(c, rf(0.08, 0.3)); }
+  S.f0 = [base]; for (let i = 1; i < months.length; i++) S.f0.push(dcR(c, S.f0[i - 1] + (up ? 1 : -1) * step()));
+  /* exposure size */
+  if (c === 'FCPO') { const n = ri(8, 60); S.qty = n * 25 + (L >= 2 ? pick([0, 0, ri(1, 24)]) : 0); S.nf = Math.floor(S.qty / 25); }
+  else if (c === 'FKLI') { S.beta = L === 1 ? 1 : pick([0.8, 0.9, 1.1, 1.2, 1.25, 1.3]); S.port = ri(8, 60) * 1000000; S.nf = Math.floor(S.port * S.beta / (S.f0[di] * 50)); }
+  else if (c === 'FKB3') { S.principal = ri(5, 60) * 1000000; S.nf = S.principal / 1000000; S.margin = side === 'short' ? pick([1, 1.5, 2]) : 0; }
+  else { S.face = ri(5, 80) * 1000000; S.nf = S.face / 100000; }
+  if (L === 3) { S.pct = pick([50, 60, 75, 80]); S.nfP = Math.floor(S.nf * S.pct / 100); }
+  /* the later move: feared at level 2, either way at level 3 */
+  const feared = side === 'short' ? -1 : 1, way = L === 2 ? feared : R() < 0.6 ? feared : -feared;
+  const mv = c === 'FCPO' ? ri(60, 420) : c === 'FKLI' ? dcTk(c, rf(15, 90)) : c === 'FKB3' ? dcTk(c, rf(0.08, 0.6)) : dcTk(c, rf(0.3, 2.2));
+  S.way = way; S.f1 = dcR(c, S.f0[di] + way * mv); S.mv = mv;
+  const nUsed = L === 3 ? S.nfP : S.nf;
+  S.futPL = dcPL(c, side === 'short' ? S.f0[di] - S.f1 : S.f1 - S.f0[di], nUsed);
+  /* speculator, spread, arbitrage, margin */
+  S.trader = pick(DC_TRADERS); S.view = R() < 0.5 ? 'up' : 'down';
+  S.sprView = R() < 0.5 ? 'near' : 'far';
+  if (c !== 'FMG') { const fv = c === 'FCPO' ? dcR(c, S.f0[1] + (R() < 0.5 ? 1 : -1) * ri(25, 90)) : c === 'FKLI' ? dcTk(c, S.f0[1] + (R() < 0.5 ? 1 : -1) * rf(4, 15)) : dcTk(c, S.f0[1] + (R() < 0.5 ? 1 : -1) * rf(0.05, 0.2)); S.fv = fv; S.fvMonth = S.mlab[1]; }
+  const imPer = c === 'FCPO' ? pick([6000, 7000, 8000]) : c === 'FKLI' ? pick([5000, 6000, 7500]) : c === 'FKB3' ? 1000 : 2000;
+  S.mN = pick([2, 3, 4, 5]); S.TIM = imPer * S.mN; S.TMM = Math.round(S.TIM * 0.8); S.BM = Math.round(S.TIM * rf(R() < 0.75 ? 0.55 : 0.82, R() < 0.75 ? 0.79 : 0.97) / 10) * 10;
+  S.CM = S.BM < S.TMM ? S.TIM - S.BM : 0;
+  return S;
+}
+
+function dcPool(S, R) {
+  const c = S.c, C = DC_C[c], P = C.px, pick = (a) => a[Math.floor(R() * a.length)], short = S.side === 'short';
+  const cn = C.cn, dm = S.dealLab, nf = S.nf;
+  const mcq = (q, a, w, how, hint) => ({ type: 'mcq', q, a, w, how, hint });
+  const num = (q, a, unit, how, hint, extra) => Object.assign({ type: 'num', q, a, unit, tol: unit === 'RM' ? 1 : 0, how, hint }, extra || {});
+  const risk = { FCPO: short ? 'The CPO price falls before it sells' : 'The CPO price rises before it buys', FKLI: short ? 'The share market falls and the portfolio loses value' : 'The share market rises before it can invest', FKB3: short ? 'Interest rates rise before it borrows' : 'Interest rates fall before it deposits', FMG: short ? 'MGS yields rise, so bond prices fall' : 'MGS yields fall, so bond prices rise before it buys' }[c];
+  const riskW = { FCPO: ['The CPO price falls before it sells', 'The CPO price rises before it buys', 'The FCPO contract is cancelled by the exchange', 'The ringgit strengthens against the US dollar'], FKLI: ['The share market falls and the portfolio loses value', 'The share market rises before it can invest', 'Dividends are paid on the index shares', 'FKLI trading hours are shortened'], FKB3: ['Interest rates rise before it borrows', 'Interest rates fall before it deposits', 'The bank refuses the loan', 'The FKB3 contract expires early'], FMG: ['MGS yields rise, so bond prices fall', 'MGS yields fall, so bond prices rise before it buys', 'The government stops issuing MGS', 'The bonds pay a lower coupon'] }[c];
+  const pos = short ? `Sell (go short) ${cn}` : `Buy (go long) ${cn}`, posW = short ? `Buy (go long) ${cn}` : `Sell (go short) ${cn}`;
+  const posFull = `${short ? 'Sell' : 'Buy'} ${E.num(nf)} ${dm} ${cn} contracts`;
+  const posFullW = [`${short ? 'Buy' : 'Sell'} ${E.num(nf)} ${dm} ${cn} contracts`, `${short ? 'Sell' : 'Buy'} ${E.num(nf)} ${S.mlab[0]} ${cn} contracts`, `${short ? 'Sell' : 'Buy'} ${E.num(nf + 1)} ${dm} ${cn} contracts`, `${short ? 'Buy' : 'Sell'} ${E.num(nf)} ${S.mlab[S.mlab.length - 1]} ${cn} contracts`].filter((x) => x !== posFull);
+  const why = { FCPO: short ? 'a short futures position gains when the CPO price falls' : 'a long futures position gains when the CPO price rises', FKLI: short ? 'a short FKLI position gains when the market falls' : 'a long FKLI position gains when the market rises', FKB3: short ? 'FKB3 = 100 − rate, so its price falls when rates rise, and a short position gains' : 'FKB3 = 100 − rate, so its price rises when rates fall, and a long position gains', FMG: short ? 'a short FMG5 position gains when bond prices fall' : 'a long FMG5 position gains when bond prices rise' }[c];
+  const sizeHow = { FCPO: `${E.num(S.qty)} tonnes ÷ 25 = ${E.num(S.qty / 25, 2)}, rounded down to ${nf}.`, FKLI: `(RM${E.num(S.port)} × ${S.beta}) ÷ (${E.num(S.f0[S.di], 1)} × RM50) = ${E.num(S.port * S.beta / (S.f0[S.di] * 50), 2)}, rounded down to ${nf}.`, FKB3: `RM${E.num(S.principal)} ÷ RM1,000,000 = ${nf}.`, FMG: `RM${E.num(S.face)} ÷ RM100,000 = ${nf}.` }[c];
+  const sizeHint = { FCPO: 'Contracts = tonnes ÷ 25, rounded DOWN.', FKLI: 'Contracts = (portfolio × beta) ÷ (FKLI price of the hedge month × RM50), rounded DOWN.', FKB3: 'Contracts = principal ÷ RM1,000,000.', FMG: 'Contracts = nominal value of the bonds ÷ RM100,000.' }[c];
+  const monthHow = (c === 'FKB3' || c === 'FMG') && S.dealText !== S.dealMonth ? `The deal is in ${S.dealText}. ${cn} trades only in March, June, September and December, so use the first quarterly month on or after it: ${dm}.` : `Use the contract month of the spot deal: ${dm}.`;
+  const out = {};
+  out.risk = () => mcq(`What price risk does ${S.firm} face?`, risk, riskW, risk + '.', 'Ask what move in prices would hurt the firm’s planned deal.');
+  out.dir = () => mcq('Which futures position protects the firm?', pos, [posW, 'No futures position: simply wait and see', `Buy and sell the same number of ${cn} contracts`], `${pos}, because ${why}.`, 'Open the futures position that gains when the feared move happens.');
+  out.month = () => mcq('Which contract month should the hedge use?', dm, S.mlab.filter((x) => x !== dm), monthHow, 'Match the futures month to the timing of the spot deal.');
+  out.size = () => num('How many contracts are needed for a full hedge?', nf, 'contracts', sizeHow, sizeHint);
+  out.name = () => mcq('What is this strategy called?', short ? 'A short hedge (selling hedge)' : 'A long hedge (buying hedge)', ['A short hedge (selling hedge)', 'A long hedge (buying hedge)', 'A bull spread', 'Cash and carry arbitrage'], short ? 'A hedge that sells futures is a short (selling) hedge.' : 'A hedge that buys futures is a long (buying) hedge.', 'The hedge is named after the futures position.');
+  out.posFull = () => mcq('Which futures transaction should the firm make today?', posFull, posFullW, `${posFull}: right direction (${why}), month of the spot deal, ${nf} contracts.`, 'Check three things: the direction, the month and the number of contracts.');
+  out.spec = () => { const a = S.view === 'up' ? { FCPO: 'Buy FCPO now and sell it later at the higher price', FKLI: 'Buy FKLI now and sell it later', FKB3: 'Buy FKB3 now, because its price rises when rates fall', FMG: 'Buy FMG5 now, because bond prices rise when yields fall' }[c] : { FCPO: 'Sell FCPO now and buy it back later at the lower price', FKLI: 'Sell FKLI now and buy it back later', FKB3: 'Sell FKB3 now, because its price falls when rates rise', FMG: 'Sell FMG5 now, because bond prices fall when yields rise' }[c];
+    const all = [{ FCPO: 'Buy FCPO now and sell it later at the higher price', FKLI: 'Buy FKLI now and sell it later', FKB3: 'Buy FKB3 now, because its price rises when rates fall', FMG: 'Buy FMG5 now, because bond prices rise when yields fall' }[c], { FCPO: 'Sell FCPO now and buy it back later at the lower price', FKLI: 'Sell FKLI now and buy it back later', FKB3: 'Sell FKB3 now, because its price falls when rates rise', FMG: 'Sell FMG5 now, because bond prices fall when yields rise' }[c], `Buy the near month and sell the far month of ${cn}`, `Hold no position until the price has moved`];
+    return mcq(`${S.trader} ${S.view === 'up' ? { FCPO: 'expects CPO prices to rise', FKLI: 'expects the FBM KLCI to rise', FKB3: 'expects interest rates to fall', FMG: 'expects MGS yields to fall' }[c] : { FCPO: 'expects CPO prices to fall', FKLI: 'expects the FBM KLCI to fall', FKB3: 'expects interest rates to rise', FMG: 'expects MGS yields to rise' }[c]} and has no position in the market. What should a speculator do?`, a, all, a + '.', 'A speculator takes the position that profits if the view is right.'); };
+  out.spread = () => { const bull = S.sprView === 'near', a = bull ? `Bull spread: buy ${S.mlab[0]} and sell ${S.mlab[1]}` : `Bear spread: sell ${S.mlab[0]} and buy ${S.mlab[1]}`;
+    return mcq(`${S.trader} expects the ${S.mlab[0]} ${cn} price to ${bull ? 'gain against' : 'fall against'} the ${S.mlab[1]} price, but is unsure of the overall direction. Which spread fits this view?`, a, [`Bull spread: buy ${S.mlab[0]} and sell ${S.mlab[1]}`, `Bear spread: sell ${S.mlab[0]} and buy ${S.mlab[1]}`, `Buy both ${S.mlab[0]} and ${S.mlab[1]}`, `Sell both ${S.mlab[0]} and ${S.mlab[1]}`], `${a}: the spread profits when the near month ${bull ? 'strengthens' : 'weakens'} relative to the far month.`, 'In a bull spread you buy the near month and sell the far month; in a bear spread you do the opposite.'); };
+  if (S.fv !== undefined) out.arb = () => { const over = S.f0[1] > S.fv;
+    const opts = c === 'FKB3' ? ['FKB3 over-priced: sell FKB3, borrow short term, lend long term', 'FKB3 under-priced: buy FKB3, lend short term, borrow long term', 'No arbitrage: FKB3 is at its fair value', 'Buy FKB3 and hold it to maturity'] : [`Cash and carry: buy ${c === 'FCPO' ? 'CPO' : 'the index shares'} and sell ${cn}`, `Reverse cash and carry (${cn} under-priced): impractical, so no arbitrage`, `Buy ${cn} and sell ${c === 'FCPO' ? 'CPO' : 'the index shares'} today`, `No arbitrage: ${cn} is at its fair value`];
+    const a = c === 'FKB3' ? (over ? opts[0] : opts[1]) : (over ? opts[0] : opts[1]);
+    return mcq(`The fair value of ${S.fvMonth} ${cn} is ${P(S.fv)} but it trades at ${P(S.f0[1])}. What should an arbitrageur do?`, a, opts, `${P(S.f0[1])} is ${over ? 'above' : 'below'} the fair value of ${P(S.fv)}, so ${cn} is ${over ? 'over-priced' : 'under-priced'}: ${a}.`, 'Compare the futures price with its fair value. Over-priced: sell the futures. Under-priced: buy the futures.'); };
+  out.marginAmt = () => num(`${S.trader} holds ${S.mN} ${cn} contracts. Total initial margin is RM${E.num(S.TIM)} and total maintenance margin is RM${E.num(S.TMM)}. After today’s loss the balance is RM${E.num(S.BM)}. How much must be deposited today? (0 if no margin call)`, S.CM, 'RM', S.CM ? `RM${E.num(S.BM)} is below the maintenance margin, so top up to the initial margin: ${E.num(S.TIM)} − ${E.num(S.BM)} = RM${E.num(S.CM)}.` : `RM${E.num(S.BM)} is still at or above the maintenance margin of RM${E.num(S.TMM)}, so there is no margin call.`, 'A margin call happens only when the balance falls below the maintenance margin. The deposit brings the account back up to the initial margin.');
+  out.marginRule = () => mcq('A margin call is made. How much must the trader deposit?', 'Enough to bring the account back up to the initial margin', ['Enough to bring the account back up to the maintenance margin', 'The full value of the contracts', 'Nothing, the broker covers the loss', 'Only the loss for the day'], 'After a margin call the account is topped up to the initial margin.', 'Variation margin restores the initial margin, not the maintenance margin.');
+  out.reg = (k) => { const V = [
+    () => mcq('Which body guarantees every trade on Bursa Malaysia Derivatives by becoming the buyer to every seller and the seller to every buyer?', 'Bursa Malaysia Derivatives Clearing Berhad', ['Securities Commission Malaysia', 'Bursa Malaysia Derivatives Berhad', 'Bank Negara Malaysia'], 'The clearing house, Bursa Malaysia Derivatives Clearing Berhad, stands between buyer and seller.', 'Think of the clearing house.'),
+    () => mcq('Which body is the main regulator of the Malaysian derivatives market?', 'Securities Commission Malaysia', ['Bursa Malaysia Derivatives Berhad', 'Bursa Malaysia Derivatives Clearing Berhad', 'Bank Negara Malaysia'], 'The Securities Commission Malaysia regulates the capital market, including derivatives.', 'Think of the regulator, not the exchange.'),
+    () => mcq(`Which body runs the exchange on which ${cn} is traded?`, 'Bursa Malaysia Derivatives Berhad', ['Securities Commission Malaysia', 'Bursa Malaysia Derivatives Clearing Berhad', 'Bank Negara Malaysia'], 'Bursa Malaysia Derivatives Berhad is the exchange.', 'Think of the exchange, not the clearing house.')
+  ]; return (k === undefined ? pick(V) : V[k])(); };
+  out.pl = () => { const n = S.L === 3 ? S.nfP : nf; return num(`Later, the ${dm} ${cn} price is ${P(S.f1)}. The firm closes its ${E.num(n)} contracts. What is the gain or loss on the futures? (minus sign for a loss)`, S.futPL, 'RM', `${short ? `Short: (${E.num(S.f0[S.di], C.d)} − ${E.num(S.f1, C.d)})` : `Long: (${E.num(S.f1, C.d)} − ${E.num(S.f0[S.di], C.d)})`} ${c === 'FKB3' || c === 'FMG' ? '÷ 0.01 × RM' + E.num(C.val / 100) : '× RM' + C.val} × ${n} = ${rmS(S.futPL)}.`, 'Futures gain or loss = price change × value per point (or per tonne, or per 0.01) × contracts, with the sign for your position.', { signed: true }); };
+  const hit = S.futPL > 0;
+  out.effect = () => mcq('What did the hedge do for the firm?', hit ? 'The futures gain offsets the loss in the spot market' : 'The futures loss offsets the gain in the spot market', ['The futures gain offsets the loss in the spot market', 'The futures loss offsets the gain in the spot market', 'The firm gains in both markets', 'The firm loses in both markets'], hit ? 'The feared move happened: the futures gained while the spot deal became worse.' : 'Prices moved in the firm’s favour: the spot deal improved, and the futures loss gave most of that back.', 'In a hedge the two markets move against each other.');
+  out.other = () => mcq('If prices had moved the other way, what would the hedge have done?', 'The futures would lose, giving back most of the better spot price', ['The futures would also gain, doubling the profit', 'Nothing, because the hedge only works one way', 'The exchange would cancel the futures contracts'], 'A hedge locks in a price: it removes the gain as well as the loss.', 'A futures hedge is symmetric, unlike an option.');
+  out.should = () => { const fav = { FCPO: short ? 'CPO prices will rise' : 'CPO prices will fall', FKLI: short ? 'the market will rise' : 'the market will fall', FKB3: short ? 'rates will fall' : 'rates will rise', FMG: short ? 'yields will fall' : 'yields will rise' }[c];
+    return mcq(`The finance director believes ${fav} and says the firm should not hedge at all. Which reply is best?`, 'Hedging removes the risk of a costly wrong forecast; the firm can hedge part of the exposure if it wants to keep some upside', ['He is right: never hedge when you expect prices to move in your favour', 'Hedge twice the exposure to make an extra profit', 'Hedging guarantees a profit whatever happens to prices'], 'A hedger’s aim is certainty, not profit. A partial hedge keeps some upside while limiting the downside.', 'Ask what the firm is trying to achieve: certainty or a bet on prices.'); };
+  out.partial = () => num(`The board decides to hedge only ${S.pct}% of the exposure. How many contracts should it use?`, S.nfP, 'contracts', `${E.num(nf)} × ${S.pct}% = ${E.num(nf * S.pct / 100, 2)}, rounded down to ${S.nfP}.`, 'Contracts for a partial hedge = full-hedge contracts × percentage hedged, rounded DOWN.');
+  out.hind = () => { const good = S.futPL > 0;
+    return mcq('Looking back, which statement best judges the decision to hedge?', good ? 'The hedge did its job: it protected the firm from the move it feared' : 'The hedge still did its job: it gave certainty, even though prices moved in the firm’s favour this time', ['The hedge did its job: it protected the firm from the move it feared', 'The hedge still did its job: it gave certainty, even though prices moved in the firm’s favour this time', 'The hedge was a mistake because the futures made a loss', 'The hedge was a mistake because the firm should have speculated'], good ? 'The futures gain offset the worse spot price, which is what a hedge is for.' : 'A futures loss on a hedge is the price of certainty, not a mistake: the spot deal improved by about the same amount.', 'Judge a hedge by whether it reduced risk, not by whether the futures made money.'); };
+  return out;
+}
+function dcPlan(S, P) {
+  const c = S.c, arbOrReg = P.arb ? P.arb : () => P.reg(0), reg2 = P.arb ? () => P.reg() : () => P.reg(1 + Math.floor(rng((S.f0[0] * 100) | 0)() * 2));
+  if (S.L === 1) return [P.risk, P.dir, P.month, P.size, P.name, P.spec, P.spread, arbOrReg, P.marginRule, reg2];
+  if (S.L === 2) return [P.risk, P.posFull, P.size, P.pl, P.effect, P.other, P.spread, arbOrReg, P.marginAmt, reg2];
+  return [P.should, P.dir, P.month, P.partial, P.pl, P.hind, P.spread, arbOrReg, P.marginAmt, P.spec];
+}
+const DCQ = {};
+['FCPO', 'FKLI', 'FKB3', 'FMG'].forEach((c) => { DCQ[c] = Array.from({ length: 10 }, (_, i) => ({ id: 'q' + (i + 1), n: i + 1, label: 'Question ' + (i + 1), type: 'mcq', unit: '', tol: 0, hint: 'Think about which move in prices hurts the firm.' })); });
+function buildDecide(s) {
+  const c = s._c || s.c, L = s.lv || 1, S = dcScenario(c, s.seed || 5, L), R = rng((s.seed || 5) * 13 + L);
+  const P = dcPool(S, R), plan = dcPlan(S, P), Q = DCQ[c], key = {}, mcqs = {}, items = [];
+  plan.forEach((f, i) => {
+    const it = f(); items.push(it);
+    Object.assign(Q[i], { label: it.q, type: it.type, unit: it.unit || '', tol: it.tol || 0, signed: !!it.signed, hint: it.hint });
+    if (it.type === 'mcq') { mcqs[Q[i].id] = mcqFrom(s.id + Q[i].id + (s.seed || 0) + c + 'd', it.a, it.w, ['None of the above']); key[Q[i].id] = mcqs[Q[i].id].a; }
+    else key[Q[i].id] = it.a;
+  });
+  const steps = [{ title: 'Answers and reasons', table: { head: ['No.', 'Question', 'Answer', 'Why'], rows: items.map((it, i) => [String(i + 1), it.q, it.type === 'mcq' ? it.a : it.unit === 'RM' ? rmS(it.a) : E.num(it.a) + ' ' + it.unit, it.how || '']) } }];
+  steps.push({ title: 'Decision rules', lines: ['Hedger: open the futures position that gains when the feared move happens.', 'Month: the contract month of the spot deal (for quarterly contracts, the first quarterly month on or after it).', 'Size: round the number of contracts DOWN.', 'Speculator: take the position that profits if the view is right. Spread: buy the month you expect to strengthen and sell the other.', 'Arbitrage: futures above fair value, cash and carry; below fair value, reverse cash and carry, which is impractical.', 'Margin call: only when the balance falls below the maintenance margin; top up to the initial margin.'] });
+  return { s, S, key, mcqs, items, res: { title: `Decisions with ${DC_C[c].cn}: answers`, steps, result: { nf: S.nf } }, c };
+}
+function decideCard(B) {
+  const s = B.s, S = B.S, c = B.c, C = DC_C[c], L = s.lv || 1, P = C.px, short = S.side === 'short';
+  const what = { FCPO: short ? `It will sell <b>${E.num(S.qty)} tonnes</b> of crude palm oil in <b>${S.dealText}</b>.` : `It will buy <b>${E.num(S.qty)} tonnes</b> of crude palm oil in <b>${S.dealText}</b> for its refinery.`, FKLI: short ? `It holds a share portfolio worth <b>RM${E.num(S.port)}</b> with a beta of <b>${S.beta}</b> and plans to keep it until <b>${S.dealText}</b>.` : `It will receive <b>RM${E.num(S.port)}</b> in <b>${S.dealText}</b> and plans to buy shares that track the index (target beta <b>${S.beta}</b>).`, FKB3: short ? `It will borrow <b>RM${E.num(S.principal)}</b> for three months from <b>${S.dealText}</b> at KLIBOR plus ${S.margin}%.` : `It will deposit <b>RM${E.num(S.principal)}</b> for three months from <b>${S.dealText}</b>.`, FMG: short ? `It holds 5-year MGS with a nominal value of <b>RM${E.num(S.face)}</b> and plans to sell them in <b>${S.dealText}</b>.` : `It will receive cash in <b>${S.dealText}</b> and plans to buy 5-year MGS with a nominal value of <b>RM${E.num(S.face)}</b>.` }[c];
+  const tbl = `<div class="tw narrow"><table><thead><tr><th>${C.cn} month</th>${S.mlab.map((m) => `<th class="num">${m}</th>`).join('')}</tr></thead><tbody><tr><td>Price on ${esc(S.today)}${c === 'FCPO' ? ' (RM per tonne)' : c === 'FKLI' ? ' (points)' : ''}</td>${S.f0.map((v) => `<td class="num">${E.num(v, C.d)}</td>`).join('')}</tr></tbody></table></div>`;
+  const size = { FCPO: 'One FCPO contract is 25 tonnes.', FKLI: 'FKLI is worth RM50 per index point.', FKB3: 'One FKB3 contract has a nominal value of RM1,000,000; a move of 0.01 is worth RM25. FKB3 trades in March, June, September and December.', FMG: 'One FMG5 contract has a nominal value of RM100,000; a move of 0.01 is worth RM10. FMG5 trades in March, June, September and December.' }[c];
+  const later = L >= 2 ? `<p><b>Later.</b> When the firm closes its hedge, the ${S.dealLab} ${C.cn} price is <b>${P(S.f1)}</b>.</p>` : '';
+  return `<article class="card qcard" id="qcard"><div class="eyebrow">Decisions · Code ${T().code}${s.id} · ${['', 'Apply', 'Analyse', 'Judge'][L]}</div><h2>Decisions with ${esc(C.cn)}: ${esc(S.firm)}</h2>
+  <p>On <b>${esc(S.today)}</b>, ${esc(S.firm)} reviews its exposure. ${what}</p>${tbl}${later}
+  <p class="lbl plain">The same market note also covers a trader, ${esc(S.trader)}, and the rules of the market. ${size}</p>
+  <p class="req"><b>Required:</b> Make the decisions asked in the ${DCQ[c].length} questions below, then press <b>Check my answers</b>.</p>
+  <div class="row noprint"><button type="button" class="btn primary" id="qpdf">Download question (PDF)</button><button type="button" class="btn" id="print">Print question</button><span class="lbl plain" id="qpdf-msg" aria-live="polite"></span></div></article>`;
+}
+const dcBank = (c) => [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3].map((lv, i) => ({ id: String(i + 1).padStart(2, '0'), lv, seed: 500 * lv + 41 * (i + 1) + c.length * 11 }));
+['FCPO', 'FKLI', 'FKB3', 'FMG'].forEach((c) => {
+  TOPICS[c + '|decide'] = { key: c + '|decide', c, st: 'decide', code: `T-${c}-D-`, bank: dcBank(c), tab: `Decisions ${DC_C[c].cn}`, short: `Decisions ${DC_C[c].cn}`, method: 'decide, then justify', nameOf: (s) => ['', 'Apply', 'Analyse', 'Judge'][s.lv || 1], build: buildDecide, Q: DCQ[c], gen: (g, L) => ({ lv: L, seed: g.ri(1, 2000000000) }), levelOf: (s) => s.lv || 1, lvlInfo: DC_LVL };
+});
+const isDC = () => T() && T().st === 'decide';
+const _renderQuestionDC = renderQuestion;
+renderQuestion = function (B) { return isDC() ? decideCard(B) : _renderQuestionDC(B); };
+const _correctTextDC = correctText;
+correctText = function (q, B) { if (!isDC() || q.type !== 'num') return _correctTextDC(q, B); const k = B.key[q.id]; return q.unit === 'RM' ? rmS(k) : E.num(k) + ' ' + q.unit; };
+const _diagnoseDC = diagnose;
+diagnose = function (q, a, B, reveal) {
+  if (!isDC()) return _diagnoseDC(q, a, B, reveal);
+  if (q.type === 'mcq') { if (a[q.id] === undefined) return ['No option was chosen.']; return [q.hint].concat(reveal ? ['Correct option: ' + B.mcqs[q.id].opts[B.key[q.id]]] : []); }
+  return [q.hint].concat(numberClues(q, numIn(a[q.id]), B.key[q.id], B, reveal).filter((x) => !/commission/.test(x)));
+};
+const _renderAnswersDC = renderAnswers;
+renderAnswers = function (B) {
+  const h = _renderAnswersDC(B);
+  if (!isDC()) return h;
+  return h.replace(/<p class="lbl plain">Outside the table[\s\S]*?<\/p>/, '<p class="lbl plain">Choose one answer for each decision. For figures, type the number only; type a loss with a minus sign. Ringgit amounts are accepted within ±RM1.</p>');
 };
 
 /* ================= PART 1: THEORY QUESTION BANK =================
@@ -5907,7 +6087,7 @@ AG.reset = function () { SYNC.signout(); return _resetSy.apply(this, arguments);
       These are event rows in the sync stream; they never count in marks, history, levels or the CSV.
    4) Version number in the footer.
 ================================================================================================== */
-const APP_VERSION = 'Version 3.5 · 26 Nov 2026';
+const APP_VERSION = 'Version 3.6 · 26 Nov 2026';
 const FAIR = (function () {
   const LKEY = 'pf-lect-' + SYNC.CFG.course;
   const pad = (n) => String(n).padStart(2, '0');
