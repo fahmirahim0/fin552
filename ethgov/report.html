@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PraktiFin Eth&amp;Gov · Class report (lecturers)</title>
+<style>
+:root{--navy:#1F2A44;--gold:#C9A227;--ink:#1f2937;--quiet:#6b7280;--line:#e5e7eb;--bg:#f7f8fa;--ok:#067647;--bad:#B42318;--mid:#B54708}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg);font-size:15px}
+header{background:var(--navy);color:#fff;padding:14px 24px;border-bottom:3px solid var(--gold);display:flex;align-items:center;gap:14px}
+.homebtn{color:#fff;text-decoration:none;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:5px 12px;white-space:nowrap}
+.homebtn:hover{background:rgba(255,255,255,.12)}
+.appbtn{margin-left:auto}
+header{flex-wrap:wrap}
+header b{font-size:19px}header b span{color:var(--gold)}header small{opacity:.8}
+main{max-width:1150px;margin:0 auto;padding:20px 24px 60px}
+h1{font-size:24px;margin:6px 0}h2{font-size:18px;margin:26px 0 8px;color:var(--navy)}.sub{color:var(--quiet);margin:4px 0 10px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+.drop{border:2px dashed #b6c2d9;border-radius:10px;padding:22px;text-align:center;background:#fbfcfe;cursor:pointer}.drop.on{background:#eef4ff;border-color:var(--navy)}
+textarea{width:100%;height:90px;font-family:ui-monospace,Menlo,monospace;font-size:12px;border:1px solid var(--line);border-radius:8px;padding:8px}
+.btn{background:var(--navy);color:#fff;border:0;border-radius:8px;padding:9px 14px;font-weight:600;cursor:pointer;font-size:14px}.btn.gold{background:var(--gold);color:#1f2937}.btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--navy)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+select,input[type=date]{padding:7px;border:1px solid var(--line);border-radius:7px;font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.tile{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}.tile .v{font-size:24px;font-weight:700;color:var(--navy)}.tile .k{color:var(--quiet);font-size:13px}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}th{background:#f2f4f8;cursor:pointer;user-select:none;white-space:nowrap}
+tr.click{cursor:pointer}tr.click:hover{background:#f8fafc}.det td{background:#fbfcfe}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.mid{color:var(--mid)}.pill{display:inline-block;background:#FFFAEB;border:1px solid #FEDF89;color:#7A2E0E;border-radius:20px;padding:1px 8px;font-size:12px;margin:1px 2px}
+.bar{height:8px;background:#e9edf5;border-radius:4px;overflow:hidden;min-width:80px}.bar i{display:block;height:100%;background:var(--navy)}
+.note{background:#EEF4FF;border:1px solid #C7D7FE;color:#1D3A8A;padding:10px 14px;border-radius:8px;font-size:14px;margin:10px 0}
+.flist{font-size:13px;color:var(--quiet)}
+@media print{header,.noprint{display:none}body{background:#fff}main{padding:0}}
+</style>
+</head>
+<body>
+<header><a class="homebtn noprint" href="../" title="Back to the PraktiFin home page to choose another module">&#8592; All modules</a><a href="../" style="color:inherit;text-decoration:none"><b>Prakti<span>Fin</span> Eth&amp;Gov</b></a><small>Class report · for lecturers</small><a class="homebtn noprint appbtn" href="./" title="Open PraktiFin Eth&amp;Gov">Open the app</a></header>
+<main>
+<h1>Class report</h1>
+<div class="sub">Load the results CSV files your students downloaded from <b>My results and progress</b>. Everything stays in this page: nothing is uploaded anywhere.</div>
+<div class="panel noprint">
+  <div class="drop" id="drop">Drop CSV files here, or <b>click to choose files</b> (you can pick many at once)<input type="file" id="files" accept=".csv,text/csv,text/plain" multiple hidden></div>
+  <div class="sub" style="margin-top:10px">Or paste one or more results (students who pressed <b>Copy results</b>). Separate students with a blank line.</div>
+  <textarea id="paste" placeholder="Paste results text here"></textarea>
+  <div class="btns"><button class="btn" id="btnPaste">Add pasted results</button><button class="btn ghost" id="btnClear">Clear all</button><span class="flist" id="fcount"></span></div>
+</div>
+<div id="out"></div>
+</main>
+<script>
+(function(){
+'use strict';
+const SUBS = {"T1":"Introduction to Corporate Governance","1.1":"What governance is: the four principles","1.2":"The agency problem","1.3":"The board and its independence","1.4":"Performance, governance and the Malaysian framework","Ch1 Red Flag Hunt":"Red Flag Hunts","Ch1 Dilemma":"Dilemmas","T2":"International Development in Corporate Governance","2.1":"Why governance differs across countries","2.2":"Rules-based versus principles-based","2.3":"Global benchmarks and convergence","2.4":"Cross-border failures and their lessons","Ch2 Red Flag Hunt":"Red Flag Hunts","Ch2 Dilemma":"Dilemmas","T3":"The Malaysian Code on Corporate Governance (MCCG)","3.1":"What the MCCG is and how apply or explain works","3.2":"Judging an explanation","3.3":"The three principles: A, B and C","3.4":"Board mechanisms in practice","Ch3 Red Flag Hunt":"Red Flag Hunts","Ch3 Dilemma":"Dilemmas","T4":"Code of Ethics","4.1":"Ethics, values and codes of ethics","4.2":"The three ethical theories","4.3":"Common ethical issues in finance","4.4":"Making ethical decisions: Triple Test and framework","Ch4 Red Flag Hunt":"Red Flag Hunts","Ch4 Dilemma":"Dilemmas","T5":"Ethics Versus Morality","5.1":"Ethics versus morality","5.2":"Law, ethics and morality: legal but unethical","5.3":"Why ethics matters in finance","5.4":"Ethical leadership, values and Maqasid Shariah","Ch5 Red Flag Hunt":"Red Flag Hunts","Ch5 Dilemma":"Dilemmas","T6":"Accountability and Integrity","6.1":"Accountability versus integrity","6.2":"Mechanisms: disclosure, audit, controls and culture","6.3":"Whistleblowing, leaders, MACC s17A and the public sector","6.4":"Evaluating a case in four steps","Ch6 Red Flag Hunt":"Red Flag Hunts","Ch6 Dilemma":"Dilemmas","T7":"Financial Reporting Standards","7.1":"Why reporting matters and the MFRS framework","7.2":"Compliance is not ethical reporting","7.3":"Stewardship versus performance","7.4":"Standards, ethics, governance and ESG","Ch7 Red Flag Hunt":"Red Flag Hunts","Ch7 Dilemma":"Dilemmas"};
+const SALT = "ETHGOV|UiTM|KBM|lab";
+const NOTES = {
+ 'Opposite reading': 'Students pick the opposite idea (ethical vs unethical, accountability vs integrity, ethics vs morality). Ask them to define both terms in one line before choosing.',
+ 'Classification': 'Students place an example in the wrong category. Revisit the defining test for each category with two contrasting examples.',
+ 'Sign (+/−)': 'Students get the size right but not the direction. Ask them to say gain or loss, inflow or outflow, before they write the number.',
+ 'Percent vs decimal': 'Students type 0.125 for 12.5%. Remind them that percentage boxes take the number of percent.',
+ 'Decimal place or scale': 'Off by 10, 100 or 1000. Check RM versus RM thousand or sen, per share versus total, and percent versus decimal.',
+ 'Variance vs standard deviation': 'Square versus square root mixed up. Show variance and SD side by side with units (%² and %).',
+ 'Divide by n or n − 1': 'Population versus sample divisor. Point to the wording in the question that decides it.',
+ 'Period (annual vs semi-annual, quarterly or monthly)': 'Annualising errors, or bond coupons per year. Work one example with semi-annual periods on the board.',
+ 'Figure from another part': 'Students answer the wrong part. Train them to read each Required line before keying in.',
+ 'Left out or added an item': 'A component is missing or doubled (for example a trading cost, a dividend or a fee). Ask them to list every item before adding.',
+ 'Rounded too early': 'Rounding at intermediate steps. Teach the calculator memory keys and rounding only at the end.',
+ 'Method or inputs': 'Wrong formula or wrong inputs. Revisit the worked steps for this subtopic in class.',
+};
+function fnv(str){let x=0x811c9dc5;for(let i=0;i<str.length;i++){x^=str.charCodeAt(i);x=Math.imul(x,0x01000193)>>>0;}return ('00000000'+x.toString(16)).slice(-8).toUpperCase();}
+const esc=(s)=>String(s??'').replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=(s)=>document.querySelector(s);
+const fmt=(x)=>(Math.round(x*100)/100).toString();
+function csvLine(l){const out=[];let cur='',q=false;for(let i=0;i<l.length;i++){const ch=l[i];if(q){if(ch==='"'){if(l[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;}else if(ch==='"')q=true;else if(ch===','){out.push(cur);cur='';}else cur+=ch;}out.push(cur);return out;}
+let FILES=[];
+function parse(text,src){
+  text=text.replace(/^﻿/,'').replace(/\r/g,'').trim();
+  if(!/^PraktiFin Eth&Gov results/.test(text)) return {src,err:'Not a PraktiFin Eth&Gov results file'};
+  const lines=text.split('\n'); const meta={}; let i=0;
+  for(;i<lines.length;i++){const c=csvLine(lines[i]);if(c[0]==='Chapter'&&c[1]==='Section'){i++;break;} if(c.length>=2) meta[c[0]]=c[1];}
+  const rows=[]; let code=null;
+  for(;i<lines.length;i++){ if(!lines[i].trim())continue; const c=csvLine(lines[i]); if(c[0]==='Check code'){code=c[1];break;} const mx=+c[6]||10; rows.push({ch:+c[0],sec:/Concept/.test(c[1])?'A':/Case/.test(c[1])?'B':'C',item:/^(Red Flag Hunt|Dilemma)$/.test(c[4])?'Ch'+c[0]+' '+c[4]:c[2],level:c[3]?+c[3]:'',src:c[4],mark:+c[5]*10/mx,raw:+c[5],max:mx,t:c[7]||'',mt:c[8]||''}); }
+  const k=text.lastIndexOf('\nCheck code,'); const valid=k>0&&fnv(SALT+text.slice(0,k))===text.slice(k+12).trim();
+  return {src,name:meta['Name']||'',id:meta['Student ID']||'',grp:meta['Group']||'',exported:meta['Exported']||'',rows,valid,hasMT:lines.some(l=>/Mistake types/.test(l))};
+}
+function add(text,src){ text.replace(/\r/g,'').split(/\n\s*\n(?=PraktiFin Eth&Gov)/).forEach((t,j)=>{ if(t.trim()) FILES.push(parse(t,src+(j?` (${j+1})`:''))); }); render(); }
+const drop=$('#drop'), fin=$('#files');
+drop.onclick=()=>fin.click();
+fin.onchange=async()=>{ for(const f of fin.files) add(await f.text(), f.name); fin.value=''; };
+drop.ondragover=(e)=>{e.preventDefault();drop.classList.add('on');}; drop.ondragleave=()=>drop.classList.remove('on');
+drop.ondrop=async(e)=>{e.preventDefault();drop.classList.remove('on'); for(const f of e.dataTransfer.files) add(await f.text(), f.name);};
+$('#btnPaste').onclick=()=>{ const t=$('#paste').value; if(t.trim()){ add(t,'pasted'); $('#paste').value=''; } };
+$('#btnClear').onclick=()=>{ FILES=[]; render(); };
+let F={grp:'',from:'',to:'',edited:false}, SORT={k:'avg',d:1}, OPEN=null;
+function students(){
+  const by={};
+  FILES.filter(f=>!f.err&&(f.valid||F.edited)).forEach(f=>{ const key=(f.id||f.name).trim().toLowerCase(); if(!key) return; if(!by[key]||f.rows.length>by[key].rows.length) by[key]=f; });
+  return Object.values(by).filter(s=>!F.grp||s.grp===F.grp).map(s=>{ const rows=s.rows.filter(r=>(!F.from||r.t.slice(0,10)>=F.from)&&(!F.to||r.t.slice(0,10)<=F.to)); return Object.assign({},s,{rows}); });
+}
+function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;document.body.appendChild(a);a.click();a.remove();}
+const q=(s)=>'"'+String(s??'').replace(/"/g,'""')+'"';
+function render(){
+  const bad=FILES.filter(f=>f.err), edited=FILES.filter(f=>!f.err&&!f.valid);
+  $('#fcount').textContent=FILES.length?`${FILES.length} file(s) loaded${bad.length?`, ${bad.length} not recognised`:''}${edited.length?`, ${edited.length} edited`:''}`:'';
+  const o=$('#out'); o.innerHTML='';
+  if(!FILES.length){o.innerHTML='<div class="note">No results loaded yet.</div>';return;}
+  const groups=[...new Set(FILES.filter(f=>!f.err).map(f=>f.grp).filter(Boolean))].sort();
+  const fl=document.createElement('div'); fl.className='panel noprint';
+  fl.innerHTML=`<div class="btns"><label>Group <select id="fGrp"><option value="">All</option>${groups.map(g=>`<option${g===F.grp?' selected':''}>${esc(g)}</option>`).join('')}</select></label>
+  <label>From <input type="date" id="fFrom" value="${F.from}"></label><label>To <input type="date" id="fTo" value="${F.to}"></label>
+  <label><input type="checkbox" id="fEd"${F.edited?' checked':''}> Include edited files (check code fails)</label></div>`;
+  o.appendChild(fl);
+  $('#fGrp').onchange=(e)=>{F.grp=e.target.value;render();}; $('#fFrom').onchange=(e)=>{F.from=e.target.value;render();}; $('#fTo').onchange=(e)=>{F.to=e.target.value;render();}; $('#fEd').onchange=(e)=>{F.edited=e.target.checked;render();};
+  if(bad.length||edited.length){ const n=document.createElement('div'); n.className='note'; n.innerHTML=(bad.length?`<b>Not recognised:</b> ${bad.map(f=>esc(f.src)).join(', ')}<br>`:'')+(edited.length?`<b>Edited after download (check code fails):</b> ${edited.map(f=>esc(f.name||f.src)).join(', ')}. ${F.edited?'Included.':'Left out.'}`:''); o.appendChild(n); }
+  const S=students(); const all=[]; S.forEach(s=>s.rows.forEach(r=>all.push(Object.assign({stu:s},r))));
+  const B=all.filter(r=>r.sec==='B'), A=all.filter(r=>r.sec==='A');
+  const avg=(a)=>a.length?a.reduce((x,r)=>x+r.mark,0)/a.length:0;
+  const mtCount={}; B.forEach(r=>r.mt.split(';').map(x=>x.trim()).filter(Boolean).forEach(x=>{const t=x.replace(/^[a-z]\)\s*/,'');mtCount[t]=(mtCount[t]||0)+1;}));
+  const tiles=[['Students',S.length],['Section B questions checked',B.length],['Average first-try mark (B)',B.length?fmt(avg(B))+' / 10':'–'],['Section A quizzes checked',A.length],['Average quiz mark (A)',A.length?fmt(avg(A))+' / 10':'–'],['Mistakes diagnosed',Object.values(mtCount).reduce((a,b)=>a+b,0)],['Essays self-marked',all.filter(r=>r.src==='Essay self-mark').length],['Mock Tests taken',all.filter(r=>r.src==='Mock Test').length]];
+  o.insertAdjacentHTML('beforeend',`<h2>Summary</h2><div class="tiles">${tiles.map(([k,v])=>`<div class="tile"><div class="v">${v}</div><div class="k">${k}</div></div>`).join('')}</div>`);
+  if(FILES.some(f=>!f.err&&!f.hasMT)) o.insertAdjacentHTML('beforeend','<div class="note">Some files come from an older version of the app with no Mistake types column. Their marks count, but they add no mistake types.</div>');
+  // subtopics
+  const per={}; B.forEach(r=>{const k=r.item.split('-')[0]; (per[k]=per[k]||{k,rows:[],stu:new Set(),mt:{},lv:{}}); const p=per[k]; p.rows.push(r); p.stu.add(r.stu.id||r.stu.name); r.mt.split(';').map(x=>x.trim()).filter(Boolean).forEach(x=>{const t=x.replace(/^[a-z]\)\s*/,'');p.mt[t]=(p.mt[t]||0)+1;}); });
+  const subs=Object.values(per).map(p=>Object.assign(p,{avg:avg(p.rows)})).sort((a,b)=>a.avg-b.avg);
+  o.insertAdjacentHTML('beforeend','<h2>Section B subtopics, weakest first</h2><div class="sub">Click a row for its mistake types and the levels students reached.</div>');
+  const t=document.createElement('table'); t.innerHTML='<tr><th>Subtopic</th><th>Students</th><th>Questions</th><th>Average</th><th></th><th>Most common mistakes</th></tr>';
+  subs.forEach(p=>{ const top=Object.entries(p.mt).sort((a,b)=>b[1]-a[1]).slice(0,2); const cls=p.avg>=8?'ok':p.avg>=5?'mid':'bad';
+    const tr=document.createElement('tr'); tr.className='click'; tr.innerHTML=`<td><b>${p.k}</b> ${esc(SUBS[p.k]||'')}</td><td>${p.stu.size}</td><td>${p.rows.length}</td><td class="${cls}"><b>${fmt(p.avg)}</b></td><td><div class="bar"><i style="width:${p.avg*10}%"></i></div></td><td>${top.map(([k,v])=>`<span class="pill">${esc(k)} · ${v}</span>`).join('')||'<span class="sub">none</span>'}</td>`;
+    tr.onclick=()=>{OPEN=OPEN===p.k?null:p.k;render();}; t.appendChild(tr);
+    if(OPEN===p.k){ const lvl={}; const best={}; p.rows.forEach(r=>{const id=r.stu.id||r.stu.name; best[id]=Math.max(best[id]||0,+r.level||0);}); Object.values(best).forEach(v=>lvl[v]=(lvl[v]||0)+1);
+      const d=document.createElement('tr'); d.className='det'; d.innerHTML=`<td colspan="6"><b>Highest level reached:</b> ${[1,2,3].map(L=>`Level ${L}: ${lvl[L]||0} student(s)`).join(' · ')}<br><b>Mistake types:</b><br>${Object.entries(p.mt).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div>${esc(k)} · <b>${v}</b><br><span class="sub">${esc(NOTES[k]||'')}</span></div>`).join('')||'none recorded'}</td>`; t.appendChild(d); }
+  });
+  o.appendChild(t);
+  // section A
+  if(A.length){ const pa={}; A.forEach(r=>{(pa[r.ch]=pa[r.ch]||[]).push(r);}); o.insertAdjacentHTML('beforeend',`<h2>Section A quizzes by chapter</h2><table><tr><th>Chapter</th><th>Quizzes checked</th><th>Average</th></tr>${Object.entries(pa).sort((a,b)=>a[0]-b[0]).map(([c,rs])=>`<tr><td>${c} ${esc(SUBS['T'+c]||'')}</td><td>${rs.length}</td><td>${fmt(avg(rs))}</td></tr>`).join('')}</table>`); }
+  // mistakes overall
+  const mts=Object.entries(mtCount).sort((a,b)=>b[1]-a[1]);
+  if(mts.length) o.insertAdjacentHTML('beforeend',`<h2>Mistake types across the class</h2><table><tr><th>Mistake type</th><th>Times</th><th>Teaching note</th></tr>${mts.map(([k,v])=>`<tr><td><b>${esc(k)}</b></td><td>${v}</td><td>${esc(NOTES[k]||'')}</td></tr>`).join('')}</table>`);
+  // students
+  const st=S.map(s=>{const b=s.rows.filter(r=>r.sec==='B'); const last=s.rows.map(r=>r.t).sort().pop()||''; return {s,name:s.name,id:s.id,grp:s.grp,n:b.length,qa:s.rows.length-b.length,avg:b.length?avg(b):0,last,ch:[...new Set(s.rows.map(r=>r.ch))].sort((a,b)=>a-b).join(', '),valid:s.valid};});
+  const help=st.filter(x=>x.n<3||x.avg<5);
+  o.insertAdjacentHTML('beforeend',`<h2>Students who may need help</h2><div class="sub">Fewer than 3 Section B questions, or an average below 5.</div>${help.length?`<table><tr><th>Name</th><th>ID</th><th>Group</th><th>Questions</th><th>Average</th></tr>${help.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.id)}</td><td>${esc(x.grp)}</td><td>${x.n}</td><td class="bad">${fmt(x.avg)}</td></tr>`).join('')}</table>`:'<div class="note">None.</div>'}`);
+  const cols=[['name','Name'],['id','ID'],['grp','Group'],['n','B questions'],['qa','A quizzes'],['avg','B average'],['ch','Chapters'],['last','Last active']];
+  st.sort((a,b)=>{const x=a[SORT.k],y=b[SORT.k];return (typeof x==='number'?x-y:String(x).localeCompare(String(y)))*SORT.d;});
+  o.insertAdjacentHTML('beforeend','<h2>All students</h2><div class="sub">Click a heading to sort.</div>');
+  const tt=document.createElement('table'); tt.innerHTML='<tr>'+cols.map(([k,l])=>`<th data-k="${k}">${l}${SORT.k===k?(SORT.d>0?' ▲':' ▼'):''}</th>`).join('')+'</tr>'+st.map(x=>`<tr><td>${esc(x.name)}${x.valid?'':' <span class="bad">(edited)</span>'}</td><td>${esc(x.id)}</td><td>${esc(x.grp)}</td><td>${x.n}</td><td>${x.qa}</td><td>${fmt(x.avg)}</td><td>${x.ch}</td><td>${esc(x.last.replace('T',' ').slice(0,16))}</td></tr>`).join('');
+  tt.querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k; SORT={k,d:SORT.k===k?-SORT.d:1}; render();}); o.appendChild(tt);
+  const bb=document.createElement('div'); bb.className='btns noprint';
+  const b1=document.createElement('button'); b1.className='btn gold'; b1.textContent='Download student summary (CSV)'; b1.onclick=()=>download('PraktiFin EthGov class summary.csv',['Name,ID,Group,Section B questions,Section A quizzes,Section B average,Chapters,Last active,Check code valid',...st.map(x=>[x.name,x.id,x.grp,x.n,x.qa,fmt(x.avg),x.ch,x.last,x.valid?'Yes':'No'].map(q).join(','))].join('\n'));
+  const b2=document.createElement('button'); b2.className='btn'; b2.textContent='Download all items (CSV)'; b2.onclick=()=>download('PraktiFin EthGov all items.csv',['Name,ID,Group,Chapter,Section,Item,Level,Source,First-try mark,Max,Time,Mistake types',...all.map(r=>[r.stu.name,r.stu.id,r.stu.grp,r.ch,r.sec,r.item,r.level,r.src,r.mark,r.max,r.t,r.mt].map(q).join(','))].join('\n'));
+  const b3=document.createElement('button'); b3.className='btn ghost'; b3.textContent='Print or save as PDF'; b3.onclick=()=>window.print();
+  bb.append(b1,b2,b3); o.appendChild(bb);
+}
+window.__rep={add,get FILES(){return FILES;},students};
+render();
+})();
+</script>
+</body>
+</html>
